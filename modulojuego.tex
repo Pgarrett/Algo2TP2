@@ -1,0 +1,46 @@
+\section{Módulo Juego}
+
+%TODO descripcion
+
+\begin{Interfaz}
+
+  \textbf{usa}: \tadNombre{Mapa}.
+
+  \textbf{se explica con}: \tadNombre{Juego}.
+
+  \textbf{géneros}: \TipoVariable{juego}.
+
+  \InterfazFuncion{CrearJuego}{\Inout{m}{mapa}}{juego}%
+  [m = m_0$]%
+  {mapa($res$) $\igobs$ m_0$}%
+
+%  \InterfazFuncion{Apilar}{\Inout{p}{pila($\alpha$)}, \In{a}{$\alpha$}}{}
+% [$p \igobs p_0$]
+% {$p$ \igobs apilar($p, a$)}
+% [$\Theta(copy(a))$]
+% [apila $a$ en $p$]
+% [el elemento $a$ se apila por copia.]
+
+%  \InterfazFuncion{EsVacia?}{\In{p}{pila($\alpha$)}}{bool}
+%  {$res$ \igobs vacia?($p$)}
+%  [$\Theta(1)$]
+%  [devuelve \texttt{true} si y sólo si la pila no contiene elementos]
+%
+%  \InterfazFuncion{Tope}{\In{p}{pila($\alpha$)}}{$\alpha$}
+%  [$\lnot$vacía?($p$)]
+%  {alias($res$ \igobs tope($p$))}
+%  [$\Theta(1)$]
+%  [devuelve el tope de la pila.]
+%  [$res$ es modificable si y sólo si $p$ es modificable.]
+%
+%  \InterfazFuncion{Desapilar}{\Inout{p}{pila($\alpha$)}}{}
+%  [$p \igobs p_0$ $\land$ $\lnot$vacía?($p$)]
+%  {$p$ \igobs desapilar($p_0$) $\land$ $res$ \igobs tope($p$)}
+%  [$\Theta(1)$]
+%  [desapila el tope de $p$.]
+%
+%  \InterfazFuncion{Tamaño}{\In{p}{pila($\alpha$)}}{nat}
+%  {$res$ \igobs tamaño($p$)}
+%  [$\Theta(1)$]
+%  [devuelve la cantidad de elementos apilados en $p$.]
+%
