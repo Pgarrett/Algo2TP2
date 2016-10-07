@@ -10,21 +10,19 @@
 
   \textbf{géneros}: \TipoVariable{juego}.
 
-  \InterfazFuncion{CrearJuego}{\Inout{m}{mapa}}{juego}%
-  [m = m_0$]%
-  {mapa($res$) $\igobs$ m_0$}%
+  \InterfazFuncion{CrearJuego}{\In{m}{mapa}}{juego}%
+  [$m = m_0$]%
+  {$mapa($res$) $\igobs$ m_0$}%
 
-%  \InterfazFuncion{Apilar}{\Inout{p}{pila($\alpha$)}, \In{a}{$\alpha$}}{}
-% [$p \igobs p_0$]
-% {$p$ \igobs apilar($p, a$)}
-% [$\Theta(copy(a))$]
-% [apila $a$ en $p$]
-% [el elemento $a$ se apila por copia.]
+  \InterfazFuncion{AgregarPokemon}{\Inout{j}{juego}, \In{c}{coordenada}, \In{p}{pokemon}}{pokemon}
+  [$j \igobs j_0$]
+  {$j \igobs agregarPokemon(res$, c, j_0$)$}
+  [$\Theta(|p| + EC * log(EC))$]
 
-%  \InterfazFuncion{EsVacia?}{\In{p}{pila($\alpha$)}}{bool}
-%  {$res$ \igobs vacia?($p$)}
-%  [$\Theta(1)$]
-%  [devuelve \texttt{true} si y sólo si la pila no contiene elementos]
+  \InterfazFuncion{AgregarJugador}{\Inout{j}{juego}}{jugador}
+  [$j \igobs j_0$]
+  {$j$ \igobs agregarJugador($res, j_0$)  \land  \neg estaConectado($j, res$)  \land  \neg vacio?($pokemons(j, res$)}
+  [$\Theta(J)$]
 %
 %  \InterfazFuncion{Tope}{\In{p}{pila($\alpha$)}}{$\alpha$}
 %  [$\lnot$vacía?($p$)]
