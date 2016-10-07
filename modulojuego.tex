@@ -4,15 +4,15 @@
 
 \begin{Interfaz}
 
-  \textbf{usa}: \tadNombre{Mapa}.
+  \textbf{usa}: \tadNombre{Mapa, Coordenada}.
 
   \textbf{se explica con}: \tadNombre{Juego}.
 
   \textbf{géneros}: \TipoVariable{juego}.
 
   \InterfazFuncion{CrearJuego}{\In{m}{mapa}}{juego}%
-  [$m = m_0$]%
-  {$mapa($res$) $\igobs$ m_0$}%
+  [$m = m_0$]
+  {$res$ \igobs crearJuego($m_0$) $\land$ mapa($res$) \igobs $m_0$}
 
   \InterfazFuncion{AgregarPokemon}{\Inout{j}{juego}, \In{c}{coordenada}, \In{p}{pokemon}}{pokemon}
   [$j \igobs j_0$]

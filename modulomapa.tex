@@ -1,0 +1,19 @@
+\section{Módulo Mapa}
+
+%TODO descripcion
+
+\begin{Interfaz}
+
+  \textbf{usa}: \tadNombre{Coordenada}.
+
+  \textbf{se explica con}: \tadNombre{Mapa}.
+
+  \textbf{géneros}: \TipoVariable{mapa}.
+
+  \InterfazFuncion{CrearMapa}{}{mapa}
+  [$true$]%
+  {$res$ \igobs $crearMapa()$ $\land$ coordenadas($res$) \igobs $\emptyset$}
+
+  \InterfazFuncion{AgregarCoordenada}{\Inout{m}{mapa}, \In{c}{coordenada}}{mapa}
+  [$m \igobs m_0$]
+  {$res \igobs AgregarCoor(c, m_0)$}
