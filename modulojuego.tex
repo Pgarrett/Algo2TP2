@@ -30,14 +30,22 @@
 		\begin{Tupla}[estr]
 			\tupItem{pokemones}{diccTrie}%
 			\tupItem{jugadores}{conjLineal}
-			\tupItem{posConJugadores}{conjHash}
-			\tupItem{posConPokemones}{conjHash}
+			\tupItem{jugadoresPorPosicion}{conjHash}
+			\tupItem{pokemonesPorPosicion}{conjHash}
 			\tupItem{jugadoresEnRango}{diccHeap}
 			\tupItem{mapa}{Mapa}
 			\tupItem{pT}{Nat}
 		\end{Tupla}
 	\end{Estructura}
 \end{Representacion}
+
+%%% Sanciones	O(1)
+%%% Contador	O(1)
+%%% Heap		O(log(EC))
+%%% Atrapar		O(PS + PC)
+%%% BorrarJ		O(|P| * PC)
+
+
 %
 %  \InterfazFuncion{Tope}{\In{p}{pila($\alpha$)}}{$\alpha$}
 %  [$\lnot$vacía?($p$)]
