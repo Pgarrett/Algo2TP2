@@ -37,6 +37,25 @@
 			\tupItem{pT}{Nat}
 		\end{Tupla}
 	\end{Estructura}
+	
+	\begin{Estructura}{Jugador}[jug]
+		\begin{Tupla}[jug]
+			\tupItem{id}{Nat}%
+			\tupItem{posicion}{Coordenada}
+			\tupItem{estaConectado}{Bool}
+			\tupItem{sanciones}{Nat}
+			\tupItem{pokeCapturados}{ConjLineal}
+		\end{Tupla}
+	\end{Estructura}
+	
+	\begin{Estructura}{Pokemon}[poke]
+		\begin{Tupla}[poke]
+			\tupItem{tipo}{String}%
+			\tupItem{contador}{Nat}
+			\tupItem{posicion}{Coordenada}
+			\tupItem{salvaje}{Bool}
+		\end{Tupla}
+	\end{Estructura}
 \end{Representacion}
 
 %%% Sanciones	O(1)
