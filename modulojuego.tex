@@ -65,14 +65,25 @@
 %%% BorrarJ		O(|P| * PC)
 
 
-%% Rep: estr -> bool
-% 1) La suma de toos los significados de pokemons es igual al PT
-% 2) Todos las posiciones de jugPorPosicion esta contenida en el heap
-% 3) Idem pokePorPosicion
-% 4) Todo jugador que esta conectado y no expulsado, existe en jugPorPosicion
-% 5) Para cada posicion hay un jugador en jugPorPosicion que pertenece a jugadores
-% 6) Para cada pos en pokePorPosicion hay pokemon en pokemones
-% 7) Para cada posicion e jugadoresEnRango, sus jugadores estan contenidos en jugadores
+ Rep: estr -$>$ bool
+ \\
+ 1) La suma de toos los significados de pokemons es igual al PT
+ \\
+ 2) Todos las posiciones de jugPorPosicion esta contenida en el heap
+ \\
+ 3) Idem pokePorPosicion
+ \\
+ 4) Todo jugador que esta conectado y no expulsado, existe en jugPorPosicion
+ \\
+ 5) Para cada posicion hay un jugador en jugPorPosicion que pertenece a jugadores
+ \\
+ 6) Para cada pos en pokePorPosicion hay pokemon en pokemones
+ \\
+ 7) Para cada posicion en jugadoresEnRango, sus jugadores estan contenidos en jugadores
+ \\
+ 8) Para cada jugador en jugadores: si no esta expulsado, sus pokemones estan contenidos en pokemones del juego y no estan en pokemonesPorPosicion; y si esta conectado, su posicion pertenece al mapa del juego
+ \\
+ 9) Para cada pokemon en pokemones, si es salvaje: su contador es menor a 10, su posicion pertenece al mapa del juego y pertenece a pokemonEnPosicion
 
 
 
