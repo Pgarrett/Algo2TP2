@@ -23,6 +23,23 @@
   [$j \igobs j_0$]
   {$j$ \igobs agregarJugador($res, j_0$)  \land  \neg estaConectado($j, res$)  \land  \neg vacio?($pokemons(j, res$)}
   [$\Theta(J)$]
+\end{Interfaz}
+
+\begin{Interfaz}
+\end{Interfaz}
+
+\begin{Representacion}
+	\begin{Estructura}{Juego}[estr]
+		\begin{Tupla}[estr]
+			\tupItem{pokemones}{diccTrie}%
+			\tupItem{jugadores}{ConjLineal}
+			\tupItem{posConPokemones}{conjHash}
+			\tupItem{jugadoresEnRango}{diccHeap}
+			\tupItem{mapa}{Mapa}
+			\tupItem{pT}{Nat}
+		\end{Tupla}
+	\end{Estructura}
+\end{Representacion}
 %
 %  \InterfazFuncion{Tope}{\In{p}{pila($\alpha$)}}{$\alpha$}
 %  [$\lnot$vacía?($p$)]
