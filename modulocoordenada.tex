@@ -63,13 +63,11 @@
 \begin{Representacion}
 	\begin{Estructura}{Coordenada}[estr]
 		\begin{Tupla}[estr]
-			\tupItem{x}{Nat}%
+			\tupItem{x}{Nat}
 			\tupItem{y}{Nat}
 		\end{Tupla}
 	\end{Estructura}
 
-1) True
-
-Abs(e): estre - $>$ Coor {Rep(e)}\\
-c : Coor tq e.x = latitud(c) y e.y = longitud(c)
+	\Rep[estr][e]{true}
+	\AbsFc[estr]{coor}[e]{($\forall c : coor$) $e$.x = latitud(c) $\land$ $e$.y = longitud(c)}
 \end{Representacion}
