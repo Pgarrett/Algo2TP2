@@ -1,6 +1,6 @@
-\section{Módulo Tabla de Valores($coordenada$, $\sigma$)}
+\section{Módulo Diccionario Acotado($coordenada$, $\sigma$)}
 
-El módulo Tabla de Valores provee un diccionario por posiciones en el que se puede definir, borrar, y testear si hay un valor en una posicion en tiempo $O(1)$. 
+El módulo Diccionario Acotado provee un diccionario por posiciones en el que se puede definir, borrar, y testear si hay un valor en una posicion en tiempo $O(1)$. 
 
 El principal costo de paga al crear la estructura, dado de cuesta tiempo lineal $ancho$ por $largo$.
 
@@ -9,19 +9,19 @@ El principal costo de paga al crear la estructura, dado de cuesta tiempo lineal 
   \textbf{parámetros formales}\hangindent=2\parindent\\
   \parbox{1.7cm}{\textbf{géneros}}$coordenada,\sigma$\\
 
-  \textbf{se explica con}: \tadNombre{Diccionario$(\kappa, \sigma)$},
+  \textbf{se explica con}: \tadNombre{DiccAcotado$(Nat, \sigma)$},
 
-  \textbf{géneros}: \TipoVariable{tabla$(coordenada, \sigma)$}.
+  \textbf{géneros}: \TipoVariable{DiccAc$(coordenada, \sigma)$}.
 
   \Titulo{Operaciones básicas de tabla}
 
-  \InterfazFuncion{Vacío}{\In{Nat} ancho, \In{Nat} largo}{tabla$(coordenada,\sigma)$}%
+  \InterfazFuncion{Vacío}{\In{Nat} ancho, \In{Nat} largo}{DiccAc$(coordenada,\sigma)$}%
   [ancho $>$ 0 $\land$ largo $>$ 0]
-  {$res$ $\igobs$ vacio}%
+  {$res$ $\igobs$ vacio(ancho $*$ largo)}%
   [$\Theta(ancho $*$ largo)$]
-  [genera una tabla vacía.]
+  [genera un diccionario vacía.]
 
-  \InterfazFuncion{Definir}{\Inout{t}{tabla($coordenada,\sigma$)}, \In{c}{$coordenada$}, \In{s}{$\sigma$}}{}
+  \InterfazFuncion{Definir}{\Inout{t}{DiccAc($coordenada,\sigma$)}, \In{c}{$coordenada$}, \In{s}{$\sigma$}}{}
   [$t \igobs t_0$]
   {$t$ $\igobs$ definir($t, c, s$)}
   [$\Theta(1)$]
@@ -44,5 +44,54 @@ El principal costo de paga al crear la estructura, dado de cuesta tiempo lineal 
   {$t$ $\igobs$ borrar($t_0, c$)}
   [$\Theta(1)$]
   [elimina el valor en la posicion $c$ en $t$.]
+
+\pagebreak
+
+\subsubsection{Especificación de las operaciones auxiliares utilizadas en la interfaz}
+%%%%%%%%%%%%%%%%%%%% Diccionario Acotado
+\begin{tad}{\tadNombre{DiccAcotado(Nat,Significado)}}
+	\tadGeneros{diccAc(Nat,Significado)}
+	\tadExporta{diccAc(Nat,Significado), 
+	generadores, 
+	observadores, 
+	borrar, 
+	claves}
+	\tadUsa{\tadNombre{Nat},
+	\tadNombre{Bool},
+	\tadNombre{Conj(Nat)}},
+	\tadIgualdadObservacional{d}{d'}{Dicc(Nat, $\sigma$)}
+                         {($\forall$ c: Nat) (enRango(c,d) $\igobs$ enRango(c,d') $\yluego$ \\
+                          def?(c,d) $\igobs$ def?(c,d')) $\yluego$ \\
+                          def?(c,d) $\impluego$ obtener(c,d) $\igobs$ obtener(c,d')}
+
+	\tadObservadores
+	\tadAlinearFunciones{enRango~}{Nat/n, diccAc(Nat,sinificado), Bool}
+	
+	\tadOperacion{enRango}{Nat, diccAc(Nat,sinificado)}{Bool}{}
+    \tadOperacion{def?}{Nat/c, diccAc(Nat,significado)/d}{Bool}{enRango(c,d)}{}
+    \tadOperacion{obtener}{Nat/c, diccAc(Nat,significado)/d}{significado}{enRango(c,d) $\yluego$ def?(c,d)}{}
+
+	\tadGeneradores
+	\tadAlinearFunciones{definir~}{Nat/c, significado/s, diccAc(Nat,significado)/d}
+    \tadOperacion{vacio}{Nat/r}{diccAc(Nat,significado)}{r $>$ 0}{}
+    \tadOperacion{definir}{Nat/c, significado/s, diccAc(Nat,significado)/d}{enRango(c,d)}{}
+
+    \tadOtrasOperaciones
+    \tadAlinearFunciones{borrar~}{Nat/c, diccAc(Nat,significado)/d, diccAc(Nat,significado)}
+
+	\tadOperacion{borrar}{Nat/c, diccAc(Nat,significado)/d}{diccAc(Nat,significado)}{enRango(c,d) $\yluego$ def?(c,d)}{}
+    \tadOperacion{claves}{diccAc(Nat,significado)}{conj(Nat)}{}{}
+    
+    \tadAxiomas[\paratodo{Nat}{c, k} \paratodo{diccAc(Nat,significado)}{d} \paratodo{significado}{s}]
+
+	\tadAxioma{enRango(c, vacio(r))}{c $<$ r}
+	\tadAxioma{def?(c, vacio(r))}{false}
+	\tadAxioma{enRango(c, definir(k,s,d))}{enRango(c,d)}
+	\tadAxioma{def?(c, definir(k,s,d))}{c = k $\vee$ def?(c,d)}
+	\tadAxioma{obtener(c, definir(k,s,d))}{\IF c = k THEN s ELSE obtener(c,d) FI}	
+	\tadAxioma{borrar(c, definir(k,s,d))}{\IF c = k THEN {\IF def?(c,d) THEN borrar(c,d) ELSE d FI} ELSE definir(k,s,borrar(c,d)) FI}	
+	\tadAxioma{claves(vacio)}{$\emptyset$}
+	\tadAxioma{claves(definir(c,s,d))}{Ag(c,claves(d))}
+\end{tad}
 
 \end{Interfaz}
