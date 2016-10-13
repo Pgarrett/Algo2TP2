@@ -3,6 +3,31 @@
 %TODO descripcion
 
 \begin{Interfaz}
+
+  \textbf{usa}: \tadNombre{Nat, Bool, Coordenada, Conj($\alpha$)}.
+
+  \textbf{se explica con}: \tadNombre{Mapa}.
+
+  \textbf{géneros}: \TipoVariable{map}.
+
+  \InterfazFuncion{CrearMapa}{}{Mapa}%
+  [true]
+  {$res \igobs crearMapa(x, y)$}
+  [$O(1)$]
+  [Crea un nuevo mapa]
+
+  \InterfazFuncion{AgregarCoordenada}{\Inout{m}{map}, \In{c}{coor}}{itConj(coor)}
+  [$m \igobs m_0$]
+  {$m \igobs agregarCoor(c, m_0)$}
+  [$O(\left(\sum_{c' \in coordenadas(m)}^{\ell}{equal(c, c')}\right))$]
+  [Agrega una coordenada al mapa y devuelve el iterador a la coordenada agregada]
+
+  \InterfazFuncion{Coordenadass}{\In{m}{map}}{itConj(coor)}
+  [true]
+  {$res \igobs coordenadas(m)$}
+  [$O(1)$]
+  [Devuelve un iterador al conjunto de coordenadas del mapa]
+    
 \end{Interfaz}
 
 \begin{Representacion}

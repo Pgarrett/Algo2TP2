@@ -11,18 +11,41 @@
   \textbf{géneros}: \TipoVariable{juego}.
 
   \InterfazFuncion{CrearJuego}{\In{m}{mapa}}{juego}%
-  [$m = m_0$]
+  [true]
   {$res$ \igobs crearJuego($m_0$) $\land$ mapa($res$) \igobs $m_0$}
+  [$\Theta(MUCHO)$]
+  [Crea el nuevo juego, revisar la complejidad]
 
-  \InterfazFuncion{AgregarPokemon}{\Inout{j}{juego}, \In{c}{coordenada}, \In{p}{pokemon}}{pokemon}
-  [$j \igobs j_0$]
-  {$j \igobs agregarPokemon(res$, c, j_0$)$}
-  [$\Theta(|p| + EC * log(EC))$]
+  \InterfazFuncion{AgregarPokemon}{\Inout{j}{juego}, \In{c}{coor}, \In{p}{pokemon}}{itPokemon}
+  [$j \igobs j_0 \land puedoAgregarPokemon(c, j_0)$]
+  {$j \igobs agregarPokemon(p, c, j_0)$}
+  [$O(|P| + EC * log(EC))$]
+  [EC es la maxima cantidad de jugadores esperando para atrapar un pokemon. |P| es el nombre mas largo para un pokemon en el juego]
 
-  \InterfazFuncion{AgregarJugador}{\Inout{j}{juego}}{jugador}
+  \InterfazFuncion{AgregarJugador}{\Inout{j}{juego}}{Nat}
   [$j \igobs j_0$]
-  {$j$ \igobs agregarJugador($res, j_0$)  \land  \neg estaConectado($j, res$)  \land  \neg vacio?($pokemons(j, res$)}
-  [$\Theta(J)$]
+  {$j \igobs agregarJugador(j_0) \land res = \#jugadores(j_0) + \#expulsados(j_0)$}
+  [$O(J)$]
+  [Agrega el jugador en el conjLineal, el iterador que devuelve el agregar se guarda en un vector donde la posicion es el id del jugador que voy a devolver]
+  
+  \InterfazFuncion{Conectarse}{\Inout{j}{juego}, \In{id}{Nat}, \In{c}{coor}}{}
+  [$j \igobs j_0 \land id \in jugadores(j_0) \yluego \neg estaConectado(id, j_0) \land posExistente(c, mapa(j_0))$]
+  {$j \igobs conectarse(id, c, j_0)$}
+  [$O(log(EC))$]
+  [Conecta al jugador pasado por parametro en la coordenada indicada]
+  
+  \InterfazFuncion{Desconectarse}{\Inout{j}{juego}, \In{id}{Nat}}{}
+  [$j \igobs j_0 \land id \in jugadores(j_0) \yluego estaConectado(id, j_0)$]
+  {$j \igobs desconectarse(id, j_0)$}
+  [$O(log(EC))$]
+  [Desconecta al jugador pasado por parametro]
+  
+  \InterfazFuncion{Moverse}{\Inout{j}{juego}, \In{id}{Nat}, \In{c}{coor}}{}
+  [$j \igobs j_0 \land id \in jugadores(j_0) \yluego estaConectado(id, j_0) \land posExistente(c, mapa(j_0))$]
+  {$j \igobs moverse(c, id, j_0)$}
+  [$O((PS + PC) * |P| + log(EC))$]
+  [Mueve al jugador pasado por parametro a la coordenada indicada]
+  
 \end{Interfaz}
 
 \begin{Representacion}
@@ -32,7 +55,6 @@
 			\tupItem{jugadores}{conjLineal}
 			\tupItem{jugadoresPorPosicion}{conjHash}
 			\tupItem{pokemonesPorPosicion}{conjHash}
-			\tupItem{jugadoresEnRango}{diccHeap}
 			\tupItem{mapa}{Mapa}
 			\tupItem{pT}{Nat}
 		\end{Tupla}
@@ -52,7 +74,7 @@
 		\begin{Tupla}[poke]
 			\tupItem{tipo}{String}%
 			\tupItem{contador}{Nat}
-			\tupItem{posicion}{Coordenada}
+			\tupItem{jugadoresEnRango}{diccHeap}
 			\tupItem{salvaje}{Bool}
 		\end{Tupla}
 	\end{Estructura}
@@ -85,8 +107,8 @@
  \\
  9) Para cada pokemon en pokemones, si es salvaje: su contador es menor a 10, su posicion pertenece al mapa del juego y pertenece a pokemonEnPosicion
  
- \\
- Abs(e): estre - $>$ Jugo {Rep(e)} \\
+
+ Abs(e): estre - $>$ Jugo {Rep(e)} 
  pGo: Juego tq e.mapa = mapa(pGo) y e.jugadores = jugadores(pGo) yluego \\
  (Para todo j : jugador) j pertenece e.jugadores impluego 
  \\ j.sanciones = sanciones(j, pGo) ((j pertenece expulsados(pGo) y j.sanciones >= 10)\\
