@@ -45,16 +45,132 @@
   {$j \igobs moverse(c, id, j_0)$}
   [$O((PS + PC) * |P| + log(EC))$]
   [Mueve al jugador pasado por parametro a la coordenada indicada]
+
+  \InterfazFuncion{Mapa}{\In{j}{juego}}{Mapa}
+  [true]
+  {$res \igobs mapa(j)$}
+  [$O(copy(mapa(j)))$]
+  [Devuelve el mapa del juego]
+
+  \InterfazFuncion{Jugadores}{\In{j}{juego}}{itConj(Jugador)}
+  [true]
+  {$res \igobs jugadores(j)$}
+  [$\Theta(1)$]
+  [Devuelve un iterador al conjunto de jugadores del juego]
+
+  \InterfazFuncion{Jugadores}{\In{j}{juego}}{itConj(Jugador)}
+  [true]
+  {$res \igobs jugadores(j)$}
+  [$\Theta(1)$]
+  [Devuelve un iterador al conjunto de jugadores del juego]
+
+  \InterfazFuncion{estaConectado}{\In{j}{juego}, \In{id}{Nat}}{Bool}
+  [id $\in$ jugadores(j)]
+  {$res \igobs estaConetado(id,j)$}
+  [$\Theta(1)$]
+  [Devuelve si el jugador con id ingresado esta conectado o no]
+
+  \InterfazFuncion{posicion}{\In{j}{juego}, \In{id}{Nat}}{coor}
+  [id $\in$ jugadores(j) $\yluego$ estaConectado(id,j)]
+  {$res \igobs posicion(id,j)$}
+  [$\Theta(1)$]
+  [Devuelve la posicion actual del jugador con id ingresado si esta conectado]
+
+  \InterfazFuncion{pokemones}{\In{j}{juego}, \In{id}{Nat}}{itLista(puntero(pokemon))} %%Para borrar todos los pokemones a la hora de eliminar al jugador tenemos complejidad lineal, pero hace falta una estructura que admita repetidos ya que lo que devuelve es un multiconjunto, no queremos hacer un modulo multiconjunto queremos ser felices. Después debatimos
+  [id $\in$ jugadores(j)]
+  {$res \igobs pokemons(id,j)$}
+  [$\Theta(1)$]
+  [Devuelve un iterador a la estructura que almacena los punteros a pokemons del jugador del id ingresado]
+  
+  \InterfazFuncion{expulsados}{\In{j}{juego}}{itConj(Jugador)}
+  [True]
+  {$res \igobs expulsados(j)$}
+  [$\Theta(1)$]
+  [Devuelve un iterador al conjunto de jugadores expulsados del juego]
+
+  \InterfazFuncion{expulsados}{\In{j}{juego}}{itConj(Jugador)}
+  [True]
+  {$res \igobs expulsados(j)$}
+  [$\Theta(1)$]
+  [Devuelve un iterador al conjunto de jugadores expulsados del juego]
+
+  \InterfazFuncion{posConPokemones}{\In{j}{juego}}{itConj(Coor)}
+  [True]
+  {$res \igobs posConPokemons(j)$}
+  [$O(1)$]
+  [Devuelve un iterador al conjunto de coordenadas en donde hay pokemons]
+
+  \InterfazFuncion{pokemonEnPos}{\In{j}{juego}, \In{c}{Coor}}{itPokemon}
+  [c $\in$ posConPokemons(j)]
+  {$res \igobs pokemonEnPos(c,j)$}
+  [$\Theta(1)$] %Pero podemos tomarlos lo que queramos
+  [Devuelve un iterador al pokemon de la coordenada dada]
+
+  \InterfazFuncion{cantMovimientosParaCaptura}{\In{j}{juego}, \In{c}{Coor}}{Nat}
+  [c $\in$ posConPokemons(j)]
+  {$res \igobs cantMovimientosParaCaptura(c,j)$}
+  [$\Theta(1)$] %Pero podemos tomarnos lo que queramos (?) no, enrealidad no.
+  [Devuelve la cantidad de movimientos acumulados hasta el momento, para atrapar al pokemon de la coordenada dada]
+
+  \InterfazFuncion{puedoAgregarPokemon}{\In{j}{juego}, \In{c}{Coor}}{Bool}
+  [True]
+  {$res \igobs puedoAgregarPokemon(c,j)$}
+  [$\Theta(???)$] 
+  [Devuelve si la coordenada ingresada es válida para agregar un pokemon en ella]
+
+  \InterfazFuncion{hayPokemonCercano}{\In{j}{juego}, \In{c}{Coor}}{Bool}
+  [True]
+  {$res \igobs hayPokemonCercano(c,j)$}
+  [$\Theta(???)$] 
+  [Devuelve si la coordenada ingresada pertenece al rango de un pokemon salvaje]   
+
+  \InterfazFuncion{posPokemonCercano}{\In{j}{juego}, \In{c}{Coor}}{Coor}
+  [$hayPokemonCercano(c,j)$]
+  {$res \igobs posPokemonCercano(c,j)$}
+  [$\Theta(???)$] %Todas estas ultimas deberian ser O(1) gracias al magico DiccAcHashMagicTableListTupl pero por las dudas dejemo' la incognita hasta que sea oficial
+  [Devuelve la coordenada mas del pokemon salvaje del rango siempre y cuando haya uno]   
+
+  \InterfazFuncion{entrenadoresPosibles}{\In{j}{juego}, \In{c}{Coor}}{itColaPrior(itJugador)}
+  [$hayPokemonCercano(c,j) \yluego pokemonEnPos(posPokemonCercano(c,j),j).jugadoresEnRango \subseteq jugadoresConectados(c,j)$]
+  {$res \igobs entrenadoresPosibles(c,pokemonEnPos(posPokemonCercano(c,j),j).jugadoresEnRango,j)$}
+  [$\Theta(???)$] 
+  [Devuelve un iterador a los jugadores que están esperando para atrapar al pokemon mas cercano a la coordenada ingresada]   
+
+  \InterfazFuncion{indiceRareza}{\In{j}{juego}, \In{p}{Pokemon}}{Nat}
+  [$p \in todosLosPokemons(j)$]
+  {$res \igobs indiceRareza(p,j)$}
+  [$\Theta(???)$] 
+  [Devuelve el índice de rareza del pokemon del juego ingresado]
+
+  \InterfazFuncion{indiceRareza}{\In{j}{juego}, \In{p}{Pokemon}}{Nat}
+  [$p \in todosLosPokemons(j)$]
+  {$res \igobs indiceRareza(p,j)$}
+  [$\Theta(???)$] 
+  [Devuelve el índice de rareza del pokemon del juego ingresado]
+
+  \InterfazFuncion{cantPokemonesTotales}{\In{j}{juego}}{Nat}
+  [true]
+  {$res \igobs cantPokemonsTotales(p)$}
+  [$\Theta(???)$] 
+  [Devuelve la cantidad de pokemones que hay en el juego]
+
+  \InterfazFuncion{cantMismaEspecie}{\In{j}{juego}, \In{p}{Pokemon}}{Nat}
+  [true]
+  {$res \igobs cantMismaEspecie(p, pokemons(j), j$}
+  [$\Theta(???)$] 
+  [Devuelve la cantidad de pokemones de la especie ingresada hay en el juego]
+
   
 \end{Interfaz}
 
 \begin{Representacion}
 	\begin{Estructura}{Juego}[estr]
 		\begin{Tupla}[estr]
-			\tupItem{pokemones}{diccTrie}%
-			\tupItem{jugadores}{conjLineal}
-			\tupItem{jugadoresPorPosicion}{conjHash}
-			\tupItem{pokemonesPorPosicion}{conjHash}
+			\tupItem{pokemones}{diccString}%
+			\tupItem{jugadores}{conjLineal(jugador)}
+			\tupItem{expulsados}{conjLineal(jugador)}
+			\tupItem{jugadoresPorID}{Vector(itConj(jugador))}
+			\tupItem{pokemonesPorPosicion}{DiccAc(coor,itDiccString(pokemon))}
 			\tupItem{mapa}{Mapa}
 			\tupItem{pT}{Nat}
 		\end{Tupla}
@@ -66,7 +182,7 @@
 			\tupItem{posicion}{Coordenada}
 			\tupItem{estaConectado}{Bool}
 			\tupItem{sanciones}{Nat}
-			\tupItem{pokeCapturados}{ConjLineal}
+			\tupItem{pokeCapturados}{ConjLineal(itDiccString(pokemon))}
 		\end{Tupla}
 	\end{Estructura}
 	
