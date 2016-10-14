@@ -12,7 +12,7 @@
 
   \InterfazFuncion{CrearMapa}{}{Mapa}%
   [true]
-  {$res \igobs crearMapa(x, y)$}
+  {$res \igobs crearMapa()$}
   [$O(1)$]
   [Crea un nuevo mapa]
 
@@ -20,7 +20,7 @@
   [$m \igobs m_0$]
   {$m \igobs agregarCoor(c, m_0)$}
   [$O(\left(\sum_{c' \in coordenadas(m)}^{\ell}{equal(c, c')}\right))$]
-  [Agrega una coordenada al mapa y devuelve el iterador a la coordenada agregada]
+  [Agrega una coordenada al mapa y devuelve el iterador a la coordenada agregada. Su complejidad es la de agregar un elemento al conjunto lineal.]
 
   \InterfazFuncion{Coordenadas}{\In{m}{map}}{itConj(coor)}
   [true]
@@ -42,3 +42,39 @@
 	\AbsFc[estr]{mapa}[e]{($\forall m : Mapa$) e.coordenadas = coordenadas(m)}
 
 \end{Representacion}
+
+\begin{Algoritmos}
+
+\medskip
+	
+ \Titulo{Algoritmos del módulo}
+  	\medskip
+  
+\begin{algorithm}[H]{\textbf{iCrearMapa}() $\to$ $res$ : Mapa}
+    	\begin{algorithmic}[1]
+			\State $res.coordenadas \gets Vacio()$ \Comment{La complejidad es la de crear el Conjunto Lineal vacio $\Theta(1)$}
+			
+			\medskip
+			\Statex \underline{Complejidad:} $\Theta(1)$
+    	\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{iAgregarCoordenada}(\Inout {m}{map}, \In {c}{coor}) $\to$ $res$ : itConj(coor)}
+    	\begin{algorithmic}[1]
+			\State $res \gets Agregar(m.coordenadas, c)$ \Comment{La complejidad es la de agregar un elemento al conjunto lineal $\Theta(1)$}
+			
+			\medskip
+			\Statex \underline{Complejidad:} $\Theta(1)$
+    	\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{iCoordenadas}(\In {m}{map}) $\to$ $res$ : itConj(coor)}
+    	\begin{algorithmic}[1]
+			\State $res \gets CrearIt(m.coordenadas)$ \Comment {La complejidad es la de crear un iterador a un conjunto lineal $\Theta(1)$}
+			
+			\medskip
+			\Statex \underline{Complejidad:} $\Theta(1)$
+    	\end{algorithmic}
+\end{algorithm}
+
+\end{Algoritmos}
