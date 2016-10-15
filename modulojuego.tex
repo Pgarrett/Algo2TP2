@@ -153,7 +153,7 @@
 			\tupItem{jugadores}{conjLineal(jugador)}
 			\tupItem{expulsados}{conjLineal(jugador)}
 			\tupItem{jugadoresPorID}{Vector($<$itConj(jugador), itColaPrior(jugador)$>$)}
-			\tupItem{posicionesPokemons}{DiccAc(coor,$<$itDiccString(pokemon), Bool$>$)}
+			\tupItem{posicionesPokemons}{DiccAc(coor,$<$itDiccString(pokemon), ocupada?$>$)}
 			\tupItem{mapa}{Mapa}
 			\tupItem{pokemonsTotales}{Nat}
 		\end{Tupla}
@@ -176,6 +176,9 @@
 			\tupItem{jugadoresEnRango}{diccHeap$<$Nat, itConjLineal$>$}
 			\tupItem{salvaje}{Bool}
 		\end{Tupla}
+	\end{Estructura}
+	
+	\begin{Estructura}{ocupada?}[Bool]
 	\end{Estructura}
 
 \subsubsection{Invariante de Representación}
