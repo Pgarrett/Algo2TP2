@@ -149,7 +149,7 @@
 \subsubsection{Representación de Mapa}
 	\begin{Estructura}{Juego}[juego]
 		\begin{Tupla}[juego]
-			\tupItem{pokemones}{diccString$<$String, Nat$>$}%
+			\tupItem{pokemones}{diccString(conLineal(pokemon))}%
 			\tupItem{jugadores}{conjLineal(jugador)}
 			\tupItem{expulsados}{conjLineal(jugador)}
 			\tupItem{jugadoresPorID}{Vector($<$itConj(jugador), itColaPrior(jugador)$>$)}
