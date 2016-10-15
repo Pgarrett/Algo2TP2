@@ -149,7 +149,7 @@
 \subsubsection{Representación de Mapa}
 	\begin{Estructura}{Juego}[juego]
 		\begin{Tupla}[juego]
-			\tupItem{pokemones}{diccString}%
+			\tupItem{pokemones}{diccString$<$String, Nat$>$}%
 			\tupItem{jugadores}{conjLineal(jugador)}
 			\tupItem{expulsados}{conjLineal(jugador)}
 			\tupItem{jugadoresPorID}{Vector($<$itConj(jugador), itColaPrior(jugador)$>$)}
@@ -173,7 +173,7 @@
 		\begin{Tupla}[poke]
 			\tupItem{tipo}{String}%
 			\tupItem{contador}{Nat}
-			\tupItem{jugadoresEnRango}{diccHeap}
+			\tupItem{jugadoresEnRango}{diccHeap$<$Nat, itConjLineal$>$}
 			\tupItem{salvaje}{Bool}
 		\end{Tupla}
 	\end{Estructura}
