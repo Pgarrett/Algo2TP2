@@ -1,20 +1,33 @@
-\documentclass[10pt, a4paper]{article}
-% especifico margenes manualmente
+\documentclass[10pt, a4paper, spanish]{article}
 \usepackage[paper=a4paper, left=1.5cm, right=1.5cm, bottom=1.5cm, top=3.5cm]{geometry}
-% codificacion ISO-8859-1
-\usepackage[latin1]{inputenc}
-% separacion silabica en castellano
 \usepackage[spanish]{babel}
-% paquetes y caratula de algo2
+\selectlanguage{spanish}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{indentfirst}
+\usepackage{fancyhdr}
+\usepackage{latexsym}
+\usepackage{lastpage}
 \usepackage{aed2-symb,aed2-itef,aed2-tad,caratula}
-\usepackage{algorithmicx, algpseudocode, algorithm}
+\usepackage[colorlinks=true, linkcolor=blue]{hyperref}
+\usepackage{calc}
+\usepackage{ifthen}
 
+\usepackage{xspace}
+\usepackage{xargs}
+\usepackage{algorithm}% http://ctan.org/pkg/algorithms
+\usepackage{algpseudocode}% http://ctan.org/pkg/algorithmicx
+\usepackage{verbatim}
+\usepackage{listings}
 
+% Estilo para Algoritmos
+\lstdefinestyle{alg}{tabsize=4, frame=single, escapeinside=\'\', framesep=10pt}
 
+\newcommand{\alg}[3]{\hangindent=\parindent#1 (#2) \ifx#3\empty\else$\rightarrow$ res: #3\fi}
+\newcommand\ote[1]{\hspace*{\fill}~\mbox{O(#1)}\penalty -9999 }
+\newcommand\ofi[1]{\ensuremath{\textbf{Complejidad}: #1}}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% COMANDOS QUE ALGUN DIA PUEDAN FORMAR UN PAQUETE.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Afanado
 \newcommand{\moduloNombre}[1]{\textbf{#1}}
 
 \let\NombreFuncion=\textsc
@@ -41,7 +54,7 @@
   \textbf{Pre} $\equiv$ \{#4\}\\%
   \textbf{Post} $\equiv$ \{#5\}%
   \ifx#6\empty\else\\\textbf{Complejidad:} #6\fi%
-  \ifx#7\empty\else\\\textbf{Descripci�n:} #7\fi%
+  \ifx#7\empty\else\\\textbf{Descripción:} #7\fi%
   \ifx#8\empty\else\\\textbf{Aliasing:} #8\fi%
   \ifx#9\empty\else\\\textbf{Requiere:} #9\fi%
 }
@@ -54,7 +67,7 @@
 
 \newenvironment{Representacion}{%
   \vspace*{2ex}%
-  \noindent\textbf{\Large Representaci�n}%
+  \noindent\textbf{\Large Representación}%
   \vspace*{2ex}%
 }{}
 
@@ -101,70 +114,94 @@
 
 \newcommandx{\RepFc}[3][1={estr},2={e}]{%
   \tadOperacion{Rep}{#1}{bool}{}%
-  \tadAxioma{Rep($\#2$)}{#3}%
+  \tadAxioma{Rep($#2$)}{#3}%
 }%
 
 \newcommandx{\Rep}[3][1={estr},2={e}]{%
   \tadOperacion{Rep}{#1}{bool}{}%
-  \tadAxioma{Rep($\#2$)}{true \ssi #3}%
+  \tadAxioma{Rep($#2$)}{true \ssi #3}%
 }%
 
 \newcommandx{\Abs}[5][1={estr},3={e}]{%
-  \tadOperacion{Abs}{#1/#3}{#2}{Rep($\#3$)}%
-  \settominwidth{\hangindent}{Abs($\#3$) \igobs #4: #2 $\mid$ }%
+  \tadOperacion{Abs}{#1/#3}{#2}{Rep($#3$)}%
+  \settominwidth{\hangindent}{Abs($#3$) \igobs #4: #2 $\mid$ }%
   \addtolength{\hangindent}{\parindent}%
-  Abs($\#3$) \igobs #4: #2 $\mid$ #5%
+  Abs($#3$) \igobs #4: #2 $\mid$ #5%
 }%
 
 \newcommandx{\AbsFc}[4][1={estr},3={e}]{%
-  \tadOperacion{Abs}{#1/#3}{#2}{Rep($\#3$)}%
-  \tadAxioma{Abs($\#3$)}{#4}%
+  \tadOperacion{Abs}{#1/#3}{#2}{Rep($#3$)}%
+  \tadAxioma{Abs($#3$)}{#4}%
 }%
 
 
-\newcommand{\DRef}{\ensuremath{\rightarrow}}
+%FIN Afanado
 
+\newcommand{\f}[1]{\text{#1}}
+\renewcommand{\paratodo}[2]{$\forall~#2$: #1}
 
+\sloppy
 
+\hypersetup{%
+ % Para que el PDF se abra a página completa.
+ pdfstartview= {FitH \hypercalcbp{\paperheight-\topmargin-1in-\headheight}},
+ pdfauthor={Grupo 12 - 1c2015 - Algoritmos y Estructuras de Datos II - DC - UBA},
+ pdfsubject={TP2}
+}
 
+\parskip=5pt % 5pt es el tamaño de fuente
+
+% Pongo en 0 la distancia extra entre ítemes.
+\let\olditemize\itemize
+\def\itemize{\olditemize\itemsep=0pt}
+
+% Acomodo fancyhdr.
+\pagestyle{fancy}
+\thispagestyle{fancy}
+\addtolength{\headheight}{1pt}
+\lhead{Algoritmos y Estructuras de Datos II}
+\rhead{$2^{\mathrm{do}}$ cuatrimestre de 2016}
+\cfoot{\thepage /\pageref{LastPage}}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% Encabezado
+\lhead{Algoritmos y Estructuras de Datos II}
+\rhead{Grupo De TP Algo2}
+% Pie de pagina
+\renewcommand{\footrulewidth}{0.4pt}
+\lfoot{Facultad de Ciencias Exactas y Naturales}
+\rfoot{Universidad de Buenos Aires}
 
 \begin{document}
 
-% Estos comandos deben ir antes del \maketitle
-\materia{Algoritmos y Estructuras de Datos II} % obligatorio
-\submateria{Segundo Cuatrimestre de 2016} % opcional
-\titulo{Trabajo Practico 2} % obligatorio
-\subtitulo{Especificacion} % opcional
-\grupo{Grupo De TP Algo2} % opcional 
+% Datos de caratula
+\materia{Algoritmos y Estructuras de Datos II}
+\titulo{Trabajo Práctico II}
+\subtitulo{Diseño}
+\grupo{Grupo De TP Algo2}
 
-\integrante{Fernando Castro}{627/12}{fernandoarielcastro92@gmail.com} % obligatorio 
-\integrante{Philip Garrett}{318/14}{garrett.phg@gmail.com} % obligatorio 
-\integrante{Gabriel Salvo}{564/14}{gabrielsalvo.cap@gmail.com} % obligatorio 
-\integrante{Bernardo Tuso}{792/14}{btuso.95@gmail.com} % obligatorio 
+\integrante{Fernando Castro}{627/12}{fernandoarielcastro92@gmail.com}
+\integrante{Philip Garrett}{318/14}{garrett.phg@gmail.com}
+\integrante{Gabriel Salvo}{564/14}{gabrielsalvo.cap@gmail.com}
+\integrante{Bernardo Tuso}{792/14}{btuso.95@gmail.com}
 
 \maketitle
+\pagebreak
 
-% compilar 2 veces para actualizar las referencias
+%Indice
 \tableofcontents
 
 \pagebreak
-%\newpage
-
-
-\section{Modulos}
-Esta es un disenio(no tengo enie, paja) de la especificacion del Trabajo Practico 2 del 2$^{do}$ cuatrimestre del 2016 presentada por la catedra para la realizacion del Trabajo Practico 2. Ver enunciado:\\
-\verb+http://www.dc.uba.ar/materias/aed2/2016/2c/descargas/tps/tp2/view+\\
-
-\newpage
 \input{modulocoordenada}
-\newpage
+\pagebreak
 \input{modulomapa}
-\newpage
+\pagebreak
 \input{modulojuego}
-\newpage
+\pagebreak
 \input{modulotabla}
-\newpage
-%\input{moduloHeap}
+\pagebreak
+\input{moduloHeap}
+\pagebreak
 \input{modulodiccString}
 
 \end{document}

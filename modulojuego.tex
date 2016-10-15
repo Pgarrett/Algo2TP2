@@ -1,4 +1,4 @@
-\section{Módulo Juego}
+\section{Modulo Juego}
 
 %TODO descripcion
 
@@ -8,7 +8,7 @@
 
   \textbf{se explica con}: \tadNombre{Juego}.
 
-  \textbf{géneros}: \TipoVariable{juego}.
+  \textbf{generos}: \TipoVariable{juego}.
 
   \InterfazFuncion{CrearJuego}{\In{m}{mapa}}{juego}%
   [true]
@@ -76,7 +76,7 @@
   [$\Theta(1)$]
   [Devuelve la posicion actual del jugador con id ingresado si esta conectado]
 
-  \InterfazFuncion{pokemones}{\In{j}{juego}, \In{id}{Nat}}{itLista(puntero(pokemon))} %%Para borrar todos los pokemones a la hora de eliminar al jugador tenemos complejidad lineal, pero hace falta una estructura que admita repetidos ya que lo que devuelve es un multiconjunto, no queremos hacer un modulo multiconjunto queremos ser felices. Después debatimos
+  \InterfazFuncion{pokemones}{\In{j}{juego}, \In{id}{Nat}}{itLista(puntero(pokemon))} %%Para borrar todos los pokemones a la hora de eliminar al jugador tenemos complejidad lineal, pero hace falta una estructura que admita repetidos ya que lo que devuelve es un multiconjunto, no queremos hacer un modulo multiconjunto queremos ser felices. Despues debatimos
   [id $\in$ jugadores(j)]
   {$res \igobs pokemons(id,j)$}
   [$\Theta(1)$]
@@ -116,7 +116,7 @@
   [True]
   {$res \igobs puedoAgregarPokemon(c,j)$}
   [$\Theta(???)$] 
-  [Devuelve si la coordenada ingresada es válida para agregar un pokemon en ella]
+  [Devuelve si la coordenada ingresada es valida para agregar un pokemon en ella]
 
   \InterfazFuncion{hayPokemonCercano}{\In{j}{juego}, \In{c}{Coor}}{Bool}
   [True]
@@ -134,19 +134,19 @@
   [$hayPokemonCercano(c,j) \yluego pokemonEnPos(posPokemonCercano(c,j),j).jugadoresEnRango \subseteq jugadoresConectados(c,j)$]
   {$res \igobs entrenadoresPosibles(c,pokemonEnPos(posPokemonCercano(c,j),j).jugadoresEnRango,j)$}
   [$\Theta(???)$] 
-  [Devuelve un iterador a los jugadores que están esperando para atrapar al pokemon mas cercano a la coordenada ingresada]   
+  [Devuelve un iterador a los jugadores que estan esperando para atrapar al pokemon mas cercano a la coordenada ingresada]   
 
   \InterfazFuncion{indiceRareza}{\In{j}{juego}, \In{p}{Pokemon}}{Nat}
   [$p \in todosLosPokemons(j)$]
   {$res \igobs indiceRareza(p,j)$}
   [$\Theta(???)$] 
-  [Devuelve el índice de rareza del pokemon del juego ingresado]
+  [Devuelve el indice de rareza del pokemon del juego ingresado]
 
   \InterfazFuncion{indiceRareza}{\In{j}{juego}, \In{p}{Pokemon}}{Nat}
   [$p \in todosLosPokemons(j)$]
   {$res \igobs indiceRareza(p,j)$}
   [$\Theta(???)$] 
-  [Devuelve el índice de rareza del pokemon del juego ingresado]
+  [Devuelve el indice de rareza del pokemon del juego ingresado]
 
   \InterfazFuncion{cantPokemonesTotales}{\In{j}{juego}}{Nat}
   [true]
@@ -240,20 +240,20 @@
 
 %
 %  \InterfazFuncion{Tope}{\In{p}{pila($\alpha$)}}{$\alpha$}
-%  [$\lnot$vacía?($p$)]
+%  [$\lnot$vacia?($p$)]
 %  {alias($res$ \igobs tope($p$))}
 %  [$\Theta(1)$]
 %  [devuelve el tope de la pila.]
-%  [$res$ es modificable si y sólo si $p$ es modificable.]
+%  [$res$ es modificable si y solo si $p$ es modificable.]
 %
 %  \InterfazFuncion{Desapilar}{\Inout{p}{pila($\alpha$)}}{}
-%  [$p \igobs p_0$ $\land$ $\lnot$vacía?($p$)]
+%  [$p \igobs p_0$ $\land$ $\lnot$vacia?($p$)]
 %  {$p$ \igobs desapilar($p_0$) $\land$ $res$ \igobs tope($p$)}
 %  [$\Theta(1)$]
 %  [desapila el tope de $p$.]
 %
-%  \InterfazFuncion{Tamaño}{\In{p}{pila($\alpha$)}}{nat}
-%  {$res$ \igobs tamaño($p$)}
+%  \InterfazFuncion{TamaÃ±o}{\In{p}{pila($\alpha$)}}{nat}
+%  {$res$ \igobs tamaÃ±o($p$)}
 %  [$\Theta(1)$]
 %  [devuelve la cantidad de elementos apilados en $p$.]
 %
