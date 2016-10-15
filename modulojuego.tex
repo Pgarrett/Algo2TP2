@@ -58,12 +58,6 @@
   [$\Theta(1)$]
   [Devuelve un iterador al conjunto de jugadores del juego]
 
-  \InterfazFuncion{Jugadores}{\In{j}{juego}}{itConj(Jugador)}
-  [true]
-  {$res \igobs jugadores(j)$}
-  [$\Theta(1)$]
-  [Devuelve un iterador al conjunto de jugadores del juego]
-
   \InterfazFuncion{estaConectado}{\In{j}{juego}, \In{id}{Nat}}{Bool}
   [id $\in$ jugadores(j)]
   {$res \igobs estaConetado(id,j)$}
@@ -81,12 +75,6 @@
   {$res \igobs pokemons(id,j)$}
   [$\Theta(1)$]
   [Devuelve un iterador a la estructura que almacena los punteros a pokemons del jugador del id ingresado]
-  
-  \InterfazFuncion{expulsados}{\In{j}{juego}}{itConj(Jugador)}
-  [True]
-  {$res \igobs expulsados(j)$}
-  [$\Theta(1)$]
-  [Devuelve un iterador al conjunto de jugadores expulsados del juego]
 
   \InterfazFuncion{expulsados}{\In{j}{juego}}{itConj(Jugador)}
   [True]
@@ -142,12 +130,6 @@
   [$\Theta(???)$] 
   [Devuelve el indice de rareza del pokemon del juego ingresado]
 
-  \InterfazFuncion{indiceRareza}{\In{j}{juego}, \In{p}{Pokemon}}{Nat}
-  [$p \in todosLosPokemons(j)$]
-  {$res \igobs indiceRareza(p,j)$}
-  [$\Theta(???)$] 
-  [Devuelve el indice de rareza del pokemon del juego ingresado]
-
   \InterfazFuncion{cantPokemonesTotales}{\In{j}{juego}}{Nat}
   [true]
   {$res \igobs cantPokemonsTotales(p)$}
@@ -164,15 +146,16 @@
 \end{Interfaz}
 
 \begin{Representacion}
-	\begin{Estructura}{Juego}[estr]
-		\begin{Tupla}[estr]
+\subsubsection{Representación de Mapa}
+	\begin{Estructura}{Juego}[juego]
+		\begin{Tupla}[juego]
 			\tupItem{pokemones}{diccString}%
 			\tupItem{jugadores}{conjLineal(jugador)}
 			\tupItem{expulsados}{conjLineal(jugador)}
-			\tupItem{jugadoresPorID}{Vector(itConj(jugador))}
-			\tupItem{pokemonesPorPosicion}{DiccAc(coor,itDiccString(pokemon))}
+			\tupItem{jugadoresPorID}{Vector($<$itConj(jugador), itColaPrior(jugador)$>$)}
+			\tupItem{posicionesPokemons}{DiccAc(coor,$<$itDiccString(pokemon), Bool$>$)}
 			\tupItem{mapa}{Mapa}
-			\tupItem{pT}{Nat}
+			\tupItem{pokemonsTotales}{Nat}
 		\end{Tupla}
 	\end{Estructura}
 	
@@ -194,37 +177,31 @@
 			\tupItem{salvaje}{Bool}
 		\end{Tupla}
 	\end{Estructura}
-\end{Representacion}
 
-%%% Sanciones	O(1)
-%%% Contador	O(1)
-%%% Heap		O(log(EC))
-%%% Atrapar		O(PS + PC)
-%%% BorrarJ		O(|P| * PC)
-
-
- Rep: estr -$>$ bool
- \\
- 1) La suma de toos los significados de pokemons es igual al PT
- \\
- 2) Todos las posiciones de jugPorPosicion esta contenida en el heap
- \\
- 3) Idem pokePorPosicion
- \\
- 4) Todo jugador que esta conectado y no expulsado, existe en jugPorPosicion
- \\
- 5) Para cada posicion hay un jugador en jugPorPosicion que pertenece a jugadores
- \\
- 6) Para cada pos en pokePorPosicion hay pokemon en pokemones
- \\
- 7) Para cada posicion en jugadoresEnRango, sus jugadores estan contenidos en jugadores
- \\
- 8) Para cada jugador en jugadores: si no esta expulsado, sus pokemones estan contenidos en pokemones del juego y no estan en pokemonesPorPosicion; y si esta conectado, su posicion pertenece al mapa del juego
- \\
- 9) Para cada pokemon en pokemones, si es salvaje: su contador es menor a 10, su posicion pertenece al mapa del juego y pertenece a pokemonEnPosicion
- 
-
- Abs(e): estre - $>$ Jugo {Rep(e)} 
+\subsubsection{Invariante de Representación}
+	\begin{enumerate}
+		\item La suma de las cantidades de cada pokemon es igual a pokemonesTotales.
+		\item La suma de la cantidad de jugadores y expulsados es igual a la longitud del vector jugadoresPorID.
+		\item Para toda coordenada, si esta definida en posicionesPokemons entonces la coordeanda pertenece al mapa.
+		\item La posicion de todo jugador que pertenezca al conjunto jugadores y este conectado pertenece al mapa.
+		\item Para todo pokemon que exista en pokemons y sea salvaje, el conjunto de jugadores que esta esperando para atraparlo pertenece al conjunto jugadores.
+		\item Todo jugador que pertenezca a jugadores, este conectado y este esperando para atrapar, esta incluido en el conjunto de jugadores en rango del pokemon al que quiere atrapar.
+		\item Los conjuntos jugadores y expulsados son disjuntos.
+	\end{enumerate}
+	
+	\begin{enumerate}
+		\item Checkear con significado de trie
+		\item \# e.jugadores + \# e.expulsados = long(e.jugadoresPorID)
+		\item ($\forall c : coor$) def?(c, e.posicionesPokemons) $\impluego$ j.posicion $\in$ e.mapa.coordenadas
+		\item ($\forall j : jug$) j $\in$ e.jugadores $\land$ j.estaConectado $\impluego$ j.posicion $\in$ e.mapa.coordenadas
+		\item ($\forall p : poke$) (def?(p, e.pokemones) $\land$ p.salvaje) $\impluego$ ($\forall it : itJug$) HayMas?(it) $\yluego$ Actual(it) $\in$ p.jugadoresEnRango $\impluego$ Actual(it) $\in$ e.jugadores
+		\item ($\forall j : jug$) j $\in$ e.jugadores $\land$ j.estaConectado $\yluego$ estaParaAtrapar(j) $\impluego$ ($\forall p : poke$) def?(p, e.pokemones) $\yluego$ j $\in$ p.jugadoresEnRango
+		\item ($\forall j : jug$) (j $\in$ e.jugadores $\impluego$ j $\notin$ e.expulsados) $\lor$ (j $\in$ e.expulsados $\impluego$ j $\notin$ e.jugadores)
+		
+	\end{enumerate}
+	
+\subsubsection{Funci\'on de Abstracci\'on}	
+	Abs(e): estre - $>$ Jugo {Rep(e)} 
  pGo: Juego tq e.mapa = mapa(pGo) y e.jugadores = jugadores(pGo) yluego \\
  (Para todo j : jugador) j pertenece e.jugadores impluego 
  \\ j.sanciones = sanciones(j, pGo) ((j pertenece expulsados(pGo) y j.sanciones >= 10)\\
@@ -234,7 +211,13 @@
  j pertenece e.jugadores yluego p pertenece pokemones(j,pGo) o [(Para todo c : coord)\\
  c pertenece e.mapa.coordenadas yluego p = pokemonEnPos(c,pGo) y cantMovParaCap(c,pGo)\\
  p.contador]
- 
+\end{Representacion}
+
+%%% Sanciones	O(1)
+%%% Contador	O(1)
+%%% Heap		O(log(EC))
+%%% Atrapar		O(PS + PC)
+%%% BorrarJ		O(|P| * PC)
 
 
 

@@ -61,6 +61,7 @@
 \end{Interfaz}
 
 \begin{Representacion}
+\subsubsection{Representación de Mapa}
 	\begin{Estructura}{Coordenada}[estr]
 		\begin{Tupla}[estr]
 			\tupItem{la}{Nat}
@@ -68,7 +69,10 @@
 		\end{Tupla}
 	\end{Estructura}
 
+\subsubsection{Invariante de Representación}
 	\Rep[estr][e]{true}
+
+\subsubsection{Funci\'on de Abstracci\'on}
 	\AbsFc[estr]{coor}[e]{($\forall c : coor$) $e$.la = latitud(c) $\land$ $e$.lo = longitud(c)}
 \end{Representacion}
 
