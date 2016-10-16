@@ -333,11 +333,23 @@
     \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iEntrenadoresPosibles}(\In{j}{juego}, \In{c}{coor})  $\to$ $res$ : $itColaPrior(itJugador)$} 
+\begin{algorithm}[H]{\textbf{iEntrenadoresPosibles}(\In{c}{coor}, \In{es}{conjLineal(jugador)}, \In{j}{juego})  $\to$ $res$ : $conjLineal(itConj)$} 
 	{}
 	\begin{algorithmic}
-		\State $cuantosP \gets iCantMismaEspecie(j, p) $ \Comment $O(|p.tipo|)$
-		\State $res \gets 100 - (100 x cuantosP / iCantPokemonesTotales) $ \Comment $O(1)$
+		\State $ePosibles \gets Vacio() $ \Comment $O(1)$ {Crea un conjunto de iteradores vacio}
+		\If (Cardinal(es) $!=$ 0)	\Comment $O(1)$
+			\State itE $\gets$ CrearIt(es)	\Comment $O(1)$
+			\While {HaySiguiente(itE)} \Comment $O(Cardinal(es))$
+				\State posJugador $\gets$ Posicion(Siguiente(itE))	\Comment $O(1)$
+				\If {(iHayPokemonCercano(posJugador, j) $\yluego$ \Comment $O(???)$
+				 \State iPosPokeCercano(posJugador, j) == c $\land$ \Comment $O(1)$
+				 \State iHayCamino(c, posJugador, Mapa(j)))} \Comment $O(1)$
+					\State AgregarRapido(ePosibles, Siguiente(itE))	\Comment $O(copy(Siguiente(itE)))$
+				\EndIf
+				\State Avanzar(itE)	\Comment $O(1)$
+			\EndWhile
+		\EndIf
+		\State $res \gets ePosibles$ \Comment $O(1)$
 	
 		\medskip
 		\Statex \underline{Complejidad:} $O(|P|)$
