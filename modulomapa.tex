@@ -37,7 +37,7 @@
   \InterfazFuncion{HayCamino}{\In{c1}{coor}, \In{c2}{coor}, \In{m}{map}}{Bool}
   [$c1 \in coordenadas(m) \land c2 \in coordenadas(m)$]
   {$res \igobs hayCamino(c1, c2, m)$}
-  [$O(???)$]
+  [$\Theta(1)$]
   [Devuelve verdadero si existe un camino entre ambas coordenadas]
     
 \end{Interfaz}
@@ -48,6 +48,7 @@
 		\begin{Tupla}[estr]
 			\tupItem{coordenadas}{ConjLineal}%
 			\tupItem{ancho}{Nat}
+			\tupItem{secciones}{DiccMat($coor$, $Nat$)}
 		\end{Tupla}
 	\end{Estructura}
 	
@@ -80,11 +81,46 @@
 
 \begin{algorithm}[H]{\textbf{iAgregarCoordenada}(\Inout {m}{map}, \In {c}{coor}) $\to$ $res$ : itConj(coor)}
     	\begin{algorithmic}[1]
+            \State $ largo \gets Largo(m)  $ \Comment $\Theta( ??)$
+            \State $ ancho \gets Ancho(m)$ \Comment $\Theta( ?? )$
+            \State $ m.secciones \gets CrearArreglo(largo * ancho)$ \Comment $\Theta(largo * ancho)$
 			\State $res \gets Agregar(m.coordenadas, c)$ \Comment $\Theta\left(\displaystyle\sum_{c' \in coordendas(m)}equal(c,c')\right)$
-			
+            \State $ seccion \gets 0 $ \Comment $\Theta(1)$
+            \State $ itCoor \gets CrearIt(m.coordenadas)$ \Comment $\Theta(1)$
+			 
+            \While{$HaySiguiente(itCoor)$}			\Comment $\Theta( ?? )$
+                \State $coord \gets Siguiente(itCoor)  $ \Comment $\Theta(1)$
+			 	\State $Avanzar(it)$		\Comment $\Theta(1)$
+                \If{$\lnot(Definido?(m.secciones, coord))$} \Comment $\Theta(1)$
+                    \State $ DefinirSeccion(m, coord, seccion) $ \Comment $\Theta( ?? )$ 
+                    \State $ seccion \gets seccion + 1 $ \Comment $\Theta(1)$
+                \EndIf
+			\EndWhile
+
 			\medskip
 			\Statex \underline{Complejidad:} $\Theta\left(\displaystyle\sum_{c' \in coordendas(m)}equal(c,c')\right)$
 			\Statex \underline{Justificación:} La complejidad es la de agregar un elemento al conjunto lineal.
+    	\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{iDefinirSeccion}(\Inout {m}{map}, \In {c}{coor}, \In {i}{nat})}
+    	\begin{algorithmic}[1]
+            \If{$\lnot(Definido?(m.secciones, c)) $\land$ PosExistente(c, m)$} \Comment $\Theta(Pos existente (no es 1) ???)$
+                \State $  $ \Comment $\Theta()$
+                \State $Definir(m.secciones, c, i)$ \Comment $\Theta(1)$
+                \State $DefinirSeccion(m, CoordenadaArriba(c), i)$ \Comment $\Theta(???)$
+                \State $DefinirSeccion(m, CoordenadaALaDerecha(c), i)$ \Comment $\Theta(???)$
+                \If{$Latitud(c) > 0$} \Comment $\Theta(1)$
+                    \State $DefinirSeccion(m, CoordenadaAbajo(c), i)$ \Comment $\Theta(???)$
+                \EndIf
+                \If{$Longitud(c) > 0$} \Comment $\Theta(1)$
+                    \State $DefinirSeccion(m, CoordenadaALaIzquierda(c), i)$ \Comment $\Theta(???)$
+                \EndIf
+            \EndIf
+
+			\medskip
+			\Statex \underline{Complejidad:} $\Theta( ?? )$
+			\Statex \underline{Justificación:}
     	\end{algorithmic}
 \end{algorithm}
 
@@ -107,7 +143,15 @@
     	\end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iAncho?}(\In{m}{map}) $\to$ $res$ : nat}
+\begin{algorithm}[H]{\textbf{iHayCamino}(\In{c1}{coor}, \In{c2}{coor}, \In{m}{map}) $\to$ $res$ : $bool$}
+    	\begin{algorithmic}[1]
+			\State $res \gets (Definido?(m.secciones, c1) $\land$ Definido?(m.secciones, c2)) $\land_L$ (Significado(m.secciones, c1) = Significado(m.secciones, c2))$ \Comment $\Theta(1)$
+			\medskip
+			\Statex \underline{Complejidad:} $\Theta(1)$
+    	\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{iAncho}(\In{m}{map}) $\to$ $res$ : nat}
     	\begin{algorithmic}[1]
 			\State $res \gets m.ancho$ \Comment $\Theta(1)$
 			
@@ -116,16 +160,7 @@
     	\end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iAncho?}(\In{m}{map}) $\to$ $res$ : nat}
-    	\begin{algorithmic}[1]
-			\State $res \gets m.ancho$ \Comment $\Theta(1)$
-			
-			\medskip
-			\Statex \underline{Complejidad:} $\Theta(1)$
-    	\end{algorithmic}
-\end{algorithm}
-
-\begin{algorithm}[H]{\textbf{iLargo?}(\In{m}{map}) $\to$ $res$ : nat}
+\begin{algorithm}[H]{\textbf{iLargo}(\In{m}{map}) $\to$ $res$ : nat}
     	\begin{algorithmic}[1]
 			\State $it \gets CrearIt(m.coordenadas)$ \Comment $\Theta(1)$
 			\State $max \gets 0$ \Comment $\Theta(1)$
