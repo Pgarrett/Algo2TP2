@@ -149,11 +149,12 @@
 \subsubsection{Representación de Mapa}
 	\begin{Estructura}{Juego}[juego]
 		\begin{Tupla}[juego]
-			\tupItem{pokemones}{diccString(conLineal(pokemon))}%
+			\tupItem{pokemones}{diccString(Nat)}%
+			\tupItem{todosLosPokemones}{conjLineal(pokemon)}
 			\tupItem{jugadores}{conjLineal(jugador)}
 			\tupItem{expulsados}{conjLineal(jugador)}
 			\tupItem{jugadoresPorID}{Vector($<$itConj(jugador), itColaPrior(jugador)$>$)}
-			\tupItem{posicionesPokemons}{DiccAc(coor,$<$itDiccString(pokemon), ocupada?$>$)}
+			\tupItem{posicionesPokemons}{DiccAc(coor,itConjLineal(pokemon))}
 			\tupItem{mapa}{Mapa}
 			\tupItem{pokemonsTotales}{Nat}
 		\end{Tupla}
@@ -296,7 +297,7 @@
 	
 		\medskip
 		\Statex \underline{Complejidad:} $O(jug)$
-		\Statex \underline{Justificación: Seria el peor caso, ya que este se da cuando se tiene que armar el heap de jugadoresEnRango de pokemon}  
+		\Statex \underline{Justificación:} Seria el peor caso, ya que este se da cuando se tiene que armar el heap de jugadoresEnRango de pokemon
     \end{algorithmic}
 \end{algorithm}
 
@@ -313,7 +314,7 @@
 	
 		\medskip
 		\Statex \underline{Complejidad:} $O(1)$
-		\Statex \underline{Justificación: }  
+		\Statex \underline{Justificación:}  
     \end{algorithmic}
 \end{algorithm}
 
@@ -328,6 +329,44 @@
 	
 		\medskip
 		\Statex \underline{Complejidad:} $O(jug)$
-		\Statex \underline{Justificación: }  
+		\Statex \underline{Justificación:}  
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{iIndiceRareza}(\In{j}{juego}, \In{p}{pokemon})  $\to$ $res$ : $Nat$} 
+	{}
+	\begin{algorithmic}
+		\State $cuantosP \gets iCantMismaEspecie(j, p) $ \Comment $O(|p.tipo|)$
+		\State $res \gets 100 - (100 x cuantosP / iCantPokemonesTotales) $ \Comment $O(1)$
+	
+		\medskip
+		\Statex \underline{Complejidad:} $O(|p.tipo|)$
+		\Statex \underline{Justificación:} La complejidad esta dada por buscar cuantos hay de su misma especie.
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{iCantPokemonesTotales}(\In{j}{juego}) $\to$ $res$ : $Nat$} 
+	{}
+	\begin{algorithmic}
+		\State $res \gets cardinal(j.todosLosPokemones) $ \Comment $O(1)$
+	
+		\medskip
+		\Statex \underline{Complejidad:} $O(1)$
+		\Statex \underline{Justificación:} Pide el cardinal de un conjunto.
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{iCantMismaEspecie}(\In{j}{juego}, \In{p}{Pokemon}) $\to$ $res$ : $Nat$} 
+	{}
+	\begin{algorithmic}
+		\If(definido?(j.pokemones, p.tipo)) \Comment $O(|P|)$
+		\State $res \gets obtener(j.pokemones, p.tipo)$ \Comment $O(|P|)$
+		\Else
+		\State $res \gets 0 $ \Comment $O(1)$
+		\EndIf
+	
+		\medskip
+		\Statex \underline{Complejidad:} $O(|P|)$
+		\Statex \underline{Justificación:} En peor caso, el pokemon que se busca es el de nombre mas largo o no esta en el diccionario.
     \end{algorithmic}
 \end{algorithm}

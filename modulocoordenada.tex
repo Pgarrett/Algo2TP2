@@ -115,12 +115,12 @@
     	\begin{algorithmic}[1]
 			\State rLa $\gets$ 0	\Comment $\Theta(1)$
 			\State rLo $\gets$ 0	\Comment $\Theta(1)$
-			\If{c1.la $>$ c2.la}
+			\If{c1.la $>$ c2.la}	\Comment $\Theta(1)$
 				\State rLa $\gets$ ((c1.la - c2.la) x (c1.la - c2.la))	\Comment $\Theta(1)$
 			\Else
 				\State rLa $\gets$ ((c2.la - c1.la) x (c2.la - c1.la))	\Comment $\Theta(1)$
 			\EndIf
-			\If{c1.lo $>$ c2.lo}
+			\If{c1.lo $>$ c2.lo}	\Comment $\Theta(1)$
 				\State rLo $\gets$ ((c1.lo - c2.lo) x (c1.lo - c2.lo))	\Comment $\Theta(1)$
 			\Else
 				\State rLo $\gets$ ((c2.lo - c1.lo) x (c2.lo - c1.lo))	\Comment $\Theta(1)$
