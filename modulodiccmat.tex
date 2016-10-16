@@ -127,9 +127,16 @@ El principal costo se paga al crear la estructura o borrar un dato, dado que cue
 			\tupItem{largo}{Nat}
 		\end{Tupla}
 	\end{Estructura}
+	
+	\tadAlinearFunciones{Rep}{estr}
+	\tadAlinearAxiomas{Rep(e)}
 
-%	\Rep[estr][e]{true}
-%	\AbsFc[estr]{coor}[e]{($\forall c : coor$) $e$.la = latitud(c) $\land$ $e$.lo = longitud(c)}
+	\Rep[estr][e]{$longitud(e.posiciones) = cardinal(e.claves)$}
+	
+	\tadAlinearFunciones{Abs}{Estr/e}	
+	
+	\Abs[estr]{diccMat}[e]{d}{($\forall d : diccMat$) $e$.claves = coordenadas(d) $\land$ $e$.ancho = ancho(d) $\land$ $e$.largo = largo(d) $\land$ ($\forall c \gets e.claves$) e.posiciones[$c.campo_0 * e.ancho + c.campo_1 $] = siginificado(c,d)}
+	
 
 \end{Representacion}
 
