@@ -116,4 +116,28 @@
     	\end{algorithmic}
 \end{algorithm}
 
+\begin{algorithm}[H]{\textbf{iAncho?}(\In{m}{map}) $\to$ $res$ : nat}
+    	\begin{algorithmic}[1]
+			\State $res \gets m.ancho$ \Comment $\Theta(1)$
+			
+			\medskip
+			\Statex \underline{Complejidad:} $\Theta(1)$
+    	\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{iLargo?}(\In{m}{map}) $\to$ $res$ : nat}
+    	\begin{algorithmic}[1]
+			\State $it \gets CrearIt(m.coordenadas)$ \Comment $\Theta(1)$
+			\State $max \gets 0$ \Comment $\Theta(1)$
+			\While $HaySiguiente(it)$ \Comment $\O(\sharp m.coordenadas)$
+				\If( $max < \Pi_2(it \rightarrow siguiente)$) \Comment $\Theta(1)$
+					\State $max \gets \Pi_2 (it \rightarrow siguiente)$ \Comment $\Theta(1)$					
+				\EndIf
+				\State $Avanzar(it)$ \Comment $\Theta(1)$				
+			\EndWhile
+			\medskip
+			\Statex \underline{Complejidad:} $\Theta(\sharp m.coordenadas)$
+    	\end{algorithmic}
+\end{algorithm}
+
 \end{Algoritmos}
