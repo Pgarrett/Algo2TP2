@@ -19,7 +19,7 @@
   \InterfazFuncion{AgregarCoordenada}{\Inout{m}{map}, \In{c}{coor}}{itConj(coor)}
   [$m \igobs m_0$]
   {$m \igobs agregarCoor(c, m_0)$}
-  [$O(\left(\sum_{c' \in coordenadas(m)}^{\ell}{equal(c, c')}\right))$]
+  [$\Theta\left(\displaystyle\sum_{c' \in coordendas(m)}equal(c,c')\right)$]
   [Agrega una coordenada al mapa y devuelve el iterador a la coordenada agregada. Su complejidad es la de agregar un elemento al conjunto lineal.]
 
   \InterfazFuncion{Coordenadas}{\In{m}{map}}{itConj(coor)}
@@ -27,6 +27,18 @@
   {$res \igobs coordenadas(m)$}
   [$O(1)$]
   [Devuelve un iterador al conjunto de coordenadas del mapa]
+  
+  \InterfazFuncion{PosExistente}{\In{c}{coor}, \In{m}{map}}{Bool}
+  [true]
+  {$res \igobs posExistente(c, m)$}
+  [$O(1)$]
+  [Devuelve verdadero si la coordenada esta en el conjunto de coordenadas del mapa]
+  
+  \InterfazFuncion{HayCamino}{\In{c1}{coor}, \In{c2}{coor}, \In{m}{map}}{Bool}
+  [$c1 \in coordenadas(m) \land c2 \in coordenadas(m)$]
+  {$res \igobs hayCamino(c1, c2, m)$}
+  [$O(???)$]
+  [Devuelve verdadero si existe un camino entre ambas coordenadas]
     
 \end{Interfaz}
 
@@ -68,10 +80,11 @@
 
 \begin{algorithm}[H]{\textbf{iAgregarCoordenada}(\Inout {m}{map}, \In {c}{coor}) $\to$ $res$ : itConj(coor)}
     	\begin{algorithmic}[1]
-			\State $res \gets Agregar(m.coordenadas, c)$ \Comment{La complejidad es la de agregar un elemento al conjunto lineal $\Theta(1)$}
+			\State $res \gets Agregar(m.coordenadas, c)$ \Comment $\Theta\left(\displaystyle\sum_{c' \in coordendas(m)}equal(c,c')\right)$
 			
 			\medskip
-			\Statex \underline{Complejidad:} $\Theta(1)$
+			\Statex \underline{Complejidad:} $\Theta\left(\displaystyle\sum_{c' \in coordendas(m)}equal(c,c')\right)$
+			\Statex \underline{Justificación:} La complejidad es la de agregar un elemento al conjunto lineal.
     	\end{algorithmic}
 \end{algorithm}
 
@@ -81,6 +94,16 @@
 			
 			\medskip
 			\Statex \underline{Complejidad:} $\Theta(1)$
+    	\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{iPosExistente}(\In{c}{coor}, \In{m}{map}) $\to$ $res$ : Bool}
+    	\begin{algorithmic}[1]
+			\State $res \gets pertenece?(m.coordenadas, c)$ \Comment  $\Theta\left(\displaystyle\sum_{c' \in coordendas(m)}equal(c,c')\right)$
+			
+			\medskip
+			\Statex \underline{Complejidad:} $\Theta\left(\displaystyle\sum_{c' \in coordendas(m)}equal(c,c')\right)$
+			\Statex \underline{Justificación:} La complejidad es la fijarse que un elemento pertenezca al conjunto lineal.
     	\end{algorithmic}
 \end{algorithm}
 

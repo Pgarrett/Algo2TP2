@@ -127,19 +127,19 @@
   \InterfazFuncion{indiceRareza}{\In{j}{juego}, \In{p}{Pokemon}}{Nat}
   [$p \in todosLosPokemons(j)$]
   {$res \igobs indiceRareza(p,j)$}
-  [$\Theta(???)$] 
+  [$O(|P|)$] 
   [Devuelve el indice de rareza del pokemon del juego ingresado]
 
   \InterfazFuncion{cantPokemonesTotales}{\In{j}{juego}}{Nat}
   [true]
   {$res \igobs cantPokemonsTotales(p)$}
-  [$\Theta(???)$] 
+  [$\Theta(1)$] 
   [Devuelve la cantidad de pokemones que hay en el juego]
 
   \InterfazFuncion{cantMismaEspecie}{\In{j}{juego}, \In{p}{Pokemon}}{Nat}
   [true]
   {$res \igobs cantMismaEspecie(p, pokemons(j), j$}
-  [$\Theta(???)$] 
+  [$O(|P|)$] 
   [Devuelve la cantidad de pokemones de la especie ingresada hay en el juego]
 
   
@@ -333,6 +333,18 @@
     \end{algorithmic}
 \end{algorithm}
 
+\begin{algorithm}[H]{\textbf{iEntrenadoresPosible}(\In{j}{juego}, \In{c}{coor})  $\to$ $res$ : $itColaPrior(itJugador)$} 
+	{}
+	\begin{algorithmic}
+		\State $cuantosP \gets iCantMismaEspecie(j, p) $ \Comment $O(|p.tipo|)$
+		\State $res \gets 100 - (100 x cuantosP / iCantPokemonesTotales) $ \Comment $O(1)$
+	
+		\medskip
+		\Statex \underline{Complejidad:} $O(|P|)$
+		\Statex \underline{Justificación:} Siendo $|P|$ el nombre mas largo para un pokemon en el juego.
+    \end{algorithmic}
+\end{algorithm}
+
 \begin{algorithm}[H]{\textbf{iIndiceRareza}(\In{j}{juego}, \In{p}{pokemon})  $\to$ $res$ : $Nat$} 
 	{}
 	\begin{algorithmic}
@@ -340,8 +352,8 @@
 		\State $res \gets 100 - (100 x cuantosP / iCantPokemonesTotales) $ \Comment $O(1)$
 	
 		\medskip
-		\Statex \underline{Complejidad:} $O(|p.tipo|)$
-		\Statex \underline{Justificación:} La complejidad esta dada por buscar cuantos hay de su misma especie.
+		\Statex \underline{Complejidad:} $O(|P|)$
+		\Statex \underline{Justificación:} Siendo $|P|$ el nombre mas largo para un pokemon en el juego.
     \end{algorithmic}
 \end{algorithm}
 
