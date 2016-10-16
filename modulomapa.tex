@@ -105,7 +105,7 @@
 
 \begin{algorithm}[H]{\textbf{iDefinirSeccion}(\Inout {m}{map}, \In {c}{coor}, \In {i}{nat})}
     	\begin{algorithmic}[1]
-            \If{$\lnot(Definido?(m.secciones, c)) $\land$ PosExistente(c, m)$} \Comment $\Theta(Pos existente (no es 1) ???)$
+            \If{$\lnot(Definido?(m.secciones, c)) \land PosExistente(c, m)$} \Comment $\Theta(Pos existente (no es 1) ???)$
                 \State $  $ \Comment $\Theta()$
                 \State $Definir(m.secciones, c, i)$ \Comment $\Theta(1)$
                 \State $DefinirSeccion(m, CoordenadaArriba(c), i)$ \Comment $\Theta(???)$
@@ -145,7 +145,7 @@
 
 \begin{algorithm}[H]{\textbf{iHayCamino}(\In{c1}{coor}, \In{c2}{coor}, \In{m}{map}) $\to$ $res$ : $bool$}
     	\begin{algorithmic}[1]
-			\State $res \gets (Definido?(m.secciones, c1) $\land$ Definido?(m.secciones, c2)) $\land_L$ (Significado(m.secciones, c1) = Significado(m.secciones, c2))$ \Comment $\Theta(1)$
+			\State $res \gets (Definido?(m.secciones, c1) \land Definido?(m.secciones, c2)) \land_L (Significado(m.secciones, c1) = Significado(m.secciones, c2))$ \Comment $\Theta(1)$
 			\medskip
 			\Statex \underline{Complejidad:} $\Theta(1)$
     	\end{algorithmic}

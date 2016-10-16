@@ -118,7 +118,7 @@
   [$\Theta(???)$] %Todas estas ultimas deberian ser O(1) gracias al magico DiccAcHashMagicTableListTupl pero por las dudas dejemo' la incognita hasta que sea oficial
   [Devuelve la coordenada mas del pokemon salvaje del rango siempre y cuando haya uno]   
 
-  \InterfazFuncion{entrenadoresPosibles}{\In{j}{juego}, \In{c}{Coor}}{itColaPrior(itJugador)}
+  \InterfazFuncion{entrenadoresPosibles}{\In{c}{coor}, \In{es}{conjLineal(jugador)}, \In{j}{juego}}{itColaPrior(itJugador)}
   [$hayPokemonCercano(c,j) \yluego pokemonEnPos(posPokemonCercano(c,j),j).jugadoresEnRango \subseteq jugadoresConectados(c,j)$]
   {$res \igobs entrenadoresPosibles(c,pokemonEnPos(posPokemonCercano(c,j),j).jugadoresEnRango,j)$}
   [$\Theta(???)$] 
@@ -156,7 +156,6 @@
 			\tupItem{jugadoresPorID}{Vector($<$itConj(jugador), itColaPrior(jugador)$>$)}
 			\tupItem{posicionesPokemons}{DiccAc(coor,itConjLineal(pokemon))}
 			\tupItem{mapa}{Mapa}
-			\tupItem{pokemonsTotales}{Nat}
 		\end{Tupla}
 	\end{Estructura}
 	
@@ -184,7 +183,7 @@
 
 \subsubsection{Invariante de Representación}
 	\begin{enumerate}
-		\item La suma de las cantidades de cada pokemon es igual a pokemonesTotales.
+		\item La suma de todos los significados de pokemones es igual al cardinales de  todosLosPokemones.
 		\item La suma de la cantidad de jugadores y expulsados es igual a la longitud del vector jugadoresPorID.
 		\item Para toda coordenada, si esta definida en posicionesPokemons entonces la coordeanda pertenece al mapa.
 		\item La posicion de todo jugador que pertenezca al conjunto jugadores y este conectado pertenece al mapa.
@@ -333,11 +332,46 @@
     \end{algorithmic}
 \end{algorithm}
 
+\begin{algorithm}[H]{\textbf{iPosPokemonCercano}(\In{j}{juego}, \In{c}{Coor})  $\to$ $res$ : $conjLineal(itConj)$} 
+	{}
+	\begin{algorithmic}
+		\State i $\gets$ 0 \Comment $O(1)$
+		\State latC $\gets$ Latitud(c)	\Comment $O(1)$
+		\If {latC $>$ 2}	\Comment $O(1)$
+			\State i $\gets$ latC - 2	\Comment $O(1)$
+		\Else
+			\If {latC $>$ 1}	\Comment $O(1)$
+				\State i $\gets$ latC - 1	\Comment $O(1)$
+			\Else
+				\State i $\gets$ latC	\Comment $O(1)$
+			\EndIf
+		\EndIf
+		\State j $\gets$ 0 \Comment $O(1)$
+		\State longC $\gets$ Longitud(c)	\Comment $O(1)$
+		\If {longC $>$ 2}	\Comment $O(1)$
+			\State j $\gets$ longC - 2	\Comment $O(1)$
+		\Else
+			\If {longC $>$ 1}	\Comment $O(1)$
+				\State j $\gets$ longC - 1	\Comment $O(1)$
+			\Else
+				\State j $\gets$ longC	\Comment $O(1)$
+			\EndIf
+		\EndIf
+		\While {i < latC + 2}
+			\While {j < longC + 2}
+			\EndWhile
+		\EndWhile
+		\medskip
+		\Statex \underline{Complejidad:} $O(1)$
+		\Statex \underline{Justificación:} 
+    \end{algorithmic}
+\end{algorithm}
+
 \begin{algorithm}[H]{\textbf{iEntrenadoresPosibles}(\In{c}{coor}, \In{es}{conjLineal(jugador)}, \In{j}{juego})  $\to$ $res$ : $conjLineal(itConj)$} 
 	{}
 	\begin{algorithmic}
-		\State $ePosibles \gets Vacio() $ \Comment $O(1)$ {Crea un conjunto de iteradores vacio}
-		\If (Cardinal(es) $!=$ 0)	\Comment $O(1)$
+		\State $ePosibles \gets Vacia() $ \Comment $O(1)$ {Crea una cola de prioridad de iteradores vacia}
+		\If {Cardinal(es) $!=$ 0}	\Comment $O(1)$
 			\State itE $\gets$ CrearIt(es)	\Comment $O(1)$
 			\While {HaySiguiente(itE)} \Comment $O(Cardinal(es))$
 				\State posJugador $\gets$ Posicion(Siguiente(itE))	\Comment $O(1)$
@@ -352,8 +386,8 @@
 		\State $res \gets ePosibles$ \Comment $O(1)$
 	
 		\medskip
-		\Statex \underline{Complejidad:} $O(|P|)$
-		\Statex \underline{Justificación:} Siendo $|P|$ el nombre mas largo para un pokemon en el juego.
+		\Statex \underline{Complejidad:} $O(Cardinal(es) * copy(Siguiente(itE)))$
+		\Statex \underline{Justificación:} Se itera por completo el conjunto de jugadores 'es'. En peor caso, todos los elementos de 'es' deben ser agregados al resultado.
     \end{algorithmic}
 \end{algorithm}
 
