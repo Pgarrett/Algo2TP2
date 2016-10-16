@@ -1,6 +1,6 @@
 \section{Modulo Diccionario Matriz($coor$, $\sigma$)}
 
-El módulo Diccionario Matriz provee un diccionario por posiciones en el que se puede definir, y consultar si hay un valor en una posicion en tiempo $O(copy(\sigma))$. Ademas, se puede borrar en tiempo lineal sobre las dimensiones de la matriz, y obtener un iterador a un conjunto lineal de claves.
+El modulo Diccionario Matriz provee un diccionario por posiciones en el que se puede definir, y consultar si hay un valor en una posicion en tiempo $O(copy(\sigma))$. Ademas, se puede borrar en tiempo lineal sobre las dimensiones de la matriz, y obtener un iterador a un conjunto lineal de claves.
 
 El principal costo se paga al crear la estructura o borrar un dato, dado que cuesta tiempo lineal $ancho$ por $largo$.
 
@@ -17,7 +17,7 @@ El principal costo se paga al crear la estructura o borrar un dato, dado que cue
   [largo $*$ ancho $>$ 0]
   {$res$ $\igobs$ vacio(largo, ancho)}%
   [$\Theta(ancho $*$ largo)$]
-  [Genera un diccionario vacio, de tamaño $ancho*largo$.]
+  [Genera un diccionario vacio, de tamaÃ±o $ancho*largo$.]
 
   \InterfazFuncion{Definir}{\Inout{d}{diccMat($coor,\sigma$)}, \In{c}{$coor$}, \In{s}{$\sigma$}}{}
   [$d \igobs d_0$ $\land$ enRango($c_0$, $c_1$, $d$)]
@@ -30,7 +30,7 @@ El principal costo se paga al crear la estructura o borrar un dato, dado que cue
   [enRango($c_0$, $c_1$, $d$)]
   {$res$ $\igobs$ def?($c_0$, $c_1$, $d$)}
   [$\Theta(copy(s))$]
-  [devuelve \texttt{true} si y sólo si $c$ tiene un valor en el diccMat.]
+  [devuelve \texttt{true} si y solo si $c$ tiene un valor en el diccMat.]
 
   \InterfazFuncion{Significado}{\In{d}{diccMat($coor,\sigma$)}, \In{c}{$coor$}}{$\sigma$}
   [enRango($c_0$, $c_1$, $d$) $\land_L$ def?($c_0$, $c_1$, $d$)] 
@@ -121,7 +121,7 @@ El principal costo se paga al crear la estructura o borrar un dato, dado que cue
 \begin{Representacion}
 	\begin{Estructura}{Diccionario Matriz}[dicc]
 		\begin{Tupla}[dicc]
-			\tupItem{posiciones}{arreglo_dimensionable de <$bool$, $\sigma$>}
+			\tupItem{posiciones}{arregloDimensionable de $<bool, \sigma>$}
             \tupItem{claves}{conjLineal(coor)}
 			\tupItem{ancho}{Nat}
 			\tupItem{largo}{Nat}
@@ -139,7 +139,7 @@ El principal costo se paga al crear la estructura o borrar un dato, dado que cue
 
 \medskip
 	
- \Titulo{Algoritmos del módulo}
+ \Titulo{Algoritmos del modulo}
   	\medskip
   
 \begin{algorithm}[H]{\textbf{iVacio}(\In {l}{Nat},\In {a}{Nat}) $\to$ $res$ : diccMat}
@@ -162,16 +162,16 @@ El principal costo se paga al crear la estructura o borrar un dato, dado que cue
 			
 			\medskip
 			\Statex \underline{Complejidad:} $\Theta(copy(s))$
-            \Statex \underline{Justificación:} $Definido?$ y $Aplanar$ tienen costo $\Theta(1)$, $AgregarRapido$ y $Definir$ tienen costo $\Theta(copy(s))$. Aplicando algebra de ordenes: $\Theta(1)$ + $\Theta(1)$ + $\Theta(copy(s))$  + $\Theta(copy(s))$ = $\Theta(copy(s))$
+            \Statex \underline{Justificacion:} $Definido?$ y $Aplanar$ tienen costo $\Theta(1)$, $AgregarRapido$ y $Definir$ tienen costo $\Theta(copy(s))$. Aplicando algebra de ordenes: $\Theta(1)$ + $\Theta(1)$ + $\Theta(copy(s))$  + $\Theta(copy(s))$ = $\Theta(copy(s))$
         \end{algorithmic}
 \end{algorithm}
 
 \begin{algorithm}[H]{\textbf{iDefinido?}(\In {d}{diccMat}, \In {c}{coor}) $\to$ $res$ : $bool$}
     	\begin{algorithmic}[1]
-        \State $res \gets Definido?(d.posiciones, Aplanar(d, c)) $\land_L$ d.posiciones[Aplanar(d, c)]_0$ } \Comment{Si no esta definido o esta marcado como borrado, se devuelve que no esta definido} $\Theta(1)$
+        \State {$res \gets Definido?(d.posiciones, Aplanar(d, c)) \land_L d.posiciones[Aplanar(d, c)]_0$ } \Comment{Si no esta definido o esta marcado como borrado, se devuelve que no esta definido} $\Theta(1)$
 			\medskip
 			\Statex \underline{Complejidad:} $\Theta(1)$
-            \Statex \underline{Justificación:} $Aplanar$ tiene costo $\Theta(1)$, luego, como $Definido?$ y consular una posicion de un arreglo tienen costo $\Theta(1)$. Aplicando algebra de ordenes: $\Theta(1)$ + $\Theta(1)$ + $\Theta(1)$ = $\Theta(1)$
+            \Statex \underline{Justificacion:} $Aplanar$ tiene costo $\Theta(1)$, luego, como $Definido?$ y consular una posicion de un arreglo tienen costo $\Theta(1)$. Aplicando algebra de ordenes: $\Theta(1)$ + $\Theta(1)$ + $\Theta(1)$ = $\Theta(1)$
         \end{algorithmic}
 \end{algorithm}
 
@@ -195,7 +195,7 @@ El principal costo se paga al crear la estructura o borrar un dato, dado que cue
 
 \begin{algorithm}[H]{\textbf{iCoordenadas}(\In {d}{diccMat}) $\to$ $res$ : $itConj(coor)$}
     	\begin{algorithmic}[1]
-            \State $res \gets CrearIt(d.claves)}$ \Comment $\Theta(1)$
+            \State $res \gets CrearIt(d.claves)$ \Comment $\Theta(1)$
 
 			\medskip
 			\Statex \underline{Complejidad:} $\Theta(1)$
@@ -208,7 +208,7 @@ El principal costo se paga al crear la estructura o borrar un dato, dado que cue
 			
 			\medskip
 			\Statex \underline{Complejidad:} $\Theta(1)$
-            \Statex \underline{Justificación:} Son operaciones matematicas de Nat
+            \Statex \underline{Justificacion:} Son operaciones matematicas de Nat
         \end{algorithmic}
 \end{algorithm}
 
