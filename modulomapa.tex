@@ -56,7 +56,7 @@
 	\begin{enumerate}
 		\item El ancho del mapa es igual al maximo del primer elemento de las coordenadas
 	\end{enumerate}
-	\Rep[estr][e]{(e.ancho = Max($\Pi_1$(coordenadas)))}
+	\Rep[estr][e]{(e.ancho = Max($campo_1$(coordenadas)) $\wedge$ ($\forall c: coor$) c $\in$ e.coordenadas $\impluego$ def?(c,e.secciones)}
 
 \subsubsection{Funci\'on de Abstracci\'on}
 	\AbsFc[estr]{mapa}[e]{($\forall m : Mapa$) e.coordenadas = coordenadas(m)}
