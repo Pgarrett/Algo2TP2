@@ -1,0 +1,233 @@
+\section{Modulo Diccionario Matriz($coor$, $\sigma$)}
+
+El módulo Diccionario Matriz provee un diccionario por posiciones en el que se puede definir, y consultar si hay un valor en una posicion en tiempo $O(copy(\sigma))$. Ademas, se puede borrar en tiempo lineal sobre las dimensiones de la matriz, y obtener un iterador a un conjunto lineal de claves.
+
+El principal costo se paga al crear la estructura o borrar un dato, dado que cuesta tiempo lineal $ancho$ por $largo$.
+
+\begin{Interfaz}
+
+  \textbf{parametros formales}\hangindent=2\parindent\\
+  \parbox{1.7cm}{\textbf{generos}}$coor,\sigma$\\
+%TODO
+  \textbf{se explica con}: \tadNombre{DiccMat$(Nat, Nat, \sigma)$},
+
+  \textbf{generos}: \TipoVariable{diccMat$(coor, \sigma)$}.
+
+  \InterfazFuncion{Vacio}{\In{Nat} largo, \In{Nat} ancho}{diccMat$(coor,\sigma)$}%
+  [largo $*$ ancho $>$ 0]
+  {$res$ $\igobs$ vacio(largo, ancho)}%
+  [$\Theta(ancho $*$ largo)$]
+  [Genera un diccionario vacio, de tamaño $ancho*largo$.]
+
+  \InterfazFuncion{Definir}{\Inout{d}{diccMat($coor,\sigma$)}, \In{c}{$coor$}, \In{s}{$\sigma$}}{}
+  [$d \igobs d_0$ $\land$ enRango($c_0$, $c_1$, $d$)]
+  {$d$ $\igobs$ definir($c_0$, $c_1$, $s$, $d_0$)}
+  [$\Theta(copy(s))$]
+  [define el significado $s$ en el diccMat, en la posicion representada por $c$.]
+  [Hay alising, pero no se como explicarlo TODO]
+
+  \InterfazFuncion{Definido?}{\In{d}{diccMat($coor,\sigma$)}, \In{c}{$coor$}}{bool}
+  [enRango($c_0$, $c_1$, $d$)]
+  {$res$ $\igobs$ def?($c_0$, $c_1$, $d$)}
+  [$\Theta(copy(s))$]
+  [devuelve \texttt{true} si y sólo si $c$ tiene un valor en el diccMat.]
+
+  \InterfazFuncion{Significado}{\In{d}{diccMat($coor,\sigma$)}, \In{c}{$coor$}}{$\sigma$}
+  [enRango($c_0$, $c_1$, $d$) $\land_L$ def?($c_0$, $c_1$, $d$)] 
+  {alias($res$ $\igobs$ obtener($c_0$, $c_1$, $d$)}
+  [$\Theta(copy(s))$]
+  [Devuelve el valor de $d$ en la posicion $c$.]
+
+  \InterfazFuncion{Borrar}{\Inout{d}{diccMat($coor,\sigma$)}, \In{c}{$coor$}}{}
+  [$d = d_0$ $\land$ enRango($c_0$, $c_1$, $d$) $\land_L$ def?($c_0$, $c_1$, $d$)]
+  {$d$ $\igobs$ borrar($c_0$, $c_1$, $d_0$)}
+  [$\Theta\left(\displaystyle\sum_{c' \in d.claves}equal(c,c')\right)$]
+  [Elimina el valor en la posicion $c$ en $d$.]
+
+  \InterfazFuncion{Coordenadas}{\In{d}{diccMat($coor,\sigma$)}}{itConj($coor$)}
+  {alias(esPermutacion?(SecuSuby($res$), $claves(d)$))}
+  [$\Theta(1)$]
+  [Devuelve un iterador al conjunto de claves de $d$.]
+
+  \InterfazFuncion{Ancho}{\In{d}{diccMat($coor,\sigma$)}}{$Nat$}
+  {$res$ $\igobs$ ancho($d$)}
+  [$\Theta(1)$]
+  [Devuelve el ancho de $d$]
+
+  \InterfazFuncion{Largo}{\In{d}{diccMat($coor,\sigma$)}}{$Nat$}
+  {$res$ $\igobs$ largo($d$)}
+  [$\Theta(1)$]
+  [Devuelve el largo de $d$]
+
+\pagebreak
+
+\subsubsection{Especificacion de las operaciones auxiliares utilizadas en la interfaz}
+%%%%%%%%%%%%%%%%%%%% Diccionario Matriz
+\begin{tad}{\tadNombre{DiccMatriz(Nat, Nat,$\sigma$)}}
+	\tadGeneros{diccMat(Nat, Nat, $\sigma$)}
+	\tadExporta{diccMat(Nat, Nat, $\sigma$), 
+	generadores, 
+	observadores, 
+	borrar, 
+	claves}
+	\tadUsa{\tadNombre{Nat},
+	\tadNombre{Bool},
+	\tadNombre{Conj(tupla(Nat, Nat))}}
+	\tadIgualdadObservacional{d}{d'}{DiccMat(Nat, Nat, $\sigma$)}
+                         {(ancho(d) $\igobs$ ancho(d') $\land$ largo(d) $\igobs$ largo(d') $\yluego$ \\
+                          ($\forall$ x,y: Nat) (def?(x,y,d) $\igobs$ def?(x,y,d')) $\yluego$ \\
+                          def?(x,y,d) $\impluego$ obtener(x,y,d) $\igobs$ obtener(x,y,d')}
+
+	\tadObservadores
+	\tadAlinearFunciones{obtener~}{diccMat(Nat, Nat, sinificado), Nat, Nat}
+	
+	\tadOperacion{largo}{diccMat(Nat,Nat,$\sigma$)}{Nat}{}
+	\tadOperacion{ancho}{diccMat(Nat,Nat,$\sigma$)}{Nat}{}
+    \tadOperacion{def?}{Nat/x, Nat/y, diccMat(Nat, Nat, $\sigma$)/d}{Bool}{enRango(x,y,d)}{}
+    \tadOperacion{obtener}{Nat/x, Nat/y, diccMat(Nat,Nat,$\sigma$)/d}{$\sigma$}{enRango(x,y,d) $\yluego$ def?(x,y,d)}{}
+
+	\tadGeneradores
+	\tadAlinearFunciones{definir~}{Nat/x, Nat/y, $\sigma$/s, diccMat(Nat,Nat,$\sigma$)/d}
+    \tadOperacion{vacio}{Nat/largo,Nat/ancho}{diccMat(Nat,Nat,$\sigma$)}{largo$*$ancho $>$ 0}{}
+    \tadOperacion{definir}{Nat/x, Nat/y, $\sigma$/s, diccMat(Nat,Nat,$\sigma$)/d}{diccMat(Nat,Nat,$\sigma$)}{enRango(x,y,d)}
+
+    \tadOtrasOperaciones
+    \tadAlinearFunciones{borrar~}{Nat/x, Nat/y, diccMat(Nat,Nat,$\sigma$)/d, diccMat(Nat,Nat,$\sigma$)}
+
+	\tadOperacion{borrar}{Nat/x, Nat/y, diccMat(Nat,Nat,$\sigma$)/d}{diccMat(Nat,Nat,$\sigma$)}{enRango(x,y,d) $\yluego$ def?(x,y,d)}{}
+    \tadOperacion{claves}{diccMat(Nat,Nat,$\sigma$)}{conj(tupla(Nat,Nat))}{}{}
+    
+    \tadTitulo{otras operaciones (no exportadas)}
+	\tadAlinearFunciones{enRango~}{Nat/x, Nat/y, diccMat(Nat,Nat,sinificado), Bool}
+	\tadOperacion{enRango}{Nat, Nat, diccMat(Nat,Nat,sinificado)}{Bool}{}
+
+    \tadAxiomas[\paratodo{Nat}{x,y,m,n} \paratodo{diccMat(Nat,Nat,$\sigma$)}{d} \paratodo{$\sigma$}{s}]
+
+	\tadAxioma{largo(vacio(m,n))}{m}
+	\tadAxioma{ancho(vacio(m,n))}{n}
+	\tadAxioma{def?(x,y, vacio(m,n))}{false}
+	\tadAxioma{largo(definir(x,y,s,d)))}{largo(d)}
+	\tadAxioma{ancho(definir(x,y,s,d)))}{ancho(d)}
+	\tadAxioma{def?(x,y, definir(m,n,s,d))}{(x = m $\land$ y = n) $\vee$ def?(x,y,d)}
+	\tadAxioma{obtener(x,y, definir(m,n,s,d))}{\IF (x = m $\land$ y = n) THEN s ELSE obtener(x,y,d) FI}	
+	\tadAxioma{borrar(x,y, definir(m,n,s,d))}{\IF (x = m $\land$ y = n) THEN {\IF def?(x,y,d) THEN borrar(x,y,d) ELSE d FI} ELSE definir(m,n,s,borrar(x,y,d)) FI}	
+	\tadAxioma{claves(vacio)}{$\emptyset$}
+	\tadAxioma{claves(definir(x,y,s,d))}{Ag((x,y),claves(d))}
+	\tadAxioma{enRango(x,y, d)}{x $<$ largo(d) $\land$ y $<$ ancho(d)}
+\end{tad}
+
+\end{Interfaz}
+
+\begin{Representacion}
+	\begin{Estructura}{Diccionario Matriz}[dicc]
+		\begin{Tupla}[dicc]
+			\tupItem{posiciones}{arreglo_dimensionable de <$bool$, $\sigma$>}
+            \tupItem{claves}{conjLineal(coor)}
+			\tupItem{ancho}{Nat}
+			\tupItem{largo}{Nat}
+		\end{Tupla}
+	\end{Estructura}
+
+%	\Rep[estr][e]{true}
+%	\AbsFc[estr]{coor}[e]{($\forall c : coor$) $e$.la = latitud(c) $\land$ $e$.lo = longitud(c)}
+
+\end{Representacion}
+
+
+
+\begin{Algoritmos}
+
+\medskip
+	
+ \Titulo{Algoritmos del módulo}
+  	\medskip
+  
+\begin{algorithm}[H]{\textbf{iVacio}(\In {l}{Nat},\In {a}{Nat}) $\to$ $res$ : diccMat}
+    	\begin{algorithmic}[1]
+			\State $res.largo \gets l$ \Comment $\Theta(1)$
+			\State $res.ancho \gets a$ \Comment $\Theta(1)$
+			\State $res.posiciones \gets CrearArreglo(a * l)$ \Comment $\Theta(a*l)$
+			\State $res.coordenadas \gets Vacio()$ \Comment $\Theta(1)$
+			\medskip
+			\Statex \underline{Complejidad:} $\Theta(a*l)$
+        \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{iDefinir}(\Inout {d}{diccMat}, \In {c}{coor}, \In {s}{$\sigma$})}
+    	\begin{algorithmic}[1]
+            \If{$\lnot(Definido?(d, Aplanar(d,c)))$}
+                \State $AgregarRapido(d.claves, c)$ \Comment $\Theta(copy(s))$
+            \EndIf
+            \State $d.posiciones[Aplanar(d, c)] \gets s$ \Comment $\Theta(copy(s))$
+			
+			\medskip
+			\Statex \underline{Complejidad:} $\Theta(copy(s))$
+            \Statex \underline{Justificación:} $Definido?$ y $Aplanar$ tienen costo $\Theta(1)$, $AgregarRapido$ y $Definir$ tienen costo $\Theta(copy(s))$. Aplicando algebra de ordenes: $\Theta(1)$ + $\Theta(1)$ + $\Theta(copy(s))$  + $\Theta(copy(s))$ = $\Theta(copy(s))$
+        \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{iDefinido?}(\In {d}{diccMat}, \In {c}{coor}) $\to$ $res$ : $bool$}
+    	\begin{algorithmic}[1]
+        \State $res \gets Definido?(d.posiciones, Aplanar(d, c)) $\land_L$ d.posiciones[Aplanar(d, c)]_0$ } \Comment{Si no esta definido o esta marcado como borrado, se devuelve que no esta definido} $\Theta(1)$
+			\medskip
+			\Statex \underline{Complejidad:} $\Theta(1)$
+            \Statex \underline{Justificación:} $Aplanar$ tiene costo $\Theta(1)$, luego, como $Definido?$ y consular una posicion de un arreglo tienen costo $\Theta(1)$. Aplicando algebra de ordenes: $\Theta(1)$ + $\Theta(1)$ + $\Theta(1)$ = $\Theta(1)$
+        \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{iSignificado}(\In {d}{diccMat}, \In {c}{coor}) $\to$ $res$ : $\sigma$}
+    	\begin{algorithmic}[1]
+            \State $res \gets d.posiciones[Aplanar(d, c)]$ \Comment $\Theta(1)$
+			
+			\medskip
+			\Statex \underline{Complejidad:} $\Theta(1)$
+        \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{iBorrar}(\Inout {d}{diccMat}, \In {c}{coor})}
+    	\begin{algorithmic}[1]
+            \State $Eliminar(d.claves, c)$ \Comment $\Theta\left(\displaystyle\sum_{c' \in d.claves}equal(c,c')\right)$
+            \State $d.posiciones[Aplanar(d, c)] \gets <false, d.posiciones[Aplanar(d, c)]$ \Comment $\Theta(1)$
+			\medskip
+			\Statex \underline{Complejidad:} $\Theta\left(\displaystyle\sum_{c' \in d.claves}equal(c,c')\right)$
+        \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{iCoordenadas}(\In {d}{diccMat}) $\to$ $res$ : $itConj(coor)$}
+    	\begin{algorithmic}[1]
+            \State $res \gets CrearIt(d.claves)}$ \Comment $\Theta(1)$
+
+			\medskip
+			\Statex \underline{Complejidad:} $\Theta(1)$
+        \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{iAplanar}(\In {d}{diccMat}, \In {c}{coor}) $\to$ $res$ : $nat$}
+    	\begin{algorithmic}[1]
+			\State $res \gets c.campo_0 * d.ancho + c.campo_1 $ \Comment $\Theta(1)$
+			
+			\medskip
+			\Statex \underline{Complejidad:} $\Theta(1)$
+            \Statex \underline{Justificación:} Son operaciones matematicas de Nat
+        \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{iLargo}(\In{d}{diccMat}) $\to$ $res$ : $nat$}
+    	\begin{algorithmic}[1]
+            \State $res \gets d.largo$ \Comment $\Theta(1)$
+
+			\medskip
+			\Statex \underline{Complejidad:} $\Theta(1)$
+        \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{iAncho}(\In{d}{diccMat}) $\to$ $res$ : $nat$}
+    	\begin{algorithmic}[1]
+            \State $res \gets d.ancho$ \Comment $\Theta(1)$
+
+			\medskip
+			\Statex \underline{Complejidad:} $\Theta(1)$
+        \end{algorithmic}
+\end{algorithm}
+
+\end{Algoritmos}
