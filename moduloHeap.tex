@@ -93,23 +93,29 @@ tal que el elemento que se ingrese con el menor $nat$ será el de mayor priorida
 
 	~
 
-	\InterfazFuncion{Desencolar}{\Inout{c}{colaMinPrior($\alpha$)}}{$\alpha$}
+	\InterfazFuncion{Desencolar}{\Inout{c}{colaMinPrior($\alpha$)}}{}
 	[$\neg$vacía?($c$) $\land$ $c$ $\igobs$ $c_0$]
-	{$res$ $\igobs$ próximo($c_0$) $\land$ $c$ $\igobs$ desencolar($c_0$)}
+	{$c$ $\igobs$ desencolar($c_0$)}
 	[O(log(tamaño(c)))]
 	[Quita el elemento más prioritario]
-	[Se devuelve el elemento por copia]
 
 	~
 
-	\InterfazFuncion{Encolar}{\Inout{c}{colaMinPrior($\alpha$)}, \In{p}{nat}, \In{a}{$\alpha$}}{}
+	\InterfazFuncion{Encolar}{\Inout{c}{colaMinPrior($\alpha$)}, \In{p}{nat}, \In{a}{$\alpha$}}{itLista(<nat,$alpha$)}
 	[$c$ $\igobs$ $c_0$]
-	{$c$ $\igobs$ encolar($p$,$c_0$)}
+	{$c$ $\igobs$ encolar($p$,$c_0$) $\wedge$ $res$ $\igobs$ CrearItBi(ColaASecu($c_0$), $a$) $\wedge$ alias(SecuSuby(res) = ColaASecu(c))}
 	[O(log(tamaño(c)))]
 	[Agrega al elemento $\alpha$ con prioridad $p$ a la cola]
 	[Se agrega el elemento por copia]
 
 	~
+
+	\InterfazFuncion{Eliminar}{\Inout{c}{colaMinPrior($\alpha$), \In{i}{nat}}}{}
+	[$\neg$vacía?($c$) $\land$ $c$ $\igobs$ $c_0$]
+	{$c$ $\igobs$ Alias(EsPermutacion(deColaASecu($c$)}
+	[O(log(tamaño(c)))]
+	[Quita el elemento más prioritario]
+
 
 	\InterfazFuncion{• = •}{\In{c}{colaMinPrior($\alpha$)}, \In{c'}{colaMinPrior($\alpha$)}}{bool}
 	[true]
@@ -122,11 +128,12 @@ tal que el elemento que se ingrese con el menor $nat$ será el de mayor priorida
 	\subsubsection{Representación de colaMinPrior}
 
 		\begin{Estructura}{colaMinPrior($\alpha$)}[estr]
-			\- \- \- \- donde \TipoVariable{estr} es \TipoVariable{diccLog(nodoEncolados)}
-
-			\- \- \- \- donde \TipoVariable{nodoEncolados} es
-			\TipoVariable{tupla}($encolados$: \TipoVariable{cola($\alpha$)},
-			$prioridad$: \TipoVariable{nat})
+			\- \- \- \- donde \TipoVariable{estr} es \TipoVariable{tupla}($elementos$: \TipoVariable{Lista(Nodo)},
+			\TipoVariable{$proximos$: Vector(encolado)})
+			
+			\- \- \- \- donde \TipoVariable{nodo} es \TipoVariable{tupla}($id$: nat, $elem$: $\alpha$)
+			
+			\- \- \- \- donde \TipoVariable{encolado} es \TipoVariable{tupla}($prior$: nat, $elemCola$: itLista(Nodo))			
 		\end{Estructura}
 
 	\subsubsection{Invariante de Representación}
@@ -134,19 +141,17 @@ tal que el elemento que se ingrese con el menor $nat$ será el de mayor priorida
 		\renewcommand{\labelenumi}{(\Roman{enumi})}
 
 		\begin{enumerate}
-			\item Todos los significados del diccionario tienen como clave
-			el valor de $prioridad$
-			\item Todos los significados del diccionario no pueden tener una
-			cola vacía
+			\item Todos ids de cada nodo en elementos son menos que el largo del vector proximos 
+			\item Si ids de nodos en elementos son diferentes, evaluados en la posicion correspondiente de proximos, sus prioridades mantienen la diferencia.  
 		\end{enumerate}
 
 	\tadAlinearFunciones{Rep}{estr}
 	\tadAlinearAxiomas{Rep(e)}
 
 	\Rep[estr][e]{
-		\\($\forall n:$ nat) def?($n$, $e$) $\impluego$
-		((obtener($n$, $e$).prioridad = $n$) $\land$
-		$\neg$vacía?(obtener($n$, $e$).encolados))
+		\\($\forall i:$ nat) ($i$ < $longitud(e.proximos)$) $\impluego$
+	\\	(($\forall j:$ nat) $j \leqslant i$ $\impluego$ (e.proximos[$j$].prioridad $\leqslant$ e.proximos[$i$].prioridad) $\land$
+	\\	(($\forall n:$ nat) $n$ < $longitud(e.proximos)$ $\impluego$ e.proximos[$e.elementos$[$n$]$.id$].$elemCola \rightarrow siguiente.elem$ $\igobs$ $e.elementos$[$n$]$.elem$)
 	}\mbox{}
 
 	\subsubsection{Función de Abstracción}
@@ -154,68 +159,161 @@ tal que el elemento que se ingrese con el menor $nat$ será el de mayor priorida
 	\tadAlinearFunciones{Abs}{Estr/e}
 
 		\Abs[estr]{colaMinPrior}[e]{cmp}{
-			(vacía?($cmp$) $\Leftrightarrow$ (\#claves($e$) = 0)) $\land$ \\
-			\- $\neg$vacía?($cmp$) $\impluego$ \\
-			\- \- ((próximo($cmp$) = próximo(mínimo($e$).encolados)) $\land$ \\
-			\- \- (desencolar($cmp$) = desencolar(mínimo($e$).encolados)))
-		}
+			(vacía?($cmp$) $\Leftrightarrow$ $tamano$($e$) $\igobs$ 0) $\land$ \\
+			 $\neg$ $vacia?$($cmp$) $\impluego$ \\
+		  	 (próximo($cmp$) $\igobs$ próximo($e$) $\land$ \\
+			 desencolar($cmp$) $\igobs$ desencolar($e$))}
 
 \subsection{Algoritmos}
 	\lstset{style=alg}
 
-	\begin{lstlisting}[mathescape]
-	'\alg{iVacía}{}{colaMinPrior($\alpha$)}'
+\begin{algorithm}[H]{\textbf{iVacía}() $\to$ $res$ : colaMinPrior($\alpha$)}
+    	\begin{algorithmic}[1]
+			\State $res \gets <Vacia(), Vacia()>$ \Comment {La complejidad es la de crear una lista vacia y un vector vacio $\Theta(1)$}
+			
+			\medskip
+			\Statex \underline{Complejidad:} $\Theta(1)$
+    	\end{algorithmic}
+\end{algorithm}
 
-	res $\leftarrow$ CrearDicc() '\ote{1}'
+\begin{algorithm}[H]{\textbf{iVacía?}(\In {c}{colaMinPrior($\alpha$)}) $\to$ $res$ : Bool}
+    	\begin{algorithmic}[1]
+			\State $res \gets EsVacia?(c.elementos)$ \Comment {La complejidad es la de preguntarle a una lista si es vacia $\Theta(1)$}
+			
+			\medskip
+			\Statex \underline{Complejidad:} $\Theta(1)$
+    	\end{algorithmic}
+\end{algorithm}
 
-	'\ofi{O(1)}'
-	\end{lstlisting}
+\begin{algorithm}[H]{\textbf{iPróximo}(\In {c}{colaMinPrior($\alpha$)}) $\to$ $res$ : $\alpha$}
+    	\begin{algorithmic}[1]
+			\State $res \gets c.proximos[0].elemCola.elem \rightarrow siguiente$ \Comment {La complejidad acceder por posición a un vector y pedirle al iterador de una lista su siguiente $\Theta(1)$}
+			
+			\medskip
+			\Statex \underline{Complejidad:} $\Theta(1)$
+    	\end{algorithmic}
+\end{algorithm}
 
-	\begin{lstlisting}[mathescape]
-	'\alg{iVacía?}{\In{c}{colaMinPrior($\alpha$)}}{bool}'
+\begin{algorithm}[H]{\textbf{iDesencolar}(\Inout {c}{colaMinPrior($\alpha$)})}
+    	\begin{algorithmic}[1]
+			\State $Eliminar(c,0)$ \Comment {La complejidad es la eliminar un elemento en particular (ver iEliminar) $\Theta(log(tamano(c)))$}
+			
+			\medskip
+			\Statex \underline{Complejidad:} $\Theta(log(tamano(c)))$
+    	\end{algorithmic}
+\end{algorithm}
 
-	res $\leftarrow$ Vacio?($c$) '\ote{1}'
+\begin{algorithm}[H]{\textbf{iEncolar}(\Inout {c}{colaMinPrior($\alpha$), \In {prioridad}{nat}, \In {a}{$\alpha$}})  $\to$ $res$ : $iter$ }
+    	\begin{algorithmic}[1]
+			\State $puntero(Nodo): nuevo $ \Comment {$\Theta(1)$}
+			\State $Nodo \rightarrow id \gets longitud(c.encolados)$ \Comment {$\Theta(1)$}
+			\State $Nodo \rightarrow elem \gets a$ \Comment {$\Theta(copy(\alpha))$}
+			\State $it \gets AgregarAtras(c.elementos, Nodo)$ \Comment {La complejidad es la de agregar atras en una lista enlazada $\Theta(copy(a))$}			
+			\State $AgregarAtras(c.proximos,<prioridad, Nodo>)$ \Comment {La complejidad es la de agregar atras en un vector es amortizada sumado al copiar $\Theta(f(long(v)) + copy(\alpha))$}			
+			\State $res \gets it$ \Comment {$\Theta(1)$}
+			\If{$longitud(c.elementos) > 1$} \Comment $O(1)$
+		
+				\State $siftUp(c,Nodo \rightarrow id) $ \Comment $O(log(tamano(c))$	
+			
+			\EndIf		
+			\medskip
+			\Statex \underline{Complejidad:} $\Theta(log(tamano(c)) + copy(\alpha))$
+    	\end{algorithmic}
+\end{algorithm}
+    	
+\begin{algorithm}[H]{\textbf{iEliminar}(\Inout {c}{colaMinPrior($\alpha$), \In {i}{nat}})}
+    	\begin{algorithmic}[1]
+			\State $swapCola(c, i, longitud(c.proximos) - 1)$ \Comment {$\Theta(1)$}
+			\State $c.proximos[longitud(c.proximos) - 1].elemCola \rightarrow EliminarSiguiente$ \Comment {$\Theta(1)$}
+			\State $c.proximos \gets Comienzo(c.proximos)$ \Comment {$\Theta(1)$}				
+			\State $siftDown(c,i) $ \Comment $O(log(tamano(c)))$	
+			\medskip
+			\Statex \underline{Complejidad:} $O(log(tamano(c)))$
+    	\end{algorithmic}
+\end{algorithm}
 
-	'\ofi{O(1)}'
-	\end{lstlisting}
+\begin{algorithm}[H]{\textbf{siftDown}(\Inout {c}{colaMinPrior($\alpha$), \In {i}{nat}}) $\to$ $res$ : $nat$ }
+    	\begin{algorithmic}[1]
+			\State $nat: posNodo \gets i $ \Comment {$\Theta(1)$}
+			\State $nat: posHijo \gets i $ \Comment {$\Theta(1)$}
+			\If{$longitud(c.proximos) > 2$} \Comment {$\Theta(1)$}
+				\State $bool: swap \gets true$ \Comment {$\Theta(1)$}
+				\While{$posNodo \leq longitud(c.proximos) - 1 \wedge swap$} \Comment {La variable índice (posNodo) siempre avanza en forma exponencial $O(log(tamano(c)))$}
+					\If{$c.proximos[posNodo].prior < c.proximos[2 * posNodo + 1].prior$} \Comment {$\Theta(1)$}
+						\If{$c.proximos[posNodo].prior < c.proximos[2 * posNodo + 2].prior$} \Comment {$\Theta(1)$}
+							\State $swap \gets false$ \Comment {$\Theta(1)$}
+						\Else 
+							\State $posHijo \gets (2 * posNodo + 1)$ \Comment {$\Theta(1)$}						
+							\State $swapCola(c,posNodo,posHijo)$ \Comment {$\Theta(1)$}													
+						\EndIf
+					\Else
+						\If{$c.proximos[posNodo].prior > c.proximos[2 * posNodo + 2].prior$} \Comment {$\Theta(1)$}
+							\If{$c.proximos[posNodo].prior > c.proximos[2 * posNodo + 2].prior$} \Comment {$\Theta(1)$}														\State $posHijo \gets (2 * posNodo + 2)$ \Comment {$\Theta(1)$}						
+								\State $swapCola(c,posNodo,posHijo)$ \Comment {$\Theta(1)$}																				\Else
+								\State $posHijo \gets (2 * posNodo + 1)$ \Comment {$\Theta(1)$}						
+								\State $swapCola(c,posNodo,posHijo)$ \Comment {$\Theta(1)$}												
+							\EndIf
+						\Else 
+							\State $posHijo \gets (2 * posNodo + 1)$ \Comment {$\Theta(1)$}						
+							\State $swapCola(c,posNodo,posHijo)$ \Comment {$\Theta(1)$}												
+						\EndIf
+					\EndIf
+					\State $posNodo \gets posHijo$ \Comment {$\Theta(1)$}		
+				\EndWhile
+    		\Else
+				\If{$longitud(c.proximos) > 1$} \Comment {$\Theta(1)$}
+					\If{$c.proximos[posNodo].prior > c.proximos[2 * posNodo + 1].prior$} \Comment {$\Theta(1)$}					
+						\State $posHijo \gets (2 * posNodo + 1)$ \Comment {$\Theta(1)$}						
+						\State $swapCola(c,posNodo,posHijo)$ \Comment {$\Theta(1)$}	
+					\EndIf
+				\EndIf			
+    		\EndIf
+			\State $res \gets posNodo $ \Comment {$\Theta(1)$}
+			
+			\medskip
+			\Statex \underline{Complejidad:} $\Theta(log(tamano(c)))$
+    	\end{algorithmic}
+\end{algorithm}
 
-	\begin{lstlisting}[mathescape]
-	'\alg{iPróximo}{\Inout{c}{colaMinPrior($\alpha$)}}{$\alpha$}'
+\begin{algorithm}[H]{\textbf{siftUp}(\Inout {c}{colaMinPrior($\alpha$), \In {i}{nat}}) $\to$ $res$ : $nat$ }
+    	\begin{algorithmic}[1]
+			\State $nat: posNodo \gets i $ \Comment {$\Theta(1)$}
+			\If{$longitud(c.proximos) > 1$} \Comment {$\Theta(1)$}    	
+				\State $bool: swap \gets true $ \Comment {$\Theta(1)$}				
+				\State $nat: posPadre $ \Comment {$\Theta(1)$}				
+				\While{$posNodo \neq 0 \wedge swap$} \Comment {La variable índice (posNodo) siempre avanza en forma exponencial $O(log(tamano(c)))$}							
+					\If{$posNodo mod 2 = 1$} \Comment {$\Theta(1)$}									
+						\State $posPadre \gets (posNodo - 1)/2 $ \Comment {$\Theta(1)$}											
+					\Else
+						\State $posPadre \gets (posNodo - 2)/2 $ \Comment {$\Theta(1)$}		
+					\EndIf		
+					\If{$c.proximos[posPadre].prior > c.proximos[posNodo].prior$} \Comment {$\Theta(1)$}					
+						\State $swapCola(c,posNodo,posHijo)$ \Comment {$\Theta(1)$}							
+						\State $posNodo \gets posPadre$ \Comment{$\Theta(1)$}
+					\Else
+						\State $swap \gets false$ \Comment{$\Theta(1)$}						
+					\EndIf
+				\EndWhile
+			\EndIf    	
+			\State $res \gets posNodo$ \Comment {$\Theta(1)$}
+			\medskip
+			\Statex \underline{Complejidad:} $\Theta(log(tamano(c)))$
+    	\end{algorithmic}
+\end{algorithm}
 
-	res $\leftarrow$ Proximo(Minimo($c$).encolados) '\ote{1}'
-
-	'\ofi{O(1)}'
-	\end{lstlisting}
-
-	\begin{lstlisting}[mathescape]
-	'\alg{iDesencolar}{\Inout{c}{colaMinPrior($\alpha$)}}{$\alpha$}'
-
-	res $\leftarrow$ Copiar(Proximo(Minimo($c$).encolados)) '\ote{copy($\alpha$)}'
-	Desencolar(Minimo($c$).encolados) '\ote{log(tamaño($c$))}'
-	if EsVacia?(Minimo($c$).encolados) then '\ote{1}'
-		Borrar($c$, Minimo($c$).prioridad) '\ote{log(tamaño($c$))}'
-	end if
-
-	'\ofi{O(log(tamano(c)) + O(copy(\alpha))}'
-	\end{lstlisting}
-
-	\begin{lstlisting}[mathescape]
-	'\alg{iEncolar}{\Inout{c}{colaMinPrior($\alpha$)}, \In{p}{nat}, \In{a}{$\alpha$}}{}'
-	if Definido?($c$, $p$) then '\ote{log(tamaño($c$))}'
-		Encolar(Obtener($c$, $p$).encolados, $a$) '\ote{log(tamaño($c$)) + copy($\alpha$)}'
-	else
-		nodoEncolados $nuevoNodoEncolados$ '\ote{1}'
-		$nuevoNodoEncolados$.encolados $\leftarrow$ Vacia() '\ote{1}'
-		$nuevoNodoEncolados$.prioridad $\leftarrow$ $p$ '\ote{1}'
-		Encolar($nuevoNodoEncolados$.encolados, $a$) '\ote{copy($a$)}'
-		Definir($c$, $p$, $nuevoNodoEncolados$) '\ote{log(tamaño($c$)) + copy($nodoEncolados$)}'
-	end if
-
-	'\ofi{O(log(tamano(c)) + O(copy(\alpha))}'
-	\end{lstlisting}
-
-	\begin{lstlisting}[mathescape]
-	'\alg{• = •}{\In{c_0}{colaMinPrior($\alpha$)}, \In{c_1}{colaMinPrior($\alpha$)}}{bool}'
-	res $\leftarrow$ $c_0$ = $c_1$ '\ote{min(tamano($c_0$), tamano($c_1$))}'
-	'\ofi{O(min(tamano(c_0), tamano(c_1)))}'
-\end{lstlisting}
+\begin{algorithm}[H]{\textbf{swapCola}(\Inout {c}{colaMinPrior($\alpha$), \In {i}{nat}, \In {j}{nat}})}
+   	\begin{algorithmic}[1]
+			\State $encolado: aux \gets c.proximos[i] $ \Comment {$\Theta(1)$}
+			\State $c.proximos[i] \gets c.proximos[j]$ \Comment {$\Theta(1)$}
+			\State $(c.proximos[i].elemCola \rightarrow siguiente).id \gets i$ \Comment {$\Theta(1)$}
+			\State $c.proximos[j] \gets aux$ \Comment {$\Theta(1)$}			
+			\State $(c.proximos[j].elemCola \rightarrow siguiente).id \gets j$ \Comment {$\Theta(1)$}
+			\Statex \underline{Complejidad:} $\Theta(1)$
+   	\end{algorithmic}
+\end{algorithm}    	
+    	
+%%	\begin{lstlisting}[mathescape]
+%%	'\alg{• = •}{\In{c_0}{colaMinPrior($\alpha$)}, \In{c_1}{colaMinPrior($\alpha$)}}{bool}'
+%%	res $\leftarrow$ $c_0$ = $c_1$ '\ote{min(tamano($c_0$), tamano($c_1$))}'
+%%	'\ofi{O(min(tamano(c_0), tamano(c_1)))}'
+%%\end{lstlisting}
