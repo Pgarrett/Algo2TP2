@@ -222,24 +222,112 @@
 %%% Atrapar		O(PS + PC)
 %%% BorrarJ		O(|P| * PC)
 
+\subsection{Algoritmos}
 
+\begin{algorithm}[H]{\textbf{iCrearJuego}(\In{m}{Mapa)}) $\to$ $res$ : $juego$}
+	{\\ $\textbf{Pre}$ $\equiv$ true}
+	\begin{algorithmic}
 
-%
-%  \InterfazFuncion{Tope}{\In{p}{pila($\alpha$)}}{$\alpha$}
-%  [$\lnot$vacia?($p$)]
-%  {alias($res$ \igobs tope($p$))}
-%  [$\Theta(1)$]
-%  [devuelve el tope de la pila.]
-%  [$res$ es modificable si y solo si $p$ es modificable.]
-%
-%  \InterfazFuncion{Desapilar}{\Inout{p}{pila($\alpha$)}}{}
-%  [$p \igobs p_0$ $\land$ $\lnot$vacia?($p$)]
-%  {$p$ \igobs desapilar($p_0$) $\land$ $res$ \igobs tope($p$)}
-%  [$\Theta(1)$]
-%  [desapila el tope de $p$.]
-%
-%  \InterfazFuncion{Tamaño}{\In{p}{pila($\alpha$)}}{nat}
-%  {$res$ \igobs tamaño($p$)}
-%  [$\Theta(1)$]
-%  [devuelve la cantidad de elementos apilados en $p$.]
-%
+		\State $Juego : j$ \Comment $O(1)$
+		\State $j.pokemones \gets crearDiccionario(Vacio())$ \Comment $O(1)$
+		\State $j.posicionesPokemon \gets VACIO()$ \Comment $O(ancho * largo)$
+		\State $j.jugadores \gets vacio()$ \Comment $O(1)$
+		\State $j.expulsados \gets vacio()$ \Comment $O(1)$
+		\State $j.jugadoresPorID \gets vacia()$ \Comment $O(1)$
+		\State $j.mapa \gets m$ \Comment $O(1)$
+		\State $j.pokemonesTotales \gets 0$ \Comment $O(1)$
+
+		\State $res \gets juego$ \Comment $O(1)$
+		\medskip
+		\Statex \underline{Complejidad:} $O(ancho * largo)$
+		\Statex \underline{Justificación:} la unica operacion que no es  O(1) tiene esa complejidad.
+
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{iAgregarPokemon}(\Inout{j}{juego)}, \In{c}{coor)}, \In{p}{pokemon)}) $\to$ $res$ : $itPokemon$}
+	{\\ $\textbf{Pre}$ $\equiv$ }
+	\begin{algorithmic}
+	
+	\State $ItColaPrior(itJugador) it \gets entrenadoresPosibles(j,c) $ \Comment $O(|1|)$
+	\State $while(it.HaySiguiente()) $ {
+	\State $definir(p.jugadoresEnRango, it.Siguiente().id, it.Siguiente()) $ \Comment$O(log(|entrenadoresPosibles|))$
+	 }
+	\State $p.salvaje \gets TRUE $ \Comment $O(|1|)$
+	\State $p.contador \gets 0 $ \Comment $O(|1|)$
+	\State $j.pokemonsTotales \gets j.pokemonsTotales+1 $ \Comment $O(|1|)$
+	
+	\If(definido?(pokemones,p.tipo)) \Comment $O(|p|)$
+	\State $ItPokemon poke \gets obtener(j.pokemones,p.tipo) $ \Comment $O(|p.tipo|)$
+	\Else
+	\State $ItPokemon poke \gets definir(j.pokemones,p.tipo, p)$ \Comment $O(|p.tipo|)$
+	\EndIf
+	\State $res \gets definir(j.posicionesPokemon, coord, <poke,true>) $ \Comment $O(|1|)$
+		\medskip
+		\Statex \underline{Complejidad:} $O(|p.tipo| + |entrenadoresPosibles| * log(|entrenadoresPosibles|))$
+		 esta mal creo, pero no se que meterle
+		\Statex \underline{Justificación:}  definir, preguntar si esta definido 
+		y obtener el pokemon son la longitud del tipo ya que representan una insercion 
+		o busqueda en un trie, el ciclo recorre todos los entrenadores posibles, 
+		los cuales pertenecen a un conjunto acotado por el rango del pokemon, 
+		hay tantos ciclos como entrenadores posibles y por cada uno de ellos 
+		hay que definirlo en un heap 
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{iAgregarJugador}(\Inout{j}{juego)}, \In{c}{coor)}, \In{jug}{Jugador)}) $\to$ $res$ : $Nat$}
+	{\\ $\textbf{Pre}$ $\equiv$ }
+	\begin{algorithmic}
+	\State $jug.pokeCapturados \gets Vacio() $ \Comment $O(1)$
+	\State $jug.posicion \gets coor $ \Comment $O(1)$
+	\State $jug.estaConectado \gets TRUE $ \Comment $O(1)$
+	\State $jug.sanciones \gets 0 $ \Comment $O(1)$
+	\State $ItConLineal itConj \gets agregarRapido(j.jugadores,jug) $ \Comment $O(copy(jug))$
+	\State $ItColaPrior itCola \gets NULL $ \Comment $O(1)$
+	\If(HayPokemonCercano(j, coor)) \Comment $O(|p|)$
+	\State $ItPokemon poke \gets pokemonEnPos(j,posPokemonCercano(j,c))$ \Comment $O(1)$
+	\State $poke.contador \gets 0$ \Comment $O(1)$
+	\State $ itCola \gets definir(poke.siguiente.jugadoresEnRango,jug.id,jug) $ \Comment $O(copy(jug))$
+	\EndIf
+	
+	\State $res \gets agregarRapido(j.jugadoresPorID, coord, <itConj,itCola>).id $ \Comment $O(copy(jug))$
+
+	
+	
+		\medskip
+		\Statex \underline{Complejidad:} $O(jug)$
+		\Statex \underline{Justificación: Seria el peor caso, ya que este se da cuando se tiene que armar el heap de jugadoresEnRango de pokemon}  
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{iConectarse}(\Inout{j}{juego)}, \In{id}{Nat)}, \In{c}{Coor)})}
+	{\\ $\textbf{Pre}$ $\equiv$ }
+	\begin{algorithmic}
+		\State $\pi 2(j.jugadoresPorID[id]).Siguiente.estaConectado \gets true $ \Comment $O(1)$
+		\State $\pi 2(j.jugadoresPorID[id]).Siguiente.posicion \gets coord $ \Comment $O(1)$
+		\If(HayPokemonCercano(j, coor)) \Comment $O(|p|)$
+		\State $ItPokemon poke \gets pokemonEnPos(j,posPokemonCercano(j,c))$ \Comment $O(1)$
+		\State $poke.contador \gets 0$ \Comment $O(1)$
+	\State $ definir(poke.siguiente.jugadoresEnRango,id,\pi 1(j.jugadoresPorID[id])) $ \Comment $O(copy(jug))$
+		\EndIf
+	
+		\medskip
+		\Statex \underline{Complejidad:} $O(1)$
+		\Statex \underline{Justificación: }  
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{iDesconectarse}(\Inout{j}{juego)}, \In{id}{Nat)}} 
+	{\\ $\textbf{Pre}$ $\equiv$ }
+	\begin{algorithmic}
+		\State $\pi 2(j.jugadoresPorID[id]).Siguiente.estaConectado \gets false $ \Comment $O(1)$
+		\If(HayPokemonCercano(j, coor)) \Comment $O(|p|)$
+		\State $ItPokemon poke \gets pokemonEnPos(j,posPokemonCercano(j,c))$ \Comment $O(1)$
+		\State $definir(poke.siguiente.jugadoresEnRango,id,NULL) $ \Comment $O(copy(jug))$
+		\EndIf
+	
+		\medskip
+		\Statex \underline{Complejidad:} $O(jug)$
+		\Statex \underline{Justificación: }  
+    \end{algorithmic}
+\end{algorithm}
