@@ -31,7 +31,7 @@
   \InterfazFuncion{PosExistente}{\In{c}{coor}, \In{m}{map}}{Bool}
   [true]
   {$res \igobs posExistente(c, m)$}
-  [$O(1)$]
+  [$\Theta\left(\displaystyle\sum_{c' \in coordendas(m)}equal(c,c')\right)$]
   [Devuelve verdadero si la coordenada esta en el conjunto de coordenadas del mapa]
   
   \InterfazFuncion{HayCamino}{\In{c1}{coor}, \In{c2}{coor}, \In{m}{map}}{Bool}
@@ -56,7 +56,7 @@
 	\begin{enumerate}
 		\item El ancho del mapa es igual al maximo del primer elemento de las coordenadas
 	\end{enumerate}
-	\Rep[estr][e]{(e.ancho = Max($campo_1$(coordenadas)) $\wedge$ ($\forall c: coor$) c $\in$ e.coordenadas $\impluego$ def?(c,e.secciones)}
+	\Rep[estr][e]{(e.ancho = Max($campo_2$(coordenadas)) $\wedge$ ($\forall c: coor$) c $\in$ e.coordenadas $\impluego$ def?(c,e.secciones)}
 
 \subsubsection{Funci\'on de Abstracci\'on}
 	\AbsFc[estr]{mapa}[e]{($\forall m : Mapa$) e.coordenadas = coordenadas(m)}
@@ -81,46 +81,45 @@
 
 \begin{algorithm}[H]{\textbf{iAgregarCoordenada}(\Inout {m}{map}, \In {c}{coor}) $\to$ $res$ : itConj(coor)}
     	\begin{algorithmic}[1]
-            \State $ largo \gets Largo(m)  $ \Comment $\Theta( ??)$
-            \State $ ancho \gets Ancho(m)$ \Comment $\Theta( ?? )$
+            \State $ largo \gets Largo(m)  $ \Comment $\Theta(Cardinal(m.coordenadas))$
+            \State $ ancho \gets Ancho(m)$ \Comment $\Theta(Cardinal(m.coordenadas))$
             \State $ m.secciones \gets CrearArreglo(largo * ancho)$ \Comment $\Theta(largo * ancho)$
 			\State $res \gets Agregar(m.coordenadas, c)$ \Comment $\Theta\left(\displaystyle\sum_{c' \in coordendas(m)}equal(c,c')\right)$
             \State $ seccion \gets 0 $ \Comment $\Theta(1)$
             \State $ itCoor \gets CrearIt(m.coordenadas)$ \Comment $\Theta(1)$
 			 
-            \While{$HaySiguiente(itCoor)$}			\Comment $\Theta( ?? )$
+            \While{$HaySiguiente(itCoor)$}			\Comment $\Theta(Cardinal(m.coordenadas))$
                 \State $coord \gets Siguiente(itCoor)  $ \Comment $\Theta(1)$
 			 	\State $Avanzar(it)$		\Comment $\Theta(1)$
                 \If{$\lnot(Definido?(m.secciones, coord))$} \Comment $\Theta(1)$
-                    \State $ DefinirSeccion(m, coord, seccion) $ \Comment $\Theta( ?? )$ 
+                    \State $ DefinirSeccion(m, coord, seccion) $ \Comment $\Theta(Cardinal(m.coordenadas))$ 
                     \State $ seccion \gets seccion + 1 $ \Comment $\Theta(1)$
                 \EndIf
 			\EndWhile
 
 			\medskip
-			\Statex \underline{Complejidad:} $\Theta\left(\displaystyle\sum_{c' \in coordendas(m)}equal(c,c')\right)$
-			\Statex \underline{Justificación:} La complejidad es la de agregar un elemento al conjunto lineal.
+			\Statex \underline{Complejidad:} $\Theta(Ancho(m) * Largo(m) + Cardinal(m.coordenadas)^2)$
+			\Statex \underline{Justificación:} $\Theta(Ancho(m) * Largo(m))$ es mayor o igual que $\Theta(Cardinal(m.coordenadas))$ y el costo de Agregar un elemento a un conjunto lineal. El While tiene complejidad $\Theta(Cardinal(m.coordenadas))$ dentro, y dentro se llama a una funcion con la misma complejidad, luego, por algebra de complejidad, es $\Theta(Ancho(m) * Largo(m) + Cardinal(m.coordenadas)^2)$
     	\end{algorithmic}
 \end{algorithm}
 
 \begin{algorithm}[H]{\textbf{iDefinirSeccion}(\Inout {m}{map}, \In {c}{coor}, \In {i}{nat})}
     	\begin{algorithmic}[1]
-            \If{$\lnot(Definido?(m.secciones, c)) $\land$ PosExistente(c, m)$} \Comment $\Theta(Pos existente (no es 1) ???)$
-                \State $  $ \Comment $\Theta()$
+            \If{$\lnot(Definido?(m.secciones, c)) $\land$ PosExistente(c, m)$} \Comment $\Theta\left(\displaystyle\sum_{c' \in coordendas(m)}equal(c,c')\right)$
                 \State $Definir(m.secciones, c, i)$ \Comment $\Theta(1)$
-                \State $DefinirSeccion(m, CoordenadaArriba(c), i)$ \Comment $\Theta(???)$
-                \State $DefinirSeccion(m, CoordenadaALaDerecha(c), i)$ \Comment $\Theta(???)$
+                \State $DefinirSeccion(m, CoordenadaArriba(c), i)$ \Comment $\Theta(Cardinal(m.coordenadas))$
+                \State $DefinirSeccion(m, CoordenadaALaDerecha(c), i)$ \Comment $\Theta(Cardinal(m.coordenadas))$ 
                 \If{$Latitud(c) > 0$} \Comment $\Theta(1)$
-                    \State $DefinirSeccion(m, CoordenadaAbajo(c), i)$ \Comment $\Theta(???)$
+                    \State $DefinirSeccion(m, CoordenadaAbajo(c), i)$ \Comment $\Theta(Cardinal(m.coordenadas))$ 
                 \EndIf
                 \If{$Longitud(c) > 0$} \Comment $\Theta(1)$
-                    \State $DefinirSeccion(m, CoordenadaALaIzquierda(c), i)$ \Comment $\Theta(???)$
+                    \State $DefinirSeccion(m, CoordenadaALaIzquierda(c), i)$ \Comment $\Theta(Cardinal(m.coordenadas))$ 
                 \EndIf
             \EndIf
 
 			\medskip
-			\Statex \underline{Complejidad:} $\Theta( ?? )$
-			\Statex \underline{Justificación:}
+			\Statex \underline{Complejidad:} $\Theta(Cardinal(m.coordenadas))$
+            \Statex \underline{Justificación} DefinirSeccion se llama a si misma recursivamente recorreindo las coordenadas, en el peor caso, recorre todas las coordenadas una vez, luego su complejidad es $\Theta(4*Cardinal(m.coordenadas)$ que se puede simplificar, ya que pertenece a la misma clase. Esta funcion no es cuadratica, ya que usa el diccionario para chequear que no este recorriendo una posicion mas de una vez. 
     	\end{algorithmic}
 \end{algorithm}
 
@@ -153,10 +152,16 @@
 
 \begin{algorithm}[H]{\textbf{iAncho}(\In{m}{map}) $\to$ $res$ : nat}
     	\begin{algorithmic}[1]
-			\State $res \gets m.ancho$ \Comment $\Theta(1)$
-			
+			\State $it \gets CrearIt(m.coordenadas)$ \Comment $\Theta(1)$
+			\State $max \gets 0$ \Comment $\Theta(1)$
+			\While $HaySiguiente(it)$ \Comment $\O(\sharp m.coordenadas)$
+				\If( $max < $campo_2$(it \rightarrow siguiente)$) \Comment $\Theta(1)$
+					\State $max \gets $campo_2$(it \rightarrow siguiente)$ \Comment $\Theta(1)$					
+				\EndIf
+				\State $Avanzar(it)$ \Comment $\Theta(1)$				
+			\EndWhile
 			\medskip
-			\Statex \underline{Complejidad:} $\Theta(1)$
+			\Statex \underline{Complejidad:} $\Theta(\sharp m.coordenadas)$
     	\end{algorithmic}
 \end{algorithm}
 
@@ -165,8 +170,8 @@
 			\State $it \gets CrearIt(m.coordenadas)$ \Comment $\Theta(1)$
 			\State $max \gets 0$ \Comment $\Theta(1)$
 			\While $HaySiguiente(it)$ \Comment $\O(\sharp m.coordenadas)$
-				\If( $max < \Pi_2(it \rightarrow siguiente)$) \Comment $\Theta(1)$
-					\State $max \gets \Pi_2 (it \rightarrow siguiente)$ \Comment $\Theta(1)$					
+				\If( $max < $campo_1$(it \rightarrow siguiente)$) \Comment $\Theta(1)$
+					\State $max \gets $campo_1$(it \rightarrow siguiente)$ \Comment $\Theta(1)$					
 				\EndIf
 				\State $Avanzar(it)$ \Comment $\Theta(1)$				
 			\EndWhile
