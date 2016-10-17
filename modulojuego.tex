@@ -103,7 +103,7 @@
   \InterfazFuncion{puedoAgregarPokemon}{\In{j}{juego}, \In{c}{Coor}}{Bool}
   [True]
   {$res \igobs puedoAgregarPokemon(c,j)$}
-  [$\Theta(1)$] 
+  [$\Theta(???)$] 
   [Devuelve si la coordenada ingresada es valida para agregar un pokemon en ella]
 
   \InterfazFuncion{hayPokemonCercano}{\In{j}{juego}, \In{c}{Coor}}{Bool}
@@ -314,7 +314,7 @@
     \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iDesconectarse}(\Inout{j}{juego}, \In{id}{Nat})} 
+\begin{algorithm}[H]{\textbf{iDesconectarse}(\Inout{j}{juego)}, \In{id}{Nat)}} 
 	\begin{algorithmic}
 		\State $\pi 2(j.jugadoresPorID[id]).Siguiente.estaConectado \gets false $ \Comment $O(1)$
 		\If {HayPokemonCercano(j, coor)} \Comment $O(|p|)$
@@ -325,6 +325,38 @@
 		\medskip
 		\Statex \underline{Complejidad:} $O(jug)$
 		\Statex \underline{Justificación:}  
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{Moverse}(\Inout{j}{juego}, \In{id}{Nat}, \In{c}{coor})}{}
+	\begin{algorithmic}
+	\If {debeSancionarse$?$(Siguiente(jugadoresPorID[id]), c, j)} \Comment $O(|P|)$
+		\If {$campo_1(Siguiente(jugadoresPorID[id])).sanciones$ < 4}
+			\State $campo_1(jugadoresPorID[id]->eliminarSiguiente)$
+			\If {hayPokemonCercano(j, c)}
+				\State $(PokemonEnPos \rightarrow siguiente).jugadoresEnRango.Eliminar(campo_2(jugadoresPorID[id])$
+				\State $campo_2(jugadoresPorID[id]->eliminarSiguiente)$
+			\Else
+				\State $campo_1(jugadoresPorID[id]->siguiente).sanciones$ $\gets$ $campo_1(jugadoresPorID[id]->siguiente).sanciones$ + 1
+			\EndIf
+		\EndIf
+	\EndIf
+
+\medskip
+\Statex \underline{Complejidad:} $O()$
+\Statex \underline{Justificación:}
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{iDebeSancionarse}(\In{e}{jugador}, \In{c}{coor}, \In{j}{juego}) $\to$ $res$ : $Mapa$} 
+\\
+	{$\textbf{Pre}$ $\equiv$ e $\in$ Jugadores(j)}
+	\begin{algorithmic}
+		\State $res \gets \neg HayCamino(e.posicion, c, j.mapa) \lor DistEuclidea(e.posicion, c, mapa) > 100 $ \Comment $O(copy(mapa(j)))$
+	
+		\medskip
+		\Statex \underline{Complejidad:} $O(copy(mapa(j)))$
+		\Statex \underline{Justificación:} Devuelve el mapa del juego por copia.
     \end{algorithmic}
 \end{algorithm}
 
@@ -405,17 +437,6 @@
     \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iPosConPokemones}(\In{j}{juego}) $\to$ $res$ : $itConj(Coor)$} 
-	{}
-	\begin{algorithmic}
-		\State $res \gets CrearIt(Coordenadas(j.posicionesPokemons)) $ \Comment $O(1)$
-	
-		\medskip
-		\Statex \underline{Complejidad:} $O(1)$
-		\Statex \underline{Justificación:} Devuelve las posiciones con pokemones.
-    \end{algorithmic}
-\end{algorithm}
-
 \begin{algorithm}[H]{\textbf{iPokemonEnPos}(\In{j}{juego}, \In{c}{coor}) $\to$ $res$ : $itConj(Pokemon)$} 
 	{}
 	\begin{algorithmic}
@@ -474,25 +495,89 @@
 		\EndWhile
 		\medskip
 		\Statex \underline{Complejidad:} $O(1)$
-		\Statex \underline{Justificación:} Como el rango a recorrer es una constante, se puede decir que es de la clase $\Theta(1)$
+		\Statex \underline{Justificación:} Como el rango a recorrer es una constante, se puede decir que es de la clase $\Theta(1)$ 
     \end{algorithmic}
 \end{algorithm}
 
 \begin{algorithm}[H]{\textbf{iPuedoAgregarPokemon}(\In{j}{juego}, \In{c}{coor}) $\to$ $res$ : $bool$} 
 	\begin{algorithmic}
-		\State $res \gets \lnot(Definido?(j.posicionesPokemons, c)) \land \lnot(HayPokemonCercano(c, j)) $ \Comment $O(1)$
-		\EndIf
+		\State res $\gets$ PosExistente(c, j.mapa) $\land$ $\lnot$(Definido?(j.posicionesPokemons, c)) $\land$ $\lnot$(HayPokemonCercano(j, c))  \Comment $O(1)$
 	
 		\medskip
 		\Statex \underline{Complejidad:} $\Theta(1)$
 		\Statex \underline{Justificación:}
-    \end{algorithmic}
-\end{algorithm}
+     \end{algorithmic}
+ \end{algorithm}
+ 
+ \begin{algorithm}[H]{\textbf{HayPokemonCercano}(\In{j}{juego}, \In{c}{coor}) $\to$ $res$ : $bool$} 
+	\begin{algorithmic}
+		\State res $\gets$ false	\Comment $O(1)$ 
+		\State i $\gets$ 0 \Comment $O(1)$
+		\State latC $\gets$ Latitud(c)	\Comment $O(1)$
+		\If {latC $>$ 5}	\Comment $O(1)$
+			\State i $\gets$ latC - 5	\Comment $O(1)$
+		\Else
+			\If {latC $>$ 4}	\Comment $O(1)$
+				\State i $\gets$ latC - 4	\Comment $O(1)$
+			\Else
+				\If {latC $>$ 3}	\Comment $O(1)$
+					\State i $\gets$ latC - 3	\Comment $O(1)$
+				\Else
+					\If {latC $>$ 2}	\Comment $O(1)$
+						\State i $\gets$ latC - 2	\Comment $O(1)$
+					\Else
+						\If {latC $>$ 1}	\Comment $O(1)$
+							\State i $\gets$ latC - 1	\Comment $O(1)$
+						\Else
+							\State i $\gets$ latC	\Comment $O(1)$
+						\EndIf								
+					\EndIf
+				\EndIf
+			\EndIf
+		\EndIf
+		\State j $\gets$ 0 \Comment $O(1)$
+		\State longC $\gets$ Longitud(c)	\Comment $O(1)$
+		\If {longC $>$ 5}	\Comment $O(1)$
+			\State j $\gets$ longC - 5	\Comment $O(1)$
+		\Else
+			\If {longC $>$ 4}	\Comment $O(1)$
+				\State j $\gets$ longC - 4	\Comment $O(1)$
+			\Else
+				\If {longC $>$ 3}	\Comment $O(1)$
+					\State j $\gets$ longC - 3	\Comment $O(1)$
+				\Else
+					\If {longC $>$ 2}	\Comment $O(1)$
+						\State j $\gets$ longC - 2	\Comment $O(1)$
+					\Else
+						\If {longC $>$ 1}	\Comment $O(1)$
+							\State j $\gets$ longC - 1	\Comment $O(1)$
+						\Else
+							\State j $\gets$ longC	\Comment $O(1)$
+						\EndIf								
+					\EndIf
+				\EndIf
+			\EndIf
+		\EndIf
+		\While {i $<$ latC + 5}	\Comment $O(1)$ {Vale porque estoy recorriendo un conjunto acotado de coordenadas}
+			\While {j $<$ longC + 5 }	\Comment $O(1)$ {Vale porque estoy recorriendo un conjunto acotado de coordenadas}
+				\If {Definido?(j.posicionesPokemons, $<$i, j$>$)}	\Comment $O(1)$
+					\State res $\gets$ true	\Comment $O(1)$ 
+				\EndIf
+				\State j $\gets$ j + 1	\Comment $O(1)$
+			\EndWhile
+			\State i $\gets$ i + 1	\Comment $O(1)$
+		\EndWhile
+	
+		\medskip
+		\Statex \underline{Complejidad:} $\Theta(1)$
+		\Statex \underline{Justificación:} Como el rango a recorrer es una constante, se puede decir que es de la clase $\Theta(1)$
+     \end{algorithmic}
+ \end{algorithm}
 
 \begin{algorithm}[H]{\textbf{iEntrenadoresPosibles}(\In{c}{coor}, \In{es}{conjLineal(jugador)}, \In{j}{juego})  $\to$ $res$ : $conjLineal(itConj)$} 
 	{}
 	\begin{algorithmic}
-		\State $ePosibles \gets Vacia() $ \Comment $O(1)$ {Crea una cola de prioridad de iteradores vacia}
+		\State ePosibles $\gets$ Vacia()  \Comment $O(1)$ {Crea una cola de prioridad de iteradores vacia}
 		\If {Cardinal(es) $!=$ 0}	\Comment $O(1)$
 			\State itE $\gets$ CrearIt(es)	\Comment $O(1)$
 			\While {HaySiguiente(itE)} \Comment $O(Cardinal(es))$
