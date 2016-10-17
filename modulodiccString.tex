@@ -39,7 +39,7 @@ de copy(s) ya que los significados se almacenan por copia.
 \InterfazFuncion{Definido?}{\In{d}{diccString$(\alpha)$}, \In{c}{string})}{bool}
 [true]
 {$res$ $\igobs$ def?($d$, $c$)}
-[$O(|n_m|)$ Justificación: Debe acceder a la clave c, recorriendo una por una las partes de la clave (caracteres)]
+[$O(|c|)$ Justificación: Debe acceder a la clave c, recorriendo una por una las partes de la clave (caracteres)]
 [Devuelve true si la clave está definida en el diccionario y false en caso contrario.]
 []
 
@@ -48,7 +48,7 @@ de copy(s) ya que los significados se almacenan por copia.
 \InterfazFuncion{Definir}{\Inout{d}{diccString$(\alpha)$}, \In{c}{string}, \In{s}{$\alpha$}}{}
 [$ d \igobs d_0 $]
 {$ d \igobs$ definir($c$, $s$, $d_0$)}
-[$O(|n_m| + copy(s))$ Justificación: Debe definir la clave c, recorriendo una por una las partes de la clave y después copiar el contenido del significado.]
+[$O(|c| + copy(s))$ Justificación: Debe definir la clave c, recorriendo una por una las partes de la clave y después copiar el contenido del significado.]
 [Define la clave $c$ con el significado $s$]
 [Almacena una copia de $s$.]
 
@@ -57,7 +57,7 @@ de copy(s) ya que los significados se almacenan por copia.
 \InterfazFuncion{Obtener}{\In{d}{diccString$(\alpha)$}, \In{c}{string}}{$\alpha$}
 [def?($c$, $d$)]
 {alias($res$ $\igobs$ obtener($c$, $d$))}
-[$O(|n_m|)$ Justificación: Debe acceder a la clave c, recorriendo una por una las partes de la clave (caracteres)]
+[$O(|c|)$ Justificación: Debe acceder a la clave c, recorriendo una por una las partes de la clave (caracteres)]
 [Devuelve el significado correspondiente a la clave $c$.]
 [Devuelve el significado almacenado en el diccionario, por lo que $res$ es modificable si y sólo si $d$ lo es.]
 
@@ -66,7 +66,7 @@ de copy(s) ya que los significados se almacenan por copia.
 \InterfazFuncion{Eliminar}{\Inout{d}{diccString($\alpha$)}, \In{c}{string}}{}
 [$ d \igobs d_0 \land $ def?($d$, $c$)]
 {$ d \igobs$ borrar($d_0$, $c$)}
-[$O(|n_m|)$ Justificación: Debe acceder a la clave c, recorriendo una por una las partes de la clave (caracteres) e invalidar su significado]
+[$O(|c|)$ Justificación: Debe acceder a la clave c, recorriendo una por una las partes de la clave (caracteres) e invalidar su significado]
 [Borra la clave $c$ del diccionario y su significado.]
 []
 
@@ -292,7 +292,7 @@ operación que modifique d sin utilizar las funciones del iterador.]
 		\State $nat: letra \gets ord(c[0])$ \Comment $O(1)$
 		\State $puntero(Nodo): arr \gets d.raiz[letra]$ \Comment $O(1)$
 
-		\While{$i < longitud(c)  \land \neg arr = NULL$} \Comment $O(|n_m|)$
+		\While{$i < longitud(c)  \land \neg arr = NULL$} \Comment $O(|c|)$
 
 			\State $i \gets i + 1$ \Comment $O(1)$
 			\State $letra \gets ord(c[i])$ \Comment $O(1)$
@@ -311,8 +311,8 @@ operación que modifique d sin utilizar las funciones del iterador.]
 		\EndIf
 
 		\medskip
-		\Statex \underline{Complejidad:} $O(|n_m|)$
-		\Statex \underline{Justificación:} Toma el primer caracter y encuentra su posición en el arreglo raíz. Luego itera sobre los caracteres restantes hasta el final del String c, por lo que hace |$n_m$| operaciones. Finalmente pregunta si el significado encontrado es válido o no.
+		\Statex \underline{Complejidad:} $O(|c|)$
+		\Statex \underline{Justificación:} Toma el primer caracter y encuentra su posición en el arreglo raíz. Luego itera sobre los caracteres restantes hasta el final del String c, por lo que hace |$c$| operaciones. Finalmente pregunta si el significado encontrado es válido o no.
     \end{algorithmic}
     {$\textbf{Post}$ $\equiv$ res $=_{obs}$ def?(d,c)}
 \end{algorithm}
@@ -337,7 +337,7 @@ operación que modifique d sin utilizar las funciones del iterador.]
 
 		\State $puntero(Nodo): arr \gets d.raiz[letra]$ \Comment $O(1)$
 
-		\While{$i < longitud(c)$} \Comment $O(|n_m|)$
+		\While{$i < longitud(c)$} \Comment $O(|c|)$
 
 			\State $i \gets i + 1$ \Comment $O(1)$
 			\State $letra \gets ord(c[i])$ \Comment $O(1)$
@@ -367,8 +367,8 @@ operación que modifique d sin utilizar las funciones del iterador.]
 		\EndIf
 
 		\medskip
-		\Statex \underline{Complejidad:} $O(|n_m| + copy(s))$
-		\Statex \underline{Justificación:} Itera sobre la cantidad de caracteres del String c y en caso de que algún caracter no esté definido crea un arrelglo de 27 posiciones, por lo que realiza |$n_m$| operaciones. Luego copia el significado pasado por parámetro en O(copy(s)) y finalmente agrega en la lista un puntero al nodo creado.
+		\Statex \underline{Complejidad:} $O(|c| + copy(s))$
+		\Statex \underline{Justificación:} Itera sobre la cantidad de caracteres del String c y en caso de que algún caracter no esté definido crea un arrelglo de 27 posiciones, por lo que realiza |$c$| operaciones. Luego copia el significado pasado por parámetro en O(copy(s)) y finalmente agrega en la lista un puntero al nodo creado.
     \end{algorithmic}
     {$\textbf{Post}$ $\equiv$ d $=_{obs}$ definir(c,s,d$_0$)}
 \end{algorithm}
@@ -382,7 +382,7 @@ operación que modifique d sin utilizar las funciones del iterador.]
 		\State $nat: letra \gets ord(c[0])$ \Comment $O(1)$
 		\State $puntero(Nodo): arr \gets d.raiz[letra]$ \Comment $O(1)$
 
-		\While{$i < longitud(c)$} \Comment $O(|n_m|)$
+		\While{$i < longitud(c)$} \Comment $O(|c|)$
 
 			\State $i \gets i + 1$ \Comment $O(1)$
 			\State $letra \gets ord(c[i])$ \Comment $O(1)$
@@ -393,8 +393,8 @@ operación que modifique d sin utilizar las funciones del iterador.]
 		\State $res \gets (*arr).info$ \Comment $O(1)$
 
 		\medskip
-		\Statex \underline{Complejidad:} $O(|n_m|)$
-		\Statex \underline{Justificación:} Toma el primer caracter y encuentra su posición en el arreglo raíz. Luego itera sobre los caracteres restantes hasta el final del String c, por lo que hace |$n_m$| operaciones. Finalmente retorna el significado almacenado. Todas las demás operaciones se realizan en O(1) porque son comparaciones o asignaciones de valores enteros o de punteros.
+		\Statex \underline{Complejidad:} $O(|c|)$
+		\Statex \underline{Justificación:} Toma el primer caracter y encuentra su posición en el arreglo raíz. Luego itera sobre los caracteres restantes hasta el final del String c, por lo que hace |$c$| operaciones. Finalmente retorna el significado almacenado. Todas las demás operaciones se realizan en O(1) porque son comparaciones o asignaciones de valores enteros o de punteros.
 
     \end{algorithmic}
     {$\textbf{Post}$ $\equiv$ alias(res $=_{obs}$ obtener(c,d)}
@@ -410,7 +410,7 @@ operación que modifique d sin utilizar las funciones del iterador.]
 		\State $puntero(Nodo): arr \gets d.raiz[letra]$ \Comment $O(1)$
 		\State $pila(puntero(Nodo)): pil \gets Vacia()$ \Comment $O(1)$
 
-		\While{$i < longitud(c)$} \Comment $O(|n_m|)$
+		\While{$i < longitud(c)$} \Comment $O(|c|)$
 
 			\State $i \gets i + 1$ \Comment $O(1)$
 			\State $letra \gets ord(c[i])$ \Comment $O(1)$
@@ -430,7 +430,7 @@ operación que modifique d sin utilizar las funciones del iterador.]
 			\State $del \gets NULL$ \Comment $O(1)$
 			\State $Desapilar(pil)$ \Comment $O(1)$
 
-			\While{$i < longitud(c)  \land \neg tieneHermanosEInfo(*tope(pil))$} \Comment $O(|n_m|)$
+			\While{$i < longitud(c)  \land \neg tieneHermanosEInfo(*tope(pil))$} \Comment $O(|c|)$
 
 				\State $del \gets tope(pil)$ \Comment $O(1)$
 				\State $del \gets NULL$ \Comment $O(1)$
@@ -448,8 +448,8 @@ operación que modifique d sin utilizar las funciones del iterador.]
 		\EndIf
 
 		\medskip
-		\Statex \underline{Complejidad:} $O(|n_m|)$
-		\Statex \underline{Justificación:} Toma el primer caracter y encuentra su posición en el arreglo raíz. Luego crea una pila en O(1). Recorre el resto de los caracteres del String c y apila cada uno de los Nodos encontrado en la pila (0(1)) por lo que en total realiza |$n_m$| operaciones. Llama a la función tieneHermanos y le pasa por parámetro el nodo encontrado O(1) (ver Algoritmo "tieneHermanos"). Luego recorre todos los elementos apilados preguntando si hay alguno que no tiene hermanos para en cuyo caso eliminarlo, realizando en el peor caso |$n_m$| operaciones porque puede ser que sea necesario eliminar todo hasta la raiz.
+		\Statex \underline{Complejidad:} $O(|c|)$
+		\Statex \underline{Justificación:} Toma el primer caracter y encuentra su posición en el arreglo raíz. Luego crea una pila en O(1). Recorre el resto de los caracteres del String c y apila cada uno de los Nodos encontrado en la pila (0(1)) por lo que en total realiza |$c$| operaciones. Llama a la función tieneHermanos y le pasa por parámetro el nodo encontrado O(1) (ver Algoritmo "tieneHermanos"). Luego recorre todos los elementos apilados preguntando si hay alguno que no tiene hermanos para en cuyo caso eliminarlo, realizando en el peor caso |$c$| operaciones porque puede ser que sea necesario eliminar todo hasta la raiz.
 
     \end{algorithmic}
     {$\textbf{Post}$ $\equiv$ d $=_{obs}$ borrar(d$_0$,c)}
