@@ -20,27 +20,27 @@ El principal costo se paga al crear la estructura o borrar un dato, dado que cue
   [Genera un diccionario vacio, de tamaño $ancho*largo$.]
 
   \InterfazFuncion{Definir}{\Inout{d}{diccMat($coor,\sigma$)}, \In{c}{$coor$}, \In{s}{$\sigma$}}{}
-  [$d \igobs d_0$ $\land$ enRango($c_0$, $c_1$, $d$)]
-  {$d$ $\igobs$ definir($c_0$, $c_1$, $s$, $d_0$)}
+  [$d \igobs d_0$ $\land$ enRango($c_1$, $c_2$, $d$)]
+  {$d$ $\igobs$ definir($c_1$, $c_2$, $s$, $d_0$)}
   [$\Theta(copy(s))$]
   [define el significado $s$ en el diccMat, en la posicion representada por $c$.]
   [Hay alising, pero no se como explicarlo TODO]
 
   \InterfazFuncion{Definido?}{\In{d}{diccMat($coor,\sigma$)}, \In{c}{$coor$}}{bool}
-  [enRango($c_0$, $c_1$, $d$)]
-  {$res$ $\igobs$ def?($c_0$, $c_1$, $d$)}
+  [enRango($c_1$, $c_2$, $d$)]
+  {$res$ $\igobs$ def?($c_1$, $c_2$, $d$)}
   [$\Theta(copy(s))$]
   [devuelve \texttt{true} si y solo si $c$ tiene un valor en el diccMat.]
 
   \InterfazFuncion{Significado}{\In{d}{diccMat($coor,\sigma$)}, \In{c}{$coor$}}{$\sigma$}
-  [enRango($c_0$, $c_1$, $d$) $\land_L$ def?($c_0$, $c_1$, $d$)] 
-  {alias($res$ $\igobs$ obtener($c_0$, $c_1$, $d$)}
+  [enRango($c_1$, $c_2$, $d$) $\land_L$ def?($c_1$, $c_2$, $d$)] 
+  {alias($res$ $\igobs$ obtener($c_1$, $c_2$, $d$)}
   [$\Theta(copy(s))$]
   [Devuelve el valor de $d$ en la posicion $c$.]
 
   \InterfazFuncion{Borrar}{\Inout{d}{diccMat($coor,\sigma$)}, \In{c}{$coor$}}{}
-  [$d = d_0$ $\land$ enRango($c_0$, $c_1$, $d$) $\land_L$ def?($c_0$, $c_1$, $d$)]
-  {$d$ $\igobs$ borrar($c_0$, $c_1$, $d_0$)}
+  [$d = d_0$ $\land$ enRango($c_1$, $c_2$, $d$) $\land_L$ def?($c_1$, $c_2$, $d$)]
+  {$d$ $\igobs$ borrar($c_1$, $c_2$, $d_0$)}
   [$\Theta\left(\displaystyle\sum_{c' \in d.claves}equal(c,c')\right)$]
   [Elimina el valor en la posicion $c$ en $d$.]
 
@@ -135,7 +135,7 @@ El principal costo se paga al crear la estructura o borrar un dato, dado que cue
 	
 	\tadAlinearFunciones{Abs}{Estr/e}	
 	
-	\Abs[estr]{diccMat}[e]{d}{($\forall d : diccMat$) $e$.claves = coordenadas(d) $\land$ $e$.ancho = ancho(d) $\land$ $e$.largo = largo(d) $\land$ ($\forall c \gets e.claves$) e.posiciones[$c.campo_0 * e.ancho + c.campo_1 $] = siginificado(c,d)}
+	\Abs[estr]{diccMat}[e]{d}{($\forall d : diccMat$) $e$.claves = coordenadas(d) $\land$ $e$.ancho = ancho(d) $\land$ $e$.largo = largo(d) $\land$ ($\forall c \gets e.claves$) e.posiciones[$c.campo_1 * e.ancho + c.campo_2 $] = siginificado(c,d)}
 	
 
 \end{Representacion}
@@ -175,7 +175,7 @@ El principal costo se paga al crear la estructura o borrar un dato, dado que cue
 
 \begin{algorithm}[H]{\textbf{iDefinido?}(\In {d}{diccMat}, \In {c}{coor}) $\to$ $res$ : $bool$}
     	\begin{algorithmic}[1]
-        \State {$res \gets Definido?(d.posiciones, Aplanar(d, c)) \land_L d.posiciones[Aplanar(d, c)]_0$ } \Comment{Si no esta definido o esta marcado como borrado, se devuelve que no esta definido} $\Theta(1)$
+        \State {$res \gets Definido?(d.posiciones, Aplanar(d, c)) \land_L d.posiciones[Aplanar(d, c)]_1$ } \Comment{Si no esta definido o esta marcado como borrado, se devuelve que no esta definido} $\Theta(1)$
 			\medskip
 			\Statex \underline{Complejidad:} $\Theta(1)$
             \Statex \underline{Justificacion:} $Aplanar$ tiene costo $\Theta(1)$, luego, como $Definido?$ y consular una posicion de un arreglo tienen costo $\Theta(1)$. Aplicando algebra de ordenes: $\Theta(1)$ + $\Theta(1)$ + $\Theta(1)$ = $\Theta(1)$
@@ -211,7 +211,7 @@ El principal costo se paga al crear la estructura o borrar un dato, dado que cue
 
 \begin{algorithm}[H]{\textbf{iAplanar}(\In {d}{diccMat}, \In {c}{coor}) $\to$ $res$ : $nat$}
     	\begin{algorithmic}[1]
-			\State $res \gets c.campo_0 * d.ancho + c.campo_1 $ \Comment $\Theta(1)$
+			\State $res \gets c.campo_1 * d.ancho + c.campo_2 $ \Comment $\Theta(1)$
 			
 			\medskip
 			\Statex \underline{Complejidad:} $\Theta(1)$

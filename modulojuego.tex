@@ -332,7 +332,7 @@
     \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iPosPokemonCercano}(\In{j}{juego}, \In{c}{Coor})  $\to$ $res$ : $conjLineal(itConj)$} 
+\begin{algorithm}[H]{\textbf{iPosPokemonCercano}(\In{j}{juego}, \In{c}{Coor})  $\to$ $res$ : $coor$} 
 	{}
 	\begin{algorithmic}
 		\State i $\gets$ 0 \Comment $O(1)$
@@ -357,9 +357,14 @@
 				\State j $\gets$ longC	\Comment $O(1)$
 			\EndIf
 		\EndIf
-		\While {i < latC + 2}
-			\While {j < longC + 2}
+		\While {i $<$ latC + 2}	\Comment $O(1)$ {Vale porque estoy recorriendo un conjunto acotado de coordenadas}
+			\While {j $<$ longC + 2}	\Comment $O(1)$ {Vale porque estoy recorriendo un conjunto acotado de coordenadas}
+				\If {Definido?(j.posicionesPokemons, $<$i, j$>$)}	\Comment $O(1)$
+					\State res $\gets$ $<$i, j$>$	\Comment $O(1)$ 
+				\EndIf
+				\State j $\gets$ j + 1	\Comment $O(1)$
 			\EndWhile
+			\State i $\gets$ i + 1	\Comment $O(1)$
 		\EndWhile
 		\medskip
 		\Statex \underline{Complejidad:} $O(1)$
