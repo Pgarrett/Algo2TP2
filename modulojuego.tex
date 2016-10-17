@@ -246,23 +246,22 @@
 \end{algorithm}
 
 \begin{algorithm}[H]{\textbf{iAgregarPokemon}(\Inout{j}{juego)}, \In{c}{coor)}, \In{p}{pokemon)}) $\to$ $res$ : $itPokemon$}
-	{\\ $\textbf{Pre}$ $\equiv$ }
 	\begin{algorithmic}
 	
 	\State $ItColaPrior(itJugador) it \gets entrenadoresPosibles(j,c) $ \Comment $O(|1|)$
-	\State $while(it.HaySiguiente()) $ {
-	\State $definir(p.jugadoresEnRango, it.Siguiente().id, it.Siguiente()) $ \Comment$O(log(|entrenadoresPosibles|))$
-	 }
+	\While {it.HaySiguiente()} \Comment $O(1)$
+		\State $Definir(p.jugadoresEnRango, it.Siguiente().id, it.Siguiente()) $ \Comment $O(log(|entrenadoresPosibles|))$
+	\EndWhile
 	\State $p.salvaje \gets TRUE $ \Comment $O(|1|)$
 	\State $p.contador \gets 0 $ \Comment $O(|1|)$
 	\State $j.pokemonsTotales \gets j.pokemonsTotales+1 $ \Comment $O(|1|)$
 	
-	\If(definido?(pokemones,p.tipo)) \Comment $O(|p|)$
-	\State $ItPokemon poke \gets obtener(j.pokemones,p.tipo) $ \Comment $O(|p.tipo|)$
+	\If {Definido?(pokemones,p.tipo)} \Comment $O(|P|)$
+		\State ItPokemon poke $\gets$ Obtener(j.pokemones, p.tipo)  \Comment $O(|p.tipo|)$
 	\Else
-	\State $ItPokemon poke \gets definir(j.pokemones,p.tipo, p)$ \Comment $O(|p.tipo|)$
+		\State ItPokemon poke $\gets$ Definir(j.pokemones, p.tipo, p) \Comment $O(|p.tipo|)$
 	\EndIf
-	\State $res \gets definir(j.posicionesPokemon, coord, <poke,true>) $ \Comment $O(|1|)$
+	\State $res \gets Definir(j.posicionesPokemon, coord, <poke,true>) $ \Comment $O(|1|)$
 		\medskip
 		\Statex \underline{Complejidad:} $O(|p.tipo| + |entrenadoresPosibles| * log(|entrenadoresPosibles|))$
 		 esta mal creo, pero no se que meterle
@@ -276,7 +275,6 @@
 \end{algorithm}
 
 \begin{algorithm}[H]{\textbf{iAgregarJugador}(\Inout{j}{juego)}, \In{c}{coor)}, \In{jug}{Jugador)}) $\to$ $res$ : $Nat$}
-	{\\ $\textbf{Pre}$ $\equiv$ }
 	\begin{algorithmic}
 	\State $jug.pokeCapturados \gets Vacio() $ \Comment $O(1)$
 	\State $jug.posicion \gets coor $ \Comment $O(1)$
@@ -284,10 +282,10 @@
 	\State $jug.sanciones \gets 0 $ \Comment $O(1)$
 	\State $ItConLineal itConj \gets agregarRapido(j.jugadores,jug) $ \Comment $O(copy(jug))$
 	\State $ItColaPrior itCola \gets NULL $ \Comment $O(1)$
-	\If(HayPokemonCercano(j, coor)) \Comment $O(|p|)$
-	\State $ItPokemon poke \gets pokemonEnPos(j,posPokemonCercano(j,c))$ \Comment $O(1)$
-	\State $poke.contador \gets 0$ \Comment $O(1)$
-	\State $ itCola \gets definir(poke.siguiente.jugadoresEnRango,jug.id,jug) $ \Comment $O(copy(jug))$
+	\If {HayPokemonCercano(j, coor)} \Comment $O(|P|)$
+		\State $ItPokemon poke \gets pokemonEnPos(j,posPokemonCercano(j,c))$ \Comment $O(1)$
+		\State $poke.contador \gets 0$ \Comment $O(1)$
+		\State $ itCola \gets definir(poke.siguiente.jugadoresEnRango,jug.id,jug) $ \Comment $O(copy(jug))$
 	\EndIf
 	
 	\State $res \gets agregarRapido(j.jugadoresPorID, coord, <itConj,itCola>).id $ \Comment $O(copy(jug))$
@@ -301,14 +299,13 @@
 \end{algorithm}
 
 \begin{algorithm}[H]{\textbf{iConectarse}(\Inout{j}{juego)}, \In{id}{Nat)}, \In{c}{Coor)})}
-	{\\ $\textbf{Pre}$ $\equiv$ }
 	\begin{algorithmic}
 		\State $\pi 2(j.jugadoresPorID[id]).Siguiente.estaConectado \gets true $ \Comment $O(1)$
 		\State $\pi 2(j.jugadoresPorID[id]).Siguiente.posicion \gets coord $ \Comment $O(1)$
-		\If(HayPokemonCercano(j, coor)) \Comment $O(|p|)$
-		\State $ItPokemon poke \gets pokemonEnPos(j,posPokemonCercano(j,c))$ \Comment $O(1)$
-		\State $poke.contador \gets 0$ \Comment $O(1)$
-	\State $ definir(poke.siguiente.jugadoresEnRango,id,\pi 1(j.jugadoresPorID[id])) $ \Comment $O(copy(jug))$
+		\If {HayPokemonCercano(j, coor)} \Comment $O(|P|)$
+			\State $ItPokemon poke \gets pokemonEnPos(j,posPokemonCercano(j,c))$ \Comment $O(1)$
+			\State $poke.contador \gets 0$ \Comment $O(1)$
+			\State $ definir(poke.siguiente.jugadoresEnRango,id,\pi 1(j.jugadoresPorID[id])) $ \Comment $O(copy(jug))$
 		\EndIf
 	
 		\medskip
@@ -318,17 +315,38 @@
 \end{algorithm}
 
 \begin{algorithm}[H]{\textbf{iDesconectarse}(\Inout{j}{juego)}, \In{id}{Nat)}} 
-	{\\ $\textbf{Pre}$ $\equiv$ }
 	\begin{algorithmic}
 		\State $\pi 2(j.jugadoresPorID[id]).Siguiente.estaConectado \gets false $ \Comment $O(1)$
-		\If(HayPokemonCercano(j, coor)) \Comment $O(|p|)$
-		\State $ItPokemon poke \gets pokemonEnPos(j,posPokemonCercano(j,c))$ \Comment $O(1)$
-		\State $definir(poke.siguiente.jugadoresEnRango,id,NULL) $ \Comment $O(copy(jug))$
+		\If {HayPokemonCercano(j, coor)} \Comment $O(|p|)$
+			\State $ItPokemon poke \gets pokemonEnPos(j,posPokemonCercano(j,c))$ \Comment $O(1)$
+			\State $definir(poke.siguiente.jugadoresEnRango,id,NULL) $ \Comment $O(copy(jug))$
 		\EndIf
 	
 		\medskip
 		\Statex \underline{Complejidad:} $O(jug)$
 		\Statex \underline{Justificación:}  
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{iMapa}(\In{j}{juego}) $\to$ $res$ : $Mapa$} 
+	{}
+	\begin{algorithmic}
+		\State $res \gets j.mapa $ \Comment $O(copy(mapa(j)))$
+	
+		\medskip
+		\Statex \underline{Complejidad:} $O(copy(mapa(j)))$
+		\Statex \underline{Justificación:} Devuelve el mapa del juego por copia.
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{iJugadores}(\In{j}{juego}) $\to$ $res$ : $itConj(jugador)$} 
+	{}
+	\begin{algorithmic}
+		\State $res \gets CrearIt(j.jugadores) $ \Comment $O(1)$
+	
+		\medskip
+		\Statex \underline{Complejidad:} $O(1)$
+		\Statex \underline{Justificación:} Devuelve el mapa del juego.
     \end{algorithmic}
 \end{algorithm}
 
@@ -423,7 +441,7 @@
 	{}
 	\begin{algorithmic}
 		\If(definido?(j.pokemones, p.tipo)) \Comment $O(|P|)$
-		\State $res \gets obtener(j.pokemones, p.tipo)$ \Comment $O(|P|)$
+		\State $res \gets Obtener(j.pokemones, p.tipo)$ \Comment $O(|P|)$
 		\Else
 		\State $res \gets 0 $ \Comment $O(1)$
 		\EndIf
