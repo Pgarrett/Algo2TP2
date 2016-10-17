@@ -103,7 +103,7 @@
   \InterfazFuncion{puedoAgregarPokemon}{\In{j}{juego}, \In{c}{Coor}}{Bool}
   [True]
   {$res \igobs puedoAgregarPokemon(c,j)$}
-  [$\Theta(???)$] 
+  [$\Theta(1)$] 
   [Devuelve si la coordenada ingresada es valida para agregar un pokemon en ella]
 
   \InterfazFuncion{hayPokemonCercano}{\In{j}{juego}, \In{c}{Coor}}{Bool}
@@ -314,7 +314,7 @@
     \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iDesconectarse}(\Inout{j}{juego)}, \In{id}{Nat)}} 
+\begin{algorithm}[H]{\textbf{iDesconectarse}(\Inout{j}{juego}, \In{id}{Nat})} 
 	\begin{algorithmic}
 		\State $\pi 2(j.jugadoresPorID[id]).Siguiente.estaConectado \gets false $ \Comment $O(1)$
 		\If {HayPokemonCercano(j, coor)} \Comment $O(|p|)$
@@ -474,7 +474,18 @@
 		\EndWhile
 		\medskip
 		\Statex \underline{Complejidad:} $O(1)$
-		\Statex \underline{Justificación:} 
+		\Statex \underline{Justificación:} Como el rango a recorrer es una constante, se puede decir que es de la clase $\Theta(1)$
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{iPuedoAgregarPokemon}(\In{j}{juego}, \In{c}{coor}) $\to$ $res$ : $bool$} 
+	\begin{algorithmic}
+		\State $res \gets \lnot(Definido?(j.posicionesPokemons, c)) \land \lnot(HayPokemonCercano(c, j)) $ \Comment $O(1)$
+		\EndIf
+	
+		\medskip
+		\Statex \underline{Complejidad:} $\Theta(1)$
+		\Statex \underline{Justificación:}
     \end{algorithmic}
 \end{algorithm}
 
