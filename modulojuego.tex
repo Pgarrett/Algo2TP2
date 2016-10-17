@@ -70,7 +70,7 @@
   [$\Theta(1)$]
   [Devuelve la posicion actual del jugador con id ingresado si esta conectado]
 
-  \InterfazFuncion{pokemones}{\In{j}{juego}, \In{id}{Nat}}{itLista(puntero(pokemon))} %%Para borrar todos los pokemones a la hora de eliminar al jugador tenemos complejidad lineal, pero hace falta una estructura que admita repetidos ya que lo que devuelve es un multiconjunto, no queremos hacer un modulo multiconjunto queremos ser felices. Despues debatimos
+  \InterfazFuncion{pokemones}{\In{j}{juego}, \In{id}{Nat}}{itConj(itDiccString)} %%Para borrar todos los pokemones a la hora de eliminar al jugador tenemos complejidad lineal, pero hace falta una estructura que admita repetidos ya que lo que devuelve es un multiconjunto, no queremos hacer un modulo multiconjunto queremos ser felices. Despues debatimos
   [id $\in$ jugadores(j)]
   {$res \igobs pokemons(id,j)$}
   [$\Theta(1)$]
@@ -146,7 +146,7 @@
 \end{Interfaz}
 
 \begin{Representacion}
-\subsubsection{Representación de Mapa}
+\subsubsection{Representación de Juego}
 	\begin{Estructura}{Juego}[juego]
 		\begin{Tupla}[juego]
 			\tupItem{pokemones}{diccString(Nat)}%
@@ -350,6 +350,94 @@
     \end{algorithmic}
 \end{algorithm}
 
+\begin{algorithm}[H]{\textbf{iEstaConectado}(\In{j}{juego}, \In{id}{Nat}) $\to$ $res$ : Bool} 
+	{}
+	\begin{algorithmic}
+		\State $res \gets Siguiente(j.jugadoresPorID[id]_0).estaConectado $ \Comment $O(1)$
+	
+		\medskip
+		\Statex \underline{Complejidad:} $O(1)$
+		\Statex \underline{Justificación:} Devuelve si el jugador esta conectado.
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{iPosicion}(\In{j}{juego}, \In{id}{Nat}) $\to$ $res$ : coor} 
+	{}
+	\begin{algorithmic}
+		\State $res \gets Siguiente(j.jugadoresPorID[id]_0).posicion $ \Comment $O(1)$
+	
+		\medskip
+		\Statex \underline{Complejidad:} $O(1)$
+		\Statex \underline{Justificación:} Devuelve si el jugador esta conectado.
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{iPokemones}(\In{j}{juego}, \In{id}{Nat}) $\to$ $res$ : itConj(itDiccString)} 
+	{}
+	\begin{algorithmic}
+		\State $res \gets CrearIt(Siguiente(j.jugadoresPorID[id]_0).pokeCapturados) $ \Comment $O(1)$
+	
+		\medskip
+		\Statex \underline{Complejidad:} $O(1)$
+		\Statex \underline{Justificación:} Devuelve un iterador al conjunto de pokemones atrapados por el jugador.
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{iExpulsados}(\In{j}{juego}) $\to$ $res$ : $itConj(Jugador)$} 
+	{}
+	\begin{algorithmic}
+		\State $res \gets CrearIt(j.expulsados) $ \Comment $O(1)$
+	
+		\medskip
+		\Statex \underline{Complejidad:} $O(1)$
+		\Statex \underline{Justificación:} Devuelve un iterador al conjunto de jugadores expulsados.
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{iPosConPokemones}(\In{j}{juego}) $\to$ $res$ : $itConj(Coor)$} 
+	{}
+	\begin{algorithmic}
+		\State $res \gets CrearIt(Coordenadas(j.posicionesPokemons)) $ \Comment $O(1)$
+	
+		\medskip
+		\Statex \underline{Complejidad:} $O(1)$
+		\Statex \underline{Justificación:} Devuelve las posiciones con pokemones.
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{iPosConPokemones}(\In{j}{juego}) $\to$ $res$ : $itConj(Coor)$} 
+	{}
+	\begin{algorithmic}
+		\State $res \gets CrearIt(Coordenadas(j.posicionesPokemons)) $ \Comment $O(1)$
+	
+		\medskip
+		\Statex \underline{Complejidad:} $O(1)$
+		\Statex \underline{Justificación:} Devuelve las posiciones con pokemones.
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{iPokemonEnPos}(\In{j}{juego}, \In{c}{coor}) $\to$ $res$ : $itConj(Pokemon)$} 
+	{}
+	\begin{algorithmic}
+		\State $res \gets Significado(j.posicionesPokemons, c) $ \Comment $O(1)$
+	
+		\medskip
+		\Statex \underline{Complejidad:} $O(1)$
+		\Statex \underline{Justificación:} Devuelve el mapa del juego.
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{iCantMovimientosParaCaptura}(\In{j}{juego}, \In{c}{coor}) $\to$ $res$ : $Nat$} 
+	{}
+	\begin{algorithmic}
+		\State res $\gets$ 10 - Siguiente(Significado(j.posicionesPokemons, c)).contador  \Comment $O(1)$
+	
+		\medskip
+		\Statex \underline{Complejidad:} $O(1)$
+		\Statex \underline{Justificación:} Devuelve cuantos movimientos faltan para capturar al pokemon.
+    \end{algorithmic}
+\end{algorithm}
+
 \begin{algorithm}[H]{\textbf{iPosPokemonCercano}(\In{j}{juego}, \In{c}{Coor})  $\to$ $res$ : $coor$} 
 	{}
 	\begin{algorithmic}
@@ -418,7 +506,7 @@
 	{}
 	\begin{algorithmic}
 		\State $cuantosP \gets iCantMismaEspecie(j, p) $ \Comment $O(|p.tipo|)$
-		\State $res \gets 100 - (100 x cuantosP / iCantPokemonesTotales) $ \Comment $O(1)$
+		\State res $\gets$ 100 - (100 x cuantosP / iCantPokemonesTotales)  \Comment $O(1)$
 	
 		\medskip
 		\Statex \underline{Complejidad:} $O(|P|)$
@@ -440,7 +528,7 @@
 \begin{algorithm}[H]{\textbf{iCantMismaEspecie}(\In{j}{juego}, \In{p}{Pokemon}) $\to$ $res$ : $Nat$} 
 	{}
 	\begin{algorithmic}
-		\If(definido?(j.pokemones, p.tipo)) \Comment $O(|P|)$
+		\If {Definido?(j.pokemones, p.tipo)} \Comment $O(|P|)$
 		\State $res \gets Obtener(j.pokemones, p.tipo)$ \Comment $O(|P|)$
 		\Else
 		\State $res \gets 0 $ \Comment $O(1)$
