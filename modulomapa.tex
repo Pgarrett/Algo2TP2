@@ -154,9 +154,9 @@
     	\begin{algorithmic}[1]
 			\State $it \gets CrearIt(m.coordenadas)$ \Comment $\Theta(1)$
 			\State $max \gets 0$ \Comment $\Theta(1)$
-			\While $HaySiguiente(it)$ \Comment $\O(\sharp m.coordenadas)$
-				\If( $max < campo_2(it \rightarrow siguiente)$) \Comment $\Theta(1)$
-					\State $max \gets campo_2(it \rightarrow siguiente)$ \Comment $\Theta(1)$					
+			\While {HaySiguiente(it)} \Comment $\O(\sharp m.coordenadas)$
+				\If {$max < campo_2(it \rightarrow siguiente)$} \Comment $\Theta(1)$
+					\State $max \gets campo_2(it \rightarrow siguiente)$ \Comment $\Theta(1)$	
 				\EndIf
 				\State $Avanzar(it)$ \Comment $\Theta(1)$				
 			\EndWhile
@@ -165,12 +165,12 @@
     	\end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iLargo}(\In{m}{map}) $\to$ $res$ : nat}
+\begin{algorithm}[H]{\textbf{iLargo}(\In{m}{map}) $\to$ $res$ : Nat}
     	\begin{algorithmic}[1]
 			\State $it \gets CrearIt(m.coordenadas)$ \Comment $\Theta(1)$
 			\State $max \gets 0$ \Comment $\Theta(1)$
-			\While $HaySiguiente(it)$ \Comment $\O(\sharp m.coordenadas)$
-				\If( $max < campo_1(it \rightarrow siguiente)$) \Comment $\Theta(1)$
+			\While {$HaySiguiente(it)$} \Comment $\O(\sharp m.coordenadas)$
+				\If {$max < campo_1(it \rightarrow siguiente)$} \Comment $\Theta(1)$
 					\State $max \gets campo_1(it \rightarrow siguiente)$ \Comment $\Theta(1)$					
 				\EndIf
 				\State $Avanzar(it)$ \Comment $\Theta(1)$				

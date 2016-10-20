@@ -13,10 +13,10 @@
   \InterfazFuncion{CrearJuego}{\In{m}{mapa}}{juego}%
   [true]
   {$res$ \igobs crearJuego($m_0$) $\land$ mapa($res$) \igobs $m_0$}
-  [$\Theta(MUCHO)$]
-  [Crea el nuevo juego, revisar la complejidad]
+  [O((largo(m) x ancho(m)) + copy(m))]
+  [Crea el nuevo juego]
 
-  \InterfazFuncion{AgregarPokemon}{\Inout{j}{juego}, \In{c}{coor}, \In{p}{pokemon}}{itPokemon}
+  \InterfazFuncion{AgregarPokemon}{\Inout{j}{juego}, \In{c}{coor}, \In{p}{pokemon}}{itConj}
   [$j \igobs j_0 \land puedoAgregarPokemon(c, j_0)$]
   {$j \igobs agregarPokemon(p, c, j_0)$}
   [$O(|P| + EC * log(EC))$]
@@ -224,23 +224,21 @@
 
 \subsection{Algoritmos}
 
-\begin{algorithm}[H]{\textbf{iCrearJuego}(\In{m}{Mapa)}) $\to$ $res$ : $juego$}
-	{\\ $\textbf{Pre}$ $\equiv$ true}
+\begin{algorithm}[H]{\textbf{iCrearJuego}(\In{m}{Mapa)}) $\to$ $res$ : $Juego$}
 	\begin{algorithmic}
+		\State $Juego : j$	\Comment $O(1)$
+		\State j.pokemones $\gets$ CrearDiccionario()	\Comment $O(1)$
+		\State j.todosLosPokemones $\gets$ Vacio()	\Comment $O(1)$
+		\State j.jugadores $\gets$ Vacio()	\Comment $O(1)$
+		\State j.expulsados $\gets$ Vacio()	\Comment $O(1)$
+		\State j.jugadoresPorID $\gets$ Vacia()	\Comment $O(1)$
+		\State j.posicionesPokemons $\gets$	Vacio(largo(m), ancho(m))	\Comment O(largo(m) x ancho(m))
+		\State j.mapa $\gets$ m	\Comment $O(copy(m))$
 
-		\State $Juego : j$ \Comment $O(1)$
-		\State $j.pokemones \gets crearDiccionario(Vacio())$ \Comment $O(1)$
-		\State $j.posicionesPokemon \gets VACIO()$ \Comment $O(ancho * largo)$
-		\State $j.jugadores \gets vacio()$ \Comment $O(1)$
-		\State $j.expulsados \gets vacio()$ \Comment $O(1)$
-		\State $j.jugadoresPorID \gets vacia()$ \Comment $O(1)$
-		\State $j.mapa \gets m$ \Comment $O(1)$
-		\State $j.pokemonesTotales \gets 0$ \Comment $O(1)$
-
-		\State $res \gets juego$ \Comment $O(1)$
+		\State $res \gets j$ \Comment $O(1)$
 		\medskip
-		\Statex \underline{Complejidad:} $O(ancho * largo)$
-		\Statex \underline{Justificación:} la unica operacion que no es  O(1) tiene esa complejidad.
+		\Statex \underline{Complejidad:} O((largo(m) x ancho(m)) + copy(m))
+		\Statex \underline{Justificación:} 
 
     \end{algorithmic}
 \end{algorithm}
