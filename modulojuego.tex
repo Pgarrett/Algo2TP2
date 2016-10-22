@@ -272,27 +272,21 @@
     \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iAgregarJugador}(\Inout{j}{juego)}, \In{c}{coor)}, \In{jug}{Jugador)}) $\to$ $res$ : $Nat$}
+\begin{algorithm}[H]{\textbf{iAgregarJugador}(\Inout{j}{juego)}) $\to$ $res$ : $Nat$}
 	\begin{algorithmic}
+	\State Jugador: jug \Comment $O(1)$
+	\State $jug.id \gets Cardinal(j.jugadores) + Cardinal(j.expulsados)$ \Comment $O(1)$
+	\State $jug.estaConectado \gets false $ \Comment $O(1)$
+	\State $jug.sanciones \gets 0 $ \Comment $O(1)$	
 	\State $jug.pokeCapturados \gets Vacio() $ \Comment $O(1)$
-	\State $jug.posicion \gets coor $ \Comment $O(1)$
-	\State $jug.estaConectado \gets TRUE $ \Comment $O(1)$
-	\State $jug.sanciones \gets 0 $ \Comment $O(1)$
-	\State $ItConLineal itConj \gets agregarRapido(j.jugadores,jug) $ \Comment $O(copy(jug))$
-	\State $ItColaPrior itCola \gets NULL $ \Comment $O(1)$
-	\If {HayPokemonCercano(j, coor)} \Comment $O(|P|)$
-		\State $ItPokemon poke \gets pokemonEnPos(j,posPokemonCercano(j,c))$ \Comment $O(1)$
-		\State $poke.contador \gets 0$ \Comment $O(1)$
-		\State $ itCola \gets definir(poke.siguiente.jugadoresEnRango,jug.id,jug) $ \Comment $O(copy(jug))$
-	\EndIf
-	
-	\State $res \gets agregarRapido(j.jugadoresPorID, coord, <itConj,itCola>).id $ \Comment $O(copy(jug))$
-
-	
+	\State $jug.posicion \gets NULL $ \Comment $O(1)$
+	\State $itJ \gets AgregarRapido(j.jugadores,jug) $ \Comment $O(copy(jug))$
+	\State $AgregarAtras(j.jugadoresPorID, <itJ, NULL>)$ \Comment $O(J)$ {Donde J es la cantidad total de jugadores que fueron agregados al juego}
+	\State $res \gets jug.id $ \Comment $O(1)$
 	
 		\medskip
-		\Statex \underline{Complejidad:} $O(jug)$
-		\Statex \underline{Justificación:} Seria el peor caso, ya que este se da cuando se tiene que armar el heap de jugadoresEnRango de pokemon
+		\Statex \underline{Complejidad:} $O(J)$
+		\Statex \underline{Justificación:} O(copy(jug)) es igual a O(1) ya que solamente es copiar Nat, Bool y un conjunto vacio.
     \end{algorithmic}
 \end{algorithm}
 

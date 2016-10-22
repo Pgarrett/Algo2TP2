@@ -1,0 +1,8 @@
+// AgregarPokemon (Juego)
+	+ Al momento de armar el heap si tiene jugadores en rango, como saca a los jugadores? Cada jugador sabe su posicion, recorrer todo el conjunto de jugadores para saber quienes estan en rango no es O(1), necesitamos O(1) [PG]
+	+ Agregar el pokemon al conjunto lineal es O(copy(p)), el problema esta en que si el pokemon cae en un lugar que tiene jugadores en rango ese copy no es gratis. Vale agregarlo y despues meterle el super heap desde el iterador en O(1)? [PG]
+
+// AgregarJugador (Juego)
+	+ Y si pasamos la posicion del jugador al juego? Sirve para lo de AgregarPokemon [PG]
+	+ Copiar el jugador con el conjunto vacio, es O(1), no? [PG]
+	+ Cuando agrego el jugador al vector, el heap que le pasamos a la tupla es NULL, que tan bueno estaba eso? [PG]
