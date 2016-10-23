@@ -290,19 +290,22 @@
     \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iConectarse}(\Inout{j}{juego)}, \In{id}{Nat)}, \In{c}{Coor)})}
+\begin{algorithm}[H]{\textbf{iConectarse}(\Inout{j}{juego}, \In{e}{Nat}, \In{c}{Coor})}
 	\begin{algorithmic}
-		\State $\pi 2(j.jugadoresPorID[id]).Siguiente.estaConectado \gets true $ \Comment $O(1)$
-		\State $\pi 2(j.jugadoresPorID[id]).Siguiente.posicion \gets coord $ \Comment $O(1)$
-		\If {HayPokemonCercano(j, coor)} \Comment $O(|P|)$
-			\State $ItPokemon poke \gets pokemonEnPos(j,posPokemonCercano(j,c))$ \Comment $O(1)$
-			\State $poke.contador \gets 0$ \Comment $O(1)$
-			\State $ definir(poke.siguiente.jugadoresEnRango,id,\pi 1(j.jugadoresPorID[id])) $ \Comment $O(copy(jug))$
+		\State tupJug $\gets$ j.jugadoresPorId[e]	\Comment $O(1)$
+		\State itJug $\gets$ tupJug[1]	\Comment $O(1)$
+		\State jug $\gets$ Siguiente(itJug)	\Comment $O(1)$
+		\State jug.estaConectado $\gets$ true	\Comment $O(1)$
+		\State jug.posicion $\gets$ c	\Comment $O(1)$
+		\If {HayPokemonCercano(j, c)}	\Comment $O(1)$
+			\State p $\gets$ Siguiente(Significado(j.posicionesPokemons, PosPokemonCercano(j, c)))	\Comment $O(1)$
+			\State tupJug[2] $\gets$ Encolar(p.jugadoresEnRango, Cardinal(jug.pokeCapturados), itJug)	\Comment $O(log(EC))$
+			\State p.contador $\gets$ 0	\Comment $O(1)$
 		\EndIf
 	
 		\medskip
-		\Statex \underline{Complejidad:} $O(1)$
-		\Statex \underline{Justificación:}  
+		\Statex \underline{Complejidad:} $O(log(EC))$
+		\Statex \underline{Justificación:} EC es la maxima cantidad de jugadores esperando para atrapar un pokemon. En el peor caso, el heap al que entra el jugador es el que mas jugadores esperando tiene.
     \end{algorithmic}
 \end{algorithm}
 
