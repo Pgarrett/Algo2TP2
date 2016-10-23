@@ -103,25 +103,25 @@
   \InterfazFuncion{puedoAgregarPokemon}{\In{j}{juego}, \In{c}{Coor}}{Bool}
   [True]
   {$res \igobs puedoAgregarPokemon(c,j)$}
-  [$\Theta(???)$] 
+  [$\Theta\left(\displaystyle\sum_{c' \in coordendas(mapa(j))}equal(c,c')\right)$]
   [Devuelve si la coordenada ingresada es valida para agregar un pokemon en ella]
 
   \InterfazFuncion{hayPokemonCercano}{\In{j}{juego}, \In{c}{Coor}}{Bool}
   [True]
   {$res \igobs hayPokemonCercano(c,j)$}
-  [$\Theta(???)$] 
+  [$\Theta(1)$] 
   [Devuelve si la coordenada ingresada pertenece al rango de un pokemon salvaje]   
 
   \InterfazFuncion{posPokemonCercano}{\In{j}{juego}, \In{c}{Coor}}{Coor}
   [$hayPokemonCercano(c,j)$]
   {$res \igobs posPokemonCercano(c,j)$}
-  [$\Theta(???)$] %Todas estas ultimas deberian ser O(1) gracias al magico DiccAcHashMagicTableListTupl pero por las dudas dejemo' la incognita hasta que sea oficial
+  [$\Theta(1)$] %Todas estas ultimas deberian ser O(1) gracias al magico DiccAcHashMagicTableListTupl pero por las dudas dejemo' la incognita hasta que sea oficial
   [Devuelve la coordenada mas del pokemon salvaje del rango siempre y cuando haya uno]   
 
   \InterfazFuncion{entrenadoresPosibles}{\In{c}{coor}, \In{es}{conjLineal(jugador)}, \In{j}{juego}}{itColaPrior(itJugador)}
   [$hayPokemonCercano(c,j) \yluego pokemonEnPos(posPokemonCercano(c,j),j).jugadoresEnRango \subseteq jugadoresConectados(c,j)$]
   {$res \igobs entrenadoresPosibles(c,pokemonEnPos(posPokemonCercano(c,j),j).jugadoresEnRango,j)$}
-  [$\Theta(???)$] 
+  [$O(Cardinal(es))$] 
   [Devuelve un iterador a los jugadores que estan esperando para atrapar al pokemon mas cercano a la coordenada ingresada]   
 
   \InterfazFuncion{indiceRareza}{\In{j}{juego}, \In{p}{Pokemon}}{Nat}
@@ -340,15 +340,15 @@
 \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iDebeSancionarse}(\In{e}{jugador}, \In{c}{coor}, \In{j}{juego}) $\to$ $res$ : $Mapa$} 
+\begin{algorithm}[H]{\textbf{iDebeSancionarse}(\In{e}{jugador}, \In{c}{coor}, \In{j}{juego}) $\to$ $res$ : $Bool$} 
 \\
 	{$\textbf{Pre}$ $\equiv$ e $\in$ Jugadores(j)}
 	\begin{algorithmic}
-		\State $res \gets \neg HayCamino(e.posicion, c, j.mapa) \lor DistEuclidea(e.posicion, c, mapa) > 100 $ \Comment $O(copy(mapa(j)))$
+		\State $res \gets \neg HayCamino(e.posicion, c, j.mapa) \lor DistEuclidea(e.posicion, c, mapa) > 100 $ \Comment $O(1)$
 	
 		\medskip
-		\Statex \underline{Complejidad:} $O(copy(mapa(j)))$
-		\Statex \underline{Justificación:} Devuelve el mapa del juego por copia.
+		\Statex \underline{Complejidad:} $O(1)$
+		\Statex \underline{Justificación:} Checkea si el jugador hizo un movimiento invalido.
     \end{algorithmic}
 \end{algorithm}
 
@@ -456,29 +456,12 @@
 	\begin{algorithmic}
 		\State i $\gets$ 0 \Comment $O(1)$
 		\State latC $\gets$ Latitud(c)	\Comment $O(1)$
-		\If {latC $>$ 2}	\Comment $O(1)$
-			\State i $\gets$ latC - 2	\Comment $O(1)$
-		\Else
-			\If {latC $>$ 1}	\Comment $O(1)$
-				\State i $\gets$ latC - 1	\Comment $O(1)$
-			\Else
-				\State i $\gets$ latC	\Comment $O(1)$
-			\EndIf
-		\EndIf
-		\State j $\gets$ 0 \Comment $O(1)$
+		\State i $\gets$ DamePos(latC, 2) \Comment $O(1)$		
 		\State longC $\gets$ Longitud(c)	\Comment $O(1)$
-		\If {longC $>$ 2}	\Comment $O(1)$
-			\State j $\gets$ longC - 2	\Comment $O(1)$
-		\Else
-			\If {longC $>$ 1}	\Comment $O(1)$
-				\State j $\gets$ longC - 1	\Comment $O(1)$
-			\Else
-				\State j $\gets$ longC	\Comment $O(1)$
-			\EndIf
-		\EndIf
+		\State j $\gets$ DamePos(longC, 2) \Comment $O(1)$
 		\While {i $<$ latC + 2}	\Comment $O(1)$ {Vale porque estoy recorriendo un conjunto acotado de coordenadas}
 			\While {j $<$ longC + 2}	\Comment $O(1)$ {Vale porque estoy recorriendo un conjunto acotado de coordenadas}
-				\If {Definido?(j.posicionesPokemons, $<$i, j$>$)}	\Comment $O(1)$
+				\If {Definido?(j.posicionesPokemons, $<$i, j$>$) $\land$ DistEuclidea(c, $<$i, j$>$) $\leq$ 4}	\Comment $O(1)$
 					\State res $\gets$ $<$i, j$>$	\Comment $O(1)$ 
 				\EndIf
 				\State j $\gets$ j + 1	\Comment $O(1)$
@@ -493,66 +476,24 @@
 
 \begin{algorithm}[H]{\textbf{iPuedoAgregarPokemon}(\In{j}{juego}, \In{c}{coor}) $\to$ $res$ : $bool$} 
 	\begin{algorithmic}
-		\State res $\gets$ PosExistente(c, j.mapa) $\land$ $\lnot$(Definido?(j.posicionesPokemons, c)) $\land$ $\lnot$(HayPokemonCercano(j, c))  \Comment $O(1)$
+		\State res $\gets$ PosExistente(c, j.mapa) $\land$ $\lnot$(Definido?(j.posicionesPokemons, c)) $\land$ $\lnot$(HayPokemonCercano(j, c))  \Comment $\Theta\left(\displaystyle\sum_{c' \in coordendas(mapa(j))}equal(c,c')\right)$
 	
 		\medskip
-		\Statex \underline{Complejidad:} $\Theta(1)$
-		\Statex \underline{Justificación:}
+		\Statex \underline{Complejidad:} [$\Theta\left(\displaystyle\sum_{c' \in coordendas(mapa(j))}equal(c,c')\right)$]
+		\Statex \underline{Justificación:} Tiene que ver si la posicion existe en el mapa, las demas operaciones son O(1)
      \end{algorithmic}
  \end{algorithm}
  
  \begin{algorithm}[H]{\textbf{HayPokemonCercano}(\In{j}{juego}, \In{c}{coor}) $\to$ $res$ : $bool$} 
 	\begin{algorithmic}
 		\State res $\gets$ false	\Comment $O(1)$ 
-		\State i $\gets$ 0 \Comment $O(1)$
 		\State latC $\gets$ Latitud(c)	\Comment $O(1)$
-		\If {latC $>$ 5}	\Comment $O(1)$
-			\State i $\gets$ latC - 5	\Comment $O(1)$
-		\Else
-			\If {latC $>$ 4}	\Comment $O(1)$
-				\State i $\gets$ latC - 4	\Comment $O(1)$
-			\Else
-				\If {latC $>$ 3}	\Comment $O(1)$
-					\State i $\gets$ latC - 3	\Comment $O(1)$
-				\Else
-					\If {latC $>$ 2}	\Comment $O(1)$
-						\State i $\gets$ latC - 2	\Comment $O(1)$
-					\Else
-						\If {latC $>$ 1}	\Comment $O(1)$
-							\State i $\gets$ latC - 1	\Comment $O(1)$
-						\Else
-							\State i $\gets$ latC	\Comment $O(1)$
-						\EndIf								
-					\EndIf
-				\EndIf
-			\EndIf
-		\EndIf
-		\State j $\gets$ 0 \Comment $O(1)$
+		\State i $\gets$ DamePos(latC, 5) \Comment $O(1)$		
 		\State longC $\gets$ Longitud(c)	\Comment $O(1)$
-		\If {longC $>$ 5}	\Comment $O(1)$
-			\State j $\gets$ longC - 5	\Comment $O(1)$
-		\Else
-			\If {longC $>$ 4}	\Comment $O(1)$
-				\State j $\gets$ longC - 4	\Comment $O(1)$
-			\Else
-				\If {longC $>$ 3}	\Comment $O(1)$
-					\State j $\gets$ longC - 3	\Comment $O(1)$
-				\Else
-					\If {longC $>$ 2}	\Comment $O(1)$
-						\State j $\gets$ longC - 2	\Comment $O(1)$
-					\Else
-						\If {longC $>$ 1}	\Comment $O(1)$
-							\State j $\gets$ longC - 1	\Comment $O(1)$
-						\Else
-							\State j $\gets$ longC	\Comment $O(1)$
-						\EndIf								
-					\EndIf
-				\EndIf
-			\EndIf
-		\EndIf
+		\State j $\gets$ DamePos(longC, 5) \Comment $O(1)$
 		\While {i $<$ latC + 5}	\Comment $O(1)$ {Vale porque estoy recorriendo un conjunto acotado de coordenadas}
 			\While {j $<$ longC + 5 }	\Comment $O(1)$ {Vale porque estoy recorriendo un conjunto acotado de coordenadas}
-				\If {Definido?(j.posicionesPokemons, $<$i, j$>$)}	\Comment $O(1)$
+				\If {Definido?(j.posicionesPokemons, $<$i, j$>$) $\land$ DistEuclidea(c, $<$i, j$>$) $\leq$ 25}	\Comment $O(1)$
 					\State res $\gets$ true	\Comment $O(1)$ 
 				\EndIf
 				\State j $\gets$ j + 1	\Comment $O(1)$
@@ -569,15 +510,15 @@
 \begin{algorithm}[H]{\textbf{iEntrenadoresPosibles}(\In{c}{coor}, \In{es}{conjLineal(jugador)}, \In{j}{juego})  $\to$ $res$ : $conjLineal(itConj)$} 
 	{}
 	\begin{algorithmic}
-		\State ePosibles $\gets$ Vacia()  \Comment $O(1)$ {Crea una cola de prioridad de iteradores vacia}
+		\State ePosibles $\gets$ Vacia()  \Comment $O(1)$ {Crea un conjunto de iteradores vacio}
 		\If {Cardinal(es) $!=$ 0}	\Comment $O(1)$
 			\State itE $\gets$ CrearIt(es)	\Comment $O(1)$
-			\While {HaySiguiente(itE)} \Comment $O(Cardinal(es))$
-				\State posJugador $\gets$ Posicion(Siguiente(itE))	\Comment $O(1)$
-				\If {(iHayPokemonCercano(posJugador, j) $\yluego$ \Comment $O(???)$
-				 \State iPosPokeCercano(posJugador, j) == c $\land$ \Comment $O(1)$
+			\While {HaySiguiente(itE)} \Comment $O(Cardinal(es))$ {Es la cantidad de jugadores que haya en el conjunto es}
+				\State posJugador $\gets$ Siguiente(itE).posicion	\Comment $O(1)$
+				\If {(iHayPokemonCercano(posJugador, j) $\yluego$ \Comment $O(1)$
+				 \State iPosPokemonCercano(posJugador, j) == c $\land$ \Comment $O(1)$
 				 \State iHayCamino(c, posJugador, Mapa(j)))} \Comment $O(1)$
-					\State AgregarRapido(ePosibles, Siguiente(itE))	\Comment $O(copy(Siguiente(itE)))$
+					\State AgregarRapido(ePosibles, Siguiente(itE))	\Comment $O(1)$ {Copiar un iterador es O(1)}
 				\EndIf
 				\State Avanzar(itE)	\Comment $O(1)$
 			\EndWhile
@@ -585,7 +526,7 @@
 		\State $res \gets ePosibles$ \Comment $O(1)$
 	
 		\medskip
-		\Statex \underline{Complejidad:} $O(Cardinal(es) * copy(Siguiente(itE)))$
+		\Statex \underline{Complejidad:} $O(Cardinal(es))$
 		\Statex \underline{Justificación:} Se itera por completo el conjunto de jugadores 'es'. En peor caso, todos los elementos de 'es' deben ser agregados al resultado.
     \end{algorithmic}
 \end{algorithm}
@@ -625,5 +566,24 @@
 		\medskip
 		\Statex \underline{Complejidad:} $O(|P|)$
 		\Statex \underline{Justificación:} En peor caso, el pokemon que se busca es el de nombre mas largo o no esta en el diccionario.
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{DamePos}(\In{p}{Nat}, \In{step}{Nat}) $\to$ $res$ : $Nat$} 
+	{}
+	\begin{algorithmic}
+		\State i $\gets$ p	\Comment $O(1)$
+		\State fin $\gets$ false	\Comment $O(1)$
+		\State $res \gets i$	\Comment $O(1)$
+		\While {i $\neq$ 1 $\land \neg$ fin}	\Comment $O(1)$
+			\State i $\gets$ i - 1	\Comment $O(1)$
+			\If {i == p - step}	\Comment $O(1)$
+				\State fin $\gets$ true	\Comment $O(1)$
+			\EndIf
+		\EndWhile
+	
+		\medskip
+		\Statex \underline{Complejidad:} $O(1)$
+		\Statex \underline{Justificación:} Recorre un rango acotado.
     \end{algorithmic}
 \end{algorithm}
