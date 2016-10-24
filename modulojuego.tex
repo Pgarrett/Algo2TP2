@@ -178,8 +178,6 @@
 		\end{Tupla}
 	\end{Estructura}
 	
-	\begin{Estructura}{ocupada?}[Bool]
-	\end{Estructura}
 
 \subsubsection{Invariante de Representación}
 	\begin{enumerate}
@@ -311,15 +309,15 @@
 
 \begin{algorithm}[H]{\textbf{iDesconectarse}(\Inout{j}{juego)}, \In{id}{Nat)}} 
 	\begin{algorithmic}
-		\State $\pi 2(j.jugadoresPorID[id]).Siguiente.estaConectado \gets false $ \Comment $O(1)$
-		\If {HayPokemonCercano(j, coor)} \Comment $O(|p|)$
-			\State $ItPokemon poke \gets pokemonEnPos(j,posPokemonCercano(j,c))$ \Comment $O(1)$
-			\State $definir(poke.siguiente.jugadoresEnRango,id,NULL) $ \Comment $O(copy(jug))$
+		\State tupJug $\gets$ j.jugadoresPorId[e]	\Comment $O(1)$
+		\If {HayPokemonCercano(j, c)}	\Comment $O(1)$
+			\State tupJug[2] $\gets$ EliminarSiguiente(tupJug[2])	\Comment $O(log(EC))$
 		\EndIf
+		\State Siguiente(tupJug[1]).estaConectado $\gets$ false	\Comment $O(1)$
 	
 		\medskip
-		\Statex \underline{Complejidad:} $O(jug)$
-		\Statex \underline{Justificación:}  
+		\Statex \underline{Complejidad:} $O(log(EC))$
+		\Statex \underline{Justificación:} EC es la maxima cantidad de jugadores esperando para atrapar un pokemon. En el peor caso, el heap del que sale el jugador es el que mas jugadores esperando tiene.
     \end{algorithmic}
 \end{algorithm}
 
