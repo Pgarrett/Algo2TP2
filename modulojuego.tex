@@ -202,16 +202,17 @@
 	\end{enumerate}
 	
 \subsubsection{Funci\'on de Abstracci\'on}	
-	Abs(e): estre - $>$ Jugo {Rep(e)} 
+%\end{Representacion}
+	$Abs(e): estre - > Jugo {Rep(e)} 
  pGo: Juego tq e.mapa = mapa(pGo) y e.jugadores = jugadores(pGo) yluego \\
  (Para todo j : jugador) j pertenece e.jugadores impluego 
- \\ j.sanciones = sanciones(j, pGo) ((j pertenece expulsados(pGo) y j.sanciones >= 10)\\
+  j.sanciones = sanciones(j, pGo) ((j pertenece expulsados(pGo) y j.sanciones >= 10)
  oluego (j.pokesCapturados = pokemones(j,pGo) y j.estaConectado = estaConectad(j,pGo) \\
  y j.estaConectado impluego j.pos = posicion(j,pGo))) y \\
  (Para todo p : pokemon) p pertenece c.pokemones impluego (Para todo j : Jugador) \\
  j pertenece e.jugadores yluego p pertenece pokemones(j,pGo) o [(Para todo c : coord)\\
  c pertenece e.mapa.coordenadas yluego p = pokemonEnPos(c,pGo) y cantMovParaCap(c,pGo)\\
- p.contador]
+ p.contador]$
 \end{Representacion}
 
 %%% Sanciones	O(1)
