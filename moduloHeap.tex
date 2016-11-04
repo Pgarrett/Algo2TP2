@@ -198,7 +198,11 @@ tal que el elemento que se ingrese con el menor $nat$ será el de mayor priorida
     	\begin{algorithmic}[1]
 			\State $it \leftarrow CrearIt(c) $ \Comment {$\Theta(1)$}
 			\State $A \leftarrow DecimalABinario(c.tamaño) $ \Comment {Convertir un decimal a binario tiene complejidad logaritmica del largo de número $\Theta(log(|c|))$}
+<<<<<<< HEAD
 			\For{i $\leftarrow$ 1 to $tam(A)$ - 1} \Comment {Se empieza desde el segundo elemento porque el iterador ya está parado en el primero que por precondición no está invalidado $\Theta(|A|) = \Theta(log(|c|))$}
+=======
+			\For{i $\leftarrow 1 \to$ tam(A) - 1} \Comment {Se empieza desde el segundo elemento porque el iterador ya está parado en el primero que por precondición no está invalidado $\Theta(|A|) = \Theta(log(|c|))$}
+>>>>>>> 459f9ae7cc6890764848afad8ccb3cf080929eb1
 				\If{$A[i] = 0$}
 					\State $AvanzarIzq(it) $ \Comment {$\Theta(1)$}
 				\Else
@@ -289,7 +293,11 @@ tal que el elemento que se ingrese con el menor $nat$ será el de mayor priorida
 		\State $it \leftarrow CrearIt(c)$ \Comment {$\Theta(1)$}
 		\State $swap \leftarrow true$
 		\State $A \leftarrow DecimalABinario(c.tamaño) $ \Comment {Convertir un decimal a binario tiene complejidad logaritmica del largo de número $\Theta(log(|c|))$}
+<<<<<<< HEAD
 		\For{i $\gets$ 1 to $tam(A)$ - 1} \Comment {Se empieza desde el segundo elemento porque el iterador ya está parado en el primero que por precondición no está invalidado, se avanza hasta el último elemento que es el que hay que reacomodar  $\Theta(|A|) = \Theta(log(|c|))$}
+=======
+		\For{i $\gets 1 \to$ tam(A) - 1} \Comment {Se empieza desde el segundo elemento porque el iterador ya está parado en el primero que por precondición no está invalidado, se avanza hasta el último elemento que es el que hay que reacomodar  $\Theta(|A|) = \Theta(log(|c|))$}
+>>>>>>> 459f9ae7cc6890764848afad8ccb3cf080929eb1
 			\If{$A[i] = 0$}
 				\State $AvanzarIzq(it) $ \Comment {$\Theta(1)$}
 			\Else
