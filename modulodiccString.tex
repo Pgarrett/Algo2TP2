@@ -28,7 +28,7 @@ de copy(s) ya que los significados se almacenan por copia.
 
 \InterfazFuncion{CrearDiccionario}{}{}
 {res $=_{obs}$ vacío()}
-[$O(1)$ Justificación: Sólo crea un arreglo de 27 posiciones inicializadas con null y una lista vacía]
+[$O(1)$ Justificación: Sólo crea un arreglo de 256 posiciones inicializadas con null y una lista vacía]
 [Crea un diccionario vacío.]
 []
 
@@ -184,9 +184,9 @@ operación que modifique d sin utilizar las funciones del iterador.]
 \renewcommand{\labelenumi}{(\Roman{enumi})}
 
 \begin{enumerate}
-	\item Raiz es la raiz del arbol con invariante de trie y es un arreglo de 27 posiciones.
+	\item Raiz es la raiz del arbol con invariante de trie y es un arreglo de 256 posiciones.
 	\item Cada uno de los elementos de la lista tiene que ser un puntero a un Nodo del trie.
-	\item Nodo es una tupla que contiene un arreglo de 27 posiciones con un puntero a otro Nodo en cada posicion
+	\item Nodo es una tupla que contiene un arreglo de 256 posiciones con un puntero a otro Nodo en cada posicion
 	,un elemento info que es el alfa que contiene esa clave del arbol, un elemento infoValida y un elemento iterador que es un puntero a un nodo de la lista enlazada.
 	\item El iterador a la lista enlazada de cada nodo tiene que apuntar al elemento de la lista que apunta al
 	mismo Nodo.
@@ -200,7 +200,7 @@ operación que modifique d sin utilizar las funciones del iterador.]
 
 \Rep[estr][e]{
 	\\
-	longitud(e.raiz)==27 $\yluego$
+	longitud(e.raiz)==256 $\yluego$
 	\\
 	($\forall i$ $\in$ [0..longitud(e.raiz)))\\
 	\- \- ((($\neg$ e.raiz[i] == NULL) $\impluego$
@@ -217,7 +217,7 @@ operación que modifique d sin utilizar las funciones del iterador.]
 ~
 
 \tadAxioma{nodoValido($nodo$)}{
-	longitud(*nodo.arbolTrie) == 27 $\yluego$
+	longitud(*nodo.arbolTrie) == 256 $\yluego$
 		\\
 		($\forall i$ $\in$ [0..longitud(*nodo.arbolTrie)))
 		\\
@@ -262,189 +262,128 @@ operación que modifique d sin utilizar las funciones del iterador.]
 
 
 \begin{algorithm}[H]{\textbf{iCrearDiccionario}() $\to$ $res$ : $estr$}
-	{\\ $\textbf{Pre}$ $\equiv$ true}
 	\begin{algorithmic}
-
-		\State $arreglo(puntero(Nodo)): res.raiz \gets CrearArreglo(27)$ \Comment $O(1)$
-			 
-		\State $nat: i \gets 0$ \Comment $O(1)$
-			 
+		\State $arreglo(puntero(Nodo)): res.raiz \gets CrearArreglo(256)$ \Comment $O(256)$		 		\State $nat: i \gets 0$ \Comment $O(1)$			 
 		\While{$i < long(res.raiz)$} \Comment $O(1)$
 		 	\State $res.raiz[i] \gets NULL$ \Comment $O(1)$
 		\EndWhile
-
 		\State $res.listaIterable \gets Vacia()$ \Comment $O(1)$
 
 		\medskip
 		\Statex \underline{Complejidad:} $O(1)$
-		\Statex \underline{Justificación:} Crea un arreglo de 27 posiciones y lo recorre inicializándolo en NULL. Luego crea una lista vacía.
+		\Statex \underline{Justificación:} Crea un arreglo de 256 posiciones y lo recorre inicializándolo en NULL. Luego crea una lista vacía.
 
     \end{algorithmic}
-    {$\textbf{Post}$ $\equiv$ res $=_{obs}$ vacio()}
 \end{algorithm}
 
 
-\begin{algorithm}[H]{\textbf{iDefinido?}(\In{d}{estr)}, \In{c}{string}) $\to$ $res$ : $bool$}
-	{\\ $\textbf{Pre}$ $\equiv$ true}
+\begin{algorithm}[H]{\textbf{iDefinido?}(\In{d}{estr}, \In{c}{string}) $\to$ $res$ : $bool$}
 	\begin{algorithmic}
-
 		\State $nat: i \gets 0$ \Comment $O(1)$
 		\State $nat: letra \gets ord(c[0])$ \Comment $O(1)$
 		\State $puntero(Nodo): arr \gets d.raiz[letra]$ \Comment $O(1)$
-
 		\While{$i < longitud(c)  \land \neg arr = NULL$} \Comment $O(|c|)$
-
 			\State $i \gets i + 1$ \Comment $O(1)$
 			\State $letra \gets ord(c[i])$ \Comment $O(1)$
 			\State $arr \gets (*arr).arbolTrie[letra]$ \Comment $O(1)$
-
 		\EndWhile
-
-		\If{$i=longitud(c)$} \Comment $O(1)$
-		
+		\If{$i=longitud(c)$} \Comment $O(1)$		
 			\State $res \gets (*arr).infoValida$ \Comment $O(1)$
-
 		\Else
-
 			\State $res \gets false$ \Comment $O(1)$
-
 		\EndIf
 
 		\medskip
 		\Statex \underline{Complejidad:} $O(|c|)$
 		\Statex \underline{Justificación:} Toma el primer caracter y encuentra su posición en el arreglo raíz. Luego itera sobre los caracteres restantes hasta el final del String c, por lo que hace |$c$| operaciones. Finalmente pregunta si el significado encontrado es válido o no.
     \end{algorithmic}
-    {$\textbf{Post}$ $\equiv$ res $=_{obs}$ def?(d,c)}
 \end{algorithm}
 
 
 \begin{algorithm}[H]{\textbf{iDefinir}(\Inout{d}{estr}, \In{c}{string}, \In{s}{$\alpha$})}
-	{\\ $\textbf{Pre}$ $\equiv$ d $=_{obs}$ d$_0$}
 	\begin{algorithmic}
-
-
 		\State $nat: i \gets 0$ \Comment $O(1)$
-		\State $nat: letra \gets ord(c[0])$ \Comment $O(1)$
-		
+		\State $nat: letra \gets ord(c[0])$ \Comment $O(1)$		
 		\If{$d.raiz[letra] = NULL$} \Comment $O(1)$
-
 			\State $Nodo: nuevo$ \Comment $O(1)$
-			\State $arreglo(puntero(Nodo)): nuevo.arbolTrie \gets CrearArrelgo(27)$ \Comment $O(1)$
+			\State $arreglo(puntero(Nodo)): nuevo.arbolTrie \gets CrearArrelgo(256)$ \Comment $O(1)$
 			\State $nuevo.infoValida \gets false$ \Comment $O(1)$
 			\State $d.raiz[letra] \gets puntero(nuevo)$ \Comment $O(1)$
-
 		\EndIf
-
 		\State $puntero(Nodo): arr \gets d.raiz[letra]$ \Comment $O(1)$
-
 		\While{$i < longitud(c)$} \Comment $O(|c|)$
-
 			\State $i \gets i + 1$ \Comment $O(1)$
 			\State $letra \gets ord(c[i])$ \Comment $O(1)$
-
 			\If{$arr.arbolTrie[letra] = NULL$} \Comment $O(1)$
-
 				\State $Nodo: nuevoHijo$ \Comment $O(1)$
-				\State $arreglo(puntero(Nodo)): nuevoHijo.arbolTrie \gets CrearArrelgo(27)$ \Comment $O(1)$
+				\State $arreglo(puntero(Nodo)): nuevoHijo.arbolTrie \gets CrearArrelgo(256)$ \Comment $O(1)$
 				\State $nuevoHijo.infoValida \gets false$ \Comment $O(1)$
 				\State $arr.arbolTrie[letra] \gets puntero(nuevoHijo)$ \Comment $O(1)$
-
 			\EndIf
-
 			\State $arr \gets (*arr).arbolTrie[letra]$ \Comment $O(1)$
-
 		\EndWhile
-
 		\State $(*arr).info \gets s$ \Comment $O(copy(s))$
-
 		\If{$\neg (*arr).infoValida$} \Comment $O(1)$
-
-		\State $itLista(puntero(Nodo)) it \gets AgregarAdelante(d.listaIterable,NULL)$ \Comment $O(1)$
-		\State $(*arr).infoValida \gets true$ \Comment $O(1)$
-		\State $(*arr).infoEnLista \gets it$ \Comment $O(1)$
-		\State $siguiente(it) \gets puntero(*arr)$ \Comment $O(1)$
-
+			\State $itLista(puntero(Nodo)) it \gets AgregarAdelante(d.listaIterable,NULL)$ \Comment $O(1)$
+			\State $(*arr).infoValida \gets true$ \Comment $O(1)$
+			\State $(*arr).infoEnLista \gets it$ \Comment $O(1)$
+			\State $siguiente(it) \gets puntero(*arr)$ \Comment $O(1)$
 		\EndIf
 
 		\medskip
 		\Statex \underline{Complejidad:} $O(|c| + copy(s))$
-		\Statex \underline{Justificación:} Itera sobre la cantidad de caracteres del String c y en caso de que algún caracter no esté definido crea un arrelglo de 27 posiciones, por lo que realiza |$c$| operaciones. Luego copia el significado pasado por parámetro en O(copy(s)) y finalmente agrega en la lista un puntero al nodo creado.
+		\Statex \underline{Justificación:} Itera sobre la cantidad de caracteres del String c y en caso de que algún caracter no esté definido crea un arrelglo de 256 posiciones, por lo que realiza |$c$| operaciones. Luego copia el significado pasado por parámetro en O(copy(s)) y finalmente agrega en la lista un puntero al nodo creado.
     \end{algorithmic}
-    {$\textbf{Post}$ $\equiv$ d $=_{obs}$ definir(c,s,d$_0$)}
 \end{algorithm}
 
 
 \begin{algorithm}[H]{\textbf{iObtener}(\In{d}{estr}, \In{c}{string}) $\to$ $res$ : $\alpha$}
-	{\\ $\textbf{Pre}$ $\equiv$ def?(c,d)}
 	\begin{algorithmic}
-
 		\State $nat: i \gets 0$ \Comment $O(1)$
 		\State $nat: letra \gets ord(c[0])$ \Comment $O(1)$
 		\State $puntero(Nodo): arr \gets d.raiz[letra]$ \Comment $O(1)$
-
 		\While{$i < longitud(c)$} \Comment $O(|c|)$
-
 			\State $i \gets i + 1$ \Comment $O(1)$
 			\State $letra \gets ord(c[i])$ \Comment $O(1)$
 			\State $arr \gets (*arr).arbolTrie[letra]$ \Comment $O(1)$
-
 		\EndWhile
-
 		\State $res \gets (*arr).info$ \Comment $O(1)$
 
 		\medskip
 		\Statex \underline{Complejidad:} $O(|c|)$
 		\Statex \underline{Justificación:} Toma el primer caracter y encuentra su posición en el arreglo raíz. Luego itera sobre los caracteres restantes hasta el final del String c, por lo que hace |$c$| operaciones. Finalmente retorna el significado almacenado. Todas las demás operaciones se realizan en O(1) porque son comparaciones o asignaciones de valores enteros o de punteros.
-
     \end{algorithmic}
-    {$\textbf{Post}$ $\equiv$ alias(res $=_{obs}$ obtener(c,d)}
 \end{algorithm}
 
 
 \begin{algorithm}[H]{\textbf{iEliminar}(\Inout{d}{estr}, \In{c}{string})}
-	{\\ $\textbf{Pre}$ $\equiv$ d $=_{obs}$ d$_0$ $\land$ def?(d,c)}
 	\begin{algorithmic}
-
 		\State $nat: i \gets 0$ \Comment $O(1)$
 		\State $nat: letra \gets ord(c[0])$ \Comment $O(1)$
 		\State $puntero(Nodo): arr \gets d.raiz[letra]$ \Comment $O(1)$
 		\State $pila(puntero(Nodo)): pil \gets Vacia()$ \Comment $O(1)$
-
 		\While{$i < longitud(c)$} \Comment $O(|c|)$
-
 			\State $i \gets i + 1$ \Comment $O(1)$
 			\State $letra \gets ord(c[i])$ \Comment $O(1)$
 			\State $arr \gets (*arr).arbolTrie[letra]$ \Comment $O(1)$
 			\State $Apilar(pil,arr)$ \Comment $O(1)$
-
 		\EndWhile
-
 		\If{$tieneHermanos(arr)$} \Comment $O(1)$
-
 			\State $(*arr).infoValida \gets false$ \Comment $O(1)$
-
 		\Else
-
 			\State $i \gets i + 1$ \Comment $O(1)$
 			\State $puntero(Nodo): del \gets tope(pil)$ \Comment $O(1)$
 			\State $del \gets NULL$ \Comment $O(1)$
 			\State $Desapilar(pil)$ \Comment $O(1)$
-
 			\While{$i < longitud(c)  \land \neg tieneHermanosEInfo(*tope(pil))$} \Comment $O(|c|)$
-
 				\State $del \gets tope(pil)$ \Comment $O(1)$
 				\State $del \gets NULL$ \Comment $O(1)$
 				\State $Desapilar(pil)$ \Comment $O(1)$
 				\State $i \gets i + 1$ \Comment $O(1)$
-
 			\EndWhile
-
 			\If{$i = longitud(c)$} \Comment $O(1)$
-
 				\State $d.raiz[ord(c[0])] \gets NULL$ \Comment $O(1)$
-
 			\EndIf
-
 		\EndIf
 
 		\medskip
@@ -452,46 +391,33 @@ operación que modifique d sin utilizar las funciones del iterador.]
 		\Statex \underline{Justificación:} Toma el primer caracter y encuentra su posición en el arreglo raíz. Luego crea una pila en O(1). Recorre el resto de los caracteres del String c y apila cada uno de los Nodos encontrado en la pila (0(1)) por lo que en total realiza |$c$| operaciones. Llama a la función tieneHermanos y le pasa por parámetro el nodo encontrado O(1) (ver Algoritmo "tieneHermanos"). Luego recorre todos los elementos apilados preguntando si hay alguno que no tiene hermanos para en cuyo caso eliminarlo, realizando en el peor caso |$c$| operaciones porque puede ser que sea necesario eliminar todo hasta la raiz.
 
     \end{algorithmic}
-    {$\textbf{Post}$ $\equiv$ d $=_{obs}$ borrar(d$_0$,c)}
 \end{algorithm}
 
 
 \begin{algorithm}[H]{\textbf{tieneHermanos}(\In{nodo}{puntero(Nodo)}) $\to$ $res$ : $bool$}
-	{\\ $\textbf{Pre}$ $\equiv$ nodo!=NULL}
 	\begin{algorithmic}
-
 		\State $nat: i \gets 0$ \Comment $O(1)$
 		\State $nat: l \gets longitud((*nodo).arbolTrie))$ \Comment $O(1)$
-
 		\While{$i < l \land \neg((*nodo).arbolTrie[i] = NULL)$} \Comment $O(1)$
-
 			\State $i \gets i + 1$ \Comment $O(1)$
-
 		\EndWhile
-
 		\State $res \gets i < l$ \Comment $O(1)$
 
 		\medskip
 		\Statex \underline{Complejidad:} $O(1)$
-		\Statex \underline{Justificación:} Recorre el arreglo de 27 posiciones en caso de que todas las posiciones del mismo tengan NULL. Como es una constante ya que en el peor caso siempre recorre a lo sumo 27 posiciones entonces es O(1).
+		\Statex \underline{Justificación:} Recorre el arreglo de 256 posiciones en caso de que todas las posiciones del mismo tengan NULL. Como es una constante ya que en el peor caso siempre recorre a lo sumo 256 posiciones entonces es O(1).
 
     \end{algorithmic}
-    {$\textbf{Post}$ $\equiv$ res $=_{obs}$ ($\exists i$ $\in$ [0..longitud(*nodo.arbolTrie)) (*nodo.arbolTrie[i] != NULL))}
 \end{algorithm}
 
 
 \begin{algorithm}[H]{\textbf{tieneHermanosEInfo}(\In{nodo}{puntero(Nodo)}) $\to$ $res$ : $bool$}
-	{\\ $\textbf{Pre}$ $\equiv$ nodo!=NULL}
 	\begin{algorithmic}
-
 		\State $res \gets tieneHermanos(nodo) \land (*nodo).infoValida = true$ \Comment $O(1)$
-
+		
 		\medskip
 		\Statex \underline{Complejidad:} $O(1)$
 		\Statex \underline{Justificación:} Llama a la función tieneHermanos que es O(1) y verifica además que el nodo contenga información válida.
 
     \end{algorithmic}
-    {$\textbf{Post}$ $\equiv$ res $=_{obs}$
-($\exists i$ $\in$ [0..longitud(*nodo.arbolTrie))
-(*nodo.arbolTrie[i] != NULL)) $\land$ (*nodo).infoValida = true}
 \end{algorithm}

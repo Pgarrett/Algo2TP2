@@ -88,7 +88,7 @@
   [$O(1)$]
   [Devuelve un iterador al conjunto de coordenadas en donde hay pokemons]
 
-  \InterfazFuncion{pokemonEnPos}{\In{j}{juego}, \In{c}{Coor}}{itPokemon}
+  \InterfazFuncion{pokemonEnPos}{\In{j}{juego}, \In{c}{Coor}}{itConj(infoPokemon)}
   [c $\in$ posConPokemons(j)]
   {$res \igobs pokemonEnPos(c,j)$}
   [$\Theta(1)$] %Pero podemos tomarlos lo que queramos
@@ -118,7 +118,7 @@
   [$\Theta(1)$] %Todas estas ultimas deberian ser O(1) gracias al magico DiccAcHashMagicTableListTupl pero por las dudas dejemo' la incognita hasta que sea oficial
   [Devuelve la coordenada mas del pokemon salvaje del rango siempre y cuando haya uno]   
 
-  \InterfazFuncion{entrenadoresPosibles}{\In{c}{coor}, \In{es}{conjLineal(jugador)}, \In{j}{juego}}{itColaPrior(itJugador)}
+  \InterfazFuncion{entrenadoresPosibles}{\In{c}{coor}, \In{es}{conjLineal(jugador)}, \In{j}{juego}}{itConj(jugador)}
   [$hayPokemonCercano(c,j) \yluego pokemonEnPos(posPokemonCercano(c,j),j).jugadoresEnRango \subseteq jugadoresConectados(c,j)$]
   {$res \igobs entrenadoresPosibles(c,pokemonEnPos(posPokemonCercano(c,j),j).jugadoresEnRango,j)$}
   [$O(Cardinal(es))$] 
@@ -333,8 +333,6 @@
 \end{algorithm}
 
 \begin{algorithm}[H]{\textbf{iDebeSancionarse}(\In{e}{jugador}, \In{c}{coor}, \In{j}{juego}) $\to$ $res$ : $Bool$} 
-\\
-	{$\textbf{Pre}$ $\equiv$ e $\in$ Jugadores(j)}
 	\begin{algorithmic}
 		\State $res \gets \neg HayCamino(e.posicion, c, j.mapa) \lor DistEuclidea(e.posicion, c, mapa) > 100 $ \Comment $O(1)$
 	

@@ -24,12 +24,11 @@ El principal costo se paga al crear la estructura o borrar un dato, dado que cue
   {$d$ $\igobs$ definir($c_1$, $c_2$, $s$, $d_0$)}
   [$\Theta(copy(s))$]
   [define el significado $s$ en el diccMat, en la posicion representada por $c$.]
-  [Hay alising, pero no se como explicarlo TODO]
 
   \InterfazFuncion{Definido?}{\In{d}{diccMat($coor,\sigma$)}, \In{c}{$coor$}}{bool}
   [enRango($c_1$, $c_2$, $d$)]
   {$res$ $\igobs$ def?($c_1$, $c_2$, $d$)}
-  [$\Theta(copy(s))$]
+  [$\Theta(1)$]
   [devuelve \texttt{true} si y solo si $c$ tiene un valor en el diccMat.]
 
   \InterfazFuncion{Significado}{\In{d}{diccMat($coor,\sigma$)}, \In{c}{$coor$}}{$\sigma$}
@@ -154,7 +153,7 @@ El principal costo se paga al crear la estructura o borrar un dato, dado que cue
 			\State $res.largo \gets l$ \Comment $\Theta(1)$
 			\State $res.ancho \gets a$ \Comment $\Theta(1)$
 			\State $res.posiciones \gets CrearArreglo(a * l)$ \Comment $\Theta(a*l)$
-			\State $res.coordenadas \gets Vacio()$ \Comment $\Theta(1)$
+			\State $res.claves \gets Vacio()$ \Comment $\Theta(1)$
 			\medskip
 			\Statex \underline{Complejidad:} $\Theta(a*l)$
         \end{algorithmic}
