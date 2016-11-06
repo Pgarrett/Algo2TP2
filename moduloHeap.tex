@@ -1,9 +1,5 @@
 \section{Módulo Cola de mínima prioridad($\alpha$)}
 
-El módulo cola de mínima prioridad consiste en una cola de prioridad de
-elementos del tipo $\alpha$ cuya prioridad está determinada por un $nat$ de forma
-tal que el elemento que se ingrese con el menor $nat$ será el de mayor prioridad.
-
 \subsection{Especificación}
 
 	\begin{tad}{\tadNombre{Cola de mínima prioridad($\alpha$)}}
@@ -14,17 +10,8 @@ tal que el elemento que se ingrese con el menor $nat$ será el de mayor priorida
 	\tadParametrosFormales{
 		\tadEncabezadoInline{géneros}{$\alpha$}\\
 		\tadEncabezadoInline{operaciones}{
-			\tadOperacionInline{\argumento $<$ \argumento}{$\alpha$, $\alpha$}{bool} \hfill Relación de orden total estricto\footnotemark
+			\tadOperacionInline{\argumento $<$ \argumento}{$\alpha$, $\alpha$}{bool} 
 		}
-	}
-
-	\footnotetext{\noindent Una relación es un orden total estricto cuando se cumple:
-	\begin{description}
-	 \item[Antirreflexividad:] $\neg$ $a < a$ para todo $a: \alpha$
-	 \item[Antisimetría:] $(a < b \implies \neg\ b < a)$ para todo $a, b: \alpha$, $a \neq b$
-	 \item[Transitividad:] $((a < b \land b < c) \implies a < c)$ para todo $a, b, c: \alpha$
-	 \item[Totalidad:] $(a < b \lor b < a)$ para todo $a, b: \alpha$
-	\end{description}
 	}
 
 	\tadGeneros{colaMinPrior($\alpha$)}
@@ -66,7 +53,7 @@ tal que el elemento que se ingrese con el menor $nat$ será el de mayor priorida
 
 	\textbf{géneros}: \TipoVariable{colaMin($\alpha$)}.
 
-\subsubsection{Operaciones básicas de Cola de mínima prioridad}
+\subsubsection{Operaciones básicas de ColaMinPrior}
 
 	\InterfazFuncion{Vacía}{}{colaMin($\alpha$)}
 	[true]
@@ -74,15 +61,11 @@ tal que el elemento que se ingrese con el menor $nat$ será el de mayor priorida
 	[O(1)]
 	[Crea una cola de prioridad vacía]
 
-	~
-
 	\InterfazFuncion{Vacía?}{\In{c}{colaMin($\alpha$)}}{bool}
 	[true]
 	{$res$ $\igobs$ vacía?(c)}
 	[O(1)]
 	[Devuelve \TipoVariable{true} si y sólo si la cola está vacía]
-
-	~
 
 	\InterfazFuncion{Próximo}{\In{c}{colaMin($\alpha$)}}{$\alpha$}
 	[$\neg$vacía?($c$)]
@@ -91,15 +74,11 @@ tal que el elemento que se ingrese con el menor $nat$ será el de mayor priorida
 	[Devuelve el próximo elemento a desencolar]
 	[$res$ es modificable si y sólo si $c$ es modificable]
 
-	~
-
 	\InterfazFuncion{Desencolar}{\Inout{c}{colaMin($\alpha$)}}{}
 	[$\neg$vacía?($c$) $\land$ $c$ $\igobs$ $c_0$]
 	{$c$ $\igobs$ desencolar($c_0$)}
 	[O(log(tamaño(c)))]
 	[Quita el elemento más prioritario]
-
-	~
 
 	\InterfazFuncion{Encolar}{\Inout{c}{colaMinPrior($\alpha$)}, \In{p}{nat}, \In{a}{$\alpha$}}{itColaMin($alpha$)}
 	[$c$ $\igobs$ $c_0$]
@@ -107,8 +86,6 @@ tal que el elemento que se ingrese con el menor $nat$ será el de mayor priorida
 	[O(log($\vert$c$\vert$)) + $copy$($a$)]
 	[Agrega el elemento $a$ de tipo $\alpha$ con prioridad $p$ a la cola]
 	[Se agrega el elemento por copia]
-
-	~
 
 %	\InterfazFuncion{Eliminar}{\Inout{c}{colaMinPrior($\alpha$), \In{i}{nat}}}{}
 %	[$\neg$vacía?($c$) $\land$ $c$ $\igobs$ $c_0$]
@@ -123,18 +100,84 @@ tal que el elemento que se ingrese con el menor $nat$ será el de mayor priorida
 %	[O(min(tamaño($c$), tamaño($c'$)))]
 %	[Indica si $c$ es igual $c'$]
 
+\subsubsection{Operaciones del Iterador}
+
+	\InterfazFuncion{CrearIt}{\In{c}{ColaMinPrior($\alpha$)}}{itColaMin($alpha$)}
+	[$true$]
+	{Alias(EsPermutacion(SecuSuby($res$),c))}
+	[$\Theta(1)$]
+	[Crea un iterador de Cola Mínima de Prioridad($\alpha$)]
+	[El iterador se invalida si y solo si se elimina el elemento siguiente del iterador]
+
+	\InterfazFuncion{HaySiguiente?}{\In{it}{itColaMin($\alpha$)}}{bool}
+	[$true$]
+	{$res$ $\igobs$ haySiguiente?($it$))}
+	[$\Theta(1)$]
+	[Devuelve true si y solo si en el iterador todavía quedan elementos para avanzar]
+
+	\InterfazFuncion{HaySiguienteIzq?}{\In{it}{itColaMin($\alpha$)}}{bool}
+	[haySiguiente?($it$)]
+	{$res$ $\igobs$ haySiguienteIzq?($it$))}
+	[$\Theta(1)$]
+	[Devuelve true si y solo si en el iterador todavía quedan elementos para avanzar a la izquierda]
+
+	\InterfazFuncion{HaySiguienteDer?}{\In{it}{itColaMin($\alpha$)}}{bool}
+	[haySiguiente?($it$)]
+	{$res$ $\igobs$ haySiguienteDer?($it$))}
+	[$\Theta(1)$]
+	[Devuelve true si y solo si en el iterador todavía quedan elementos para avanzar a la derecha]	
+
+	\InterfazFuncion{Siguiente}{\In{it}{itColaMin($\alpha$)}}{$\alpha$}
+	[haySiguiente?($it$)]
+	{Alias($res$ $\igobs$ Siguiente($it$))}
+	[$\Theta(1)$]
+	[Devuelve el elemento de la siguiente posición del iterador]
+	[res es modificable si y solo si it es modificable]
+
+	\InterfazFuncion{AvanzarIzq}{\Inout{it}{itColaMin($\alpha$)}}{}
+	[$it$ $\igobs$ $it_0$ $\wedge$ haySiguienteIzq?($c$)]
+	{$it$ $\igobs$ avanzarIzq($it_0$))}
+	[$\Theta(1)$]
+	[Avanza el iterador a la posición izquierda siguiente]
+
+	\InterfazFuncion{AvanzarDer}{\Inout{it}{itColaMin($\alpha$)}}{}
+	[$it$ $\igobs$ $it_0$ $\wedge$ haySiguienteDer?($it$)]
+	{$it$ $\igobs$ avanzarDer($it_0$))}
+	[$\Theta(1)$]
+	[Avanza el iterador a la posición derecha siguiente]
+
+	\InterfazFuncion{EliminarSiguiente}{\Inout{it}{itColaMin($\alpha$)}}{}
+	[$it$ $\igobs$ $it_0$ $\wedge$ haySiguiente?($it$) $\yluego$ $\neg$haySiguienteDer?($it$) $\wedge$ $\neg$haySiguienteIzq?($it$)]
+	{$it$ $\igobs$ EliminarSiguiente($it_0$))}
+	[$\Theta(1)$]
+	[Elimina de la cola el valor que se encuentra en la posición siguiente del iterador. Tiene que ser hoja]
+	
+	\InterfazFuncion{AgregarComoSiguienteIzq}{\Inout{it}{itColaMin($\alpha$)}, \In{a}{$\alpha$}}{}
+	[$it$ $\igobs$ $it_0$ $\wedge$ $\neg$haySiguienteDer?($it$) $\wedge$ $\neg$haySiguienteIzq?($it$)]
+	{$it$ $\igobs$ AgregarComoSiguienteIzq($it_0$))}
+	[O($copy(a)$)]
+	[agrega el elemento a a la cola de prioridad, a la izquierda siguiente del iterador, dejando
+al iterador posicionado de forma tal que al llamar a Siguiente se obtenga a.]
+
+	\InterfazFuncion{AgregarComoSiguienteDer}{\Inout{it}{itColaMin($\alpha$)}, \In{a}{$\alpha$}}{}
+	[$it$ $\igobs$ $it_0$ $\wedge$ $\neg$haySiguienteDer?($it$)]
+	{$it$ $\igobs$ AgregarComoSiguienteDer($it_0$))}
+	[O($copy(a)$)]
+	[agrega el elemento a a la cola de prioridad, a la derecha siguiente del iterador, dejando
+al iterador posicionado de forma tal que al llamar a Siguiente se obtenga a.]
+
 \subsection{Representación}
 
-	\subsubsection{Representación de colaMinPrior}
+	\subsubsection{Representación de ColaMinPrior($\alpha$)}
 
-		\begin{Estructura}{colaMinPrior($\alpha$)}[colaMin]
-			\- \- \- \- donde \TipoVariable{colaMin} es \TipoVariable{tupla}($proximo$: \TipoVariable{puntero(Nodo)},
-			\TipoVariable{$tamaño$: nat})
+		\begin{Estructura}{ColaMinPrior($\alpha$)}[colaMin]
+			\- \- \- \- donde \TipoVariable{colaMin} es \TipoVariable{tupla}($proximo$: \TipoVariable{puntero(nodo)},
+			\TipoVariable{$tamano$: nat})
 			
-			\- \- \- \- donde \TipoVariable{Nodo} es \TipoVariable{tupla}($prior$: \TipoVariable{Nat}, $elem$: \TipoVariable{$\alpha$}, $padre$: \TipoVariable{puntero(Nodo)}, $izq$: \TipoVariable{puntero(Nodo)}, $der$: \TipoVariable{puntero(Nodo)})
+			\- \- \- \- donde \TipoVariable{nodo} es \TipoVariable{tupla}($prior$: \TipoVariable{Nat}, $elem$: \TipoVariable{$\alpha$}, $padre$: \TipoVariable{puntero(nodo)}, $izq$: \TipoVariable{puntero(nodo)}, $der$: \TipoVariable{puntero(nodo)})
 			
 %			\- \- \- \- donde \TipoVariable{encolado} es \TipoVariable{tupla}($prior$: nat, $elemCola$: itLista(Nodo))			
-%		\end{Estructura}
+		\end{Estructura}
 
 	\subsubsection{Invariante de Representación (Rehacer con nueva estructura)}
 
@@ -164,8 +207,44 @@ tal que el elemento que se ingrese con el menor $nat$ será el de mayor priorida
 		  	 (próximo($cmp$) $\igobs$ próximo($e$) $\land$ \\
 			 desencolar($cmp$) $\igobs$ desencolar($e$))}
 
+\subsubsection{Representación del Iterador Cola de Prioridad}
+
+		\begin{Estructura}{ItColaMin($\alpha$)}[iter]
+			\- \- \- \- donde \TipoVariable{iter} es \TipoVariable{tupla}($siguiente$: \TipoVariable{puntero(nodo)},
+			\TipoVariable{$arbol$: \TipoVariable{puntero(ColaMinPrior($\alpha$))}})
+
+		\subsubsection{Invariante de Representación}
+
+		\renewcommand{\labelenumi}{(\Roman{enumi})}
+
+		%\begin{enumerate}
+		%	\item Todos ids de cada nodo en elementos son menos que el largo del vector proximos 
+		%	\item Si ids de nodos en elementos son diferentes, evaluados en la posicion correspondiente de proximos, sus prioridades mantienen la diferencia.  
+		%\end{enumerate}
+
+	%\tadAlinearFunciones{Rep}{estr}
+	%\tadAlinearAxiomas{Rep(e)}
+
+	%\Rep[estr][e]{
+%		\\($\forall i:$ nat) ($i$ < $longitud(e.proximos)$) $\impluego$
+%	\\	(($\forall j:$ nat) $j \leqslant i$ $\impluego$ (e.proximos[$j$].prioridad $\leqslant$ e.proximos[$i$].prioridad) $\land$
+%	\\	(($\forall n:$ nat) $n$ < $longitud(e.proximos)$ $\impluego$ e.proximos[$e.elementos$[$n$]$.id$].$elemCola \rightarrow siguiente.elem$ $\igobs$ $e.elementos$[$n$]$.elem$)
+%	}\mbox{}
+
+	\subsubsection{Función de Abstracción}
+
+	\tadAlinearFunciones{Abs}{Estr/e}
+
+%		\Abs[estr]{colaMinPrior}[e]{cmp}{
+%			(vacía?($cmp$) $\Leftrightarrow$ $tamano$($e$) $\igobs$ 0) $\land$ \\
+%			 $\neg$ $vacia?$($cmp$) $\impluego$ \\
+%		  	 (próximo($cmp$) $\igobs$ próximo($e$) $\land$ \\
+%			 desencolar($cmp$) $\igobs$ desencolar($e$))}
+
 \subsection{Algoritmos}
 	\lstset{style=alg}
+
+\subsubsection{Algoritmos del Modulo}
 
 \begin{algorithm}[H]{\textbf{iVacía}() $\to$ $res$ : colaMin($\alpha$)}
     	\begin{algorithmic}[1]
@@ -207,7 +286,7 @@ tal que el elemento que se ingrese con el menor $nat$ será el de mayor priorida
 			\EndFor
 			\State $swapCola(c.proximo, it.siguiente) $ \Comment {$\Theta(1)$}
 			\State $EliminarSiguiente(it) $ \Comment {$\Theta(1)$}
-			\If($c.tamaño > 1$)
+			\If{$c.tamano > 1$}
 				\State $siftDown(c) $ \Comment {$\Theta(log(|c|))$}
 			\EndIf
 			\medskip
@@ -324,8 +403,101 @@ tal que el elemento que se ingrese con el menor $nat$ será el de mayor priorida
    	\end{algorithmic}
 \end{algorithm}    	
     	
+\begin{algorithm}[H]{\textbf{DecimalABinario}{(\In {d}{nat}}) $\to$ $res$ : arreglo(nat)}
+   	\begin{algorithmic}[1]
+		\State $lista(\alpha): temp \gets Vacia() $ \Comment {$\Theta(1)$}
+		\While{$d > 1$}\Comment {Lo máximo que se puede llegar a iterar es log(d) $\Theta(log(d))$}
+			\State $AgregarAdelante(temp, d mod 2)$ \Comment {$\Theta(1)$}			
+			\State $d \gets d/2$ \Comment {División entera $\Theta(1)$}			
+		\EndWhile
+		\State $AgregarAdelante(temp, d)$ \Comment {$\Theta(1)$}
+		\State $it \gets CrearIt(temp)$ \Comment {$\Theta(1)$}					
+		\State $nat i \gets 0$ \Comment {$\Theta(1)$}
+		\State $arreglo(nat) bin \gets CrearArreglo(Longitud(temp)) $ \Comment {$\Theta(1)$}		
+		\While{$HaySiguiente(it)$}\Comment {El largo de la lista es log(d) $\Theta(|temp|) = \Theta(log(d))$}
+			\State $bin[i] \gets Siguiente(it)$ \Comment {$\Theta(1)$}			
+			\State $i \gets i+1$ \Comment {$\Theta(1)$}			
+		\EndWhile
+		\State $res \gets bin$ \Comment {$\Theta(1)$}
+		\Statex \underline{Complejidad:} $\Theta(log(d))$
+   	\end{algorithmic}
+\end{algorithm}    
 %%	\begin{lstlisting}[mathescape]
 %%	'\alg{• = •}{\In{c_0}{colaMinPrior($\alpha$)}, \In{c_1}{colaMinPrior($\alpha$)}}{bool}'
 %%	res $\leftarrow$ $c_0$ = $c_1$ '\ote{min(tamano($c_0$), tamano($c_1$))}'
 %%	'\ofi{O(min(tamano(c_0), tamano(c_1)))}'
 %%\end{lstlisting}
+
+\subsubsection{Algoritmos del Iterador}
+
+\begin{algorithm}[H]{\textbf{CrearIt}(\In{c}{ColaMinPrior($\alpha$)}) $\to$ $res$ : itColaMin($\alpha$)}
+   	\begin{algorithmic}[1]
+			\State $res \gets <NULL, c>$ \Comment {$\Theta(1)$}
+			\Statex \underline{Complejidad:} $\Theta(1)$
+   	\end{algorithmic}
+\end{algorithm}    	
+
+\begin{algorithm}[H]{\textbf{HaySiguiente?}(\In{it}{itColaMin($\alpha$)}) $\to$ $res$ : bool}
+   	\begin{algorithmic}[1]
+			\State $res \gets it.siguiente \neq NULL $ \Comment {$\Theta(1)$}
+			\Statex \underline{Complejidad:} $\Theta(1)$
+   	\end{algorithmic}
+\end{algorithm}  
+
+\begin{algorithm}[H]{\textbf{HaySiguienteIzq?}(\In{it}{itColaMin($\alpha$)}) $\to$ $res$ : bool}
+   	\begin{algorithmic}[1]
+			\State $res \gets it.siguiente \rightarrow izq \neq NULL $ \Comment {$\Theta(1)$}
+			\Statex \underline{Complejidad:} $\Theta(1)$
+   	\end{algorithmic}
+\end{algorithm}  
+
+\begin{algorithm}[H]{\textbf{HaySiguienteDer?}(\In{it}{itColaMin($\alpha$)}) $\to$ $res$ : bool}
+   	\begin{algorithmic}[1]
+			\State $res \gets it.siguiente \rightarrow der \neq NULL $ \Comment {$\Theta(1)$}
+			\Statex \underline{Complejidad:} $\Theta(1)$
+   	\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{Siguiente?}(\In{it}{itColaMin($\alpha$)}) $\to$ $res$ : $\alpha$}
+   	\begin{algorithmic}[1]
+			\State $res \gets (it.siguiente \rightarrow elem) $ \Comment {$\Theta(1)$}
+			\Statex \underline{Complejidad:} $\Theta(1)$
+   	\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{AvanzarIzq}(\Inout{it}{itColaMin($\alpha$)})}
+   	\begin{algorithmic}[1]
+			\State $it.siguiente \gets (it.siguiente \rightarrow izq) $ \Comment {$\Theta(1)$}
+			\Statex \underline{Complejidad:} $\Theta(1)$
+   	\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{AvanzarDer}(\Inout{it}{itColaMin($\alpha$)})}
+   	\begin{algorithmic}[1]
+			\State $it.siguiente \gets (it.siguiente \rightarrow der) $ \Comment {$\Theta(1)$}
+			\Statex \underline{Complejidad:} $\Theta(1)$
+   	\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{EliminarSiguiente}(\Inout{it}{itColaMin($\alpha$)})}
+   	\begin{algorithmic}[1]
+			\State $it.siguiente \gets NULL $ \Comment {$\Theta(1)$}
+			\Statex \underline{Complejidad:} $\Theta(1)$
+   	\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{AgregarComoSiguienteIzq}(\Inout{it}{itColaMin($\alpha$)}, \In{a}{$\alpha$})}
+   	\begin{algorithmic}[1]
+			\State $(it.siguiente \rightarrow izq) \gets a$ \Comment {$\Theta(1)$}
+			\State $AvanzarIzq(it)$ \Comment {$\Theta(1)$}
+			\Statex \underline{Complejidad:} $\Theta(1)$
+   	\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{AgregarComoSiguienteDer}(\Inout{it}{itColaMin($\alpha$)}, \In{a}{$\alpha$})}
+   	\begin{algorithmic}[1]
+			\State $(it.siguiente \rightarrow der) \gets a$ \Comment {$\Theta(1)$}
+			\State $AvanzarDer(it)$ \Comment {$\Theta(1)$}
+			\Statex \underline{Complejidad:} $\Theta(1)$
+   	\end{algorithmic}
+\end{algorithm}
