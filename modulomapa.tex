@@ -73,6 +73,8 @@
 \begin{algorithm}[H]{\textbf{iCrearMapa}() $\to$ $res$ : Mapa}
     	\begin{algorithmic}[1]
 			\State $res.coordenadas \gets Vacio()$ \Comment{La complejidad es la de crear el Conjunto Lineal vacio $\Theta(1)$}
+			\State res.ancho $\gets$ 0	\Comment O(1)
+			\State res.secciones $\gets$ NULL \Comment O(1)
 			
 			\medskip
 			\Statex \underline{Complejidad:} $\Theta(1)$
@@ -81,12 +83,12 @@
 
 \begin{algorithm}[H]{\textbf{iAgregarCoordenada}(\Inout {m}{map}, \In {c}{coor}) $\to$ $res$ : itConj(coor)}
     	\begin{algorithmic}[1]
-            \State $ largo \gets Largo(m)  $ \Comment $\Theta(Cardinal(m.coordenadas))$
-            \State $ ancho \gets Ancho(m)$ \Comment $\Theta(Cardinal(m.coordenadas))$
-            \State $ m.secciones \gets CrearArreglo(largo * ancho)$ \Comment $\Theta(largo * ancho)$
-			\State $res \gets Agregar(m.coordenadas, c)$ \Comment $\Theta\left(\displaystyle\sum_{c' \in coordendas(m)}equal(c,c')\right)$
-            \State $ seccion \gets 0 $ \Comment $\Theta(1)$
-            \State $ itCoor \gets CrearIt(m.coordenadas)$ \Comment $\Theta(1)$
+            \State  largo $\gets$ Largo(m)   \Comment $\Theta$(Cardinal(m.coordenadas))
+            \State  ancho $\gets$ Ancho(m) \Comment $\Theta$(Cardinal(m.coordenadas))
+            \State  m.secciones $\gets$ Vacio(largo, ancho) \Comment $\Theta$(largo * ancho)
+			\State res $\gets$ Agregar(m.coordenadas, c) \Comment $\Theta\left(\displaystyle\sum_{c' \in coordendas(m)}equal(c,c')\right)$
+            \State  seccion $\gets$ 0  \Comment $\Theta(1)$
+            \State  itCoor $\gets$ CrearIt(m.coordenadas) \Comment $\Theta(1)$
 			 
             \While{$HaySiguiente(itCoor)$}			\Comment $\Theta(Cardinal(m.coordenadas))$
                 \State $coord \gets Siguiente(itCoor)  $ \Comment $\Theta(1)$
@@ -154,14 +156,14 @@
     	\begin{algorithmic}[1]
 			\State $it \gets CrearIt(m.coordenadas)$ \Comment $\Theta(1)$
 			\State $max \gets 0$ \Comment $\Theta(1)$
-			\While {HaySiguiente(it)} \Comment $\O(\sharp m.coordenadas)$
-				\If {$max < campo_2(it \rightarrow siguiente)$} \Comment $\Theta(1)$
-					\State $max \gets campo_2(it \rightarrow siguiente)$ \Comment $\Theta(1)$	
+			\While {HaySiguiente(it)} \Comment $\Theta(Cardinal(m.coordenadas))$
+				\If {$max < Siguiente(it)_{2}$} \Comment $\Theta(1)$
+					\State $max \gets Siguiente(it)_{2}$ \Comment $\Theta(1)$	
 				\EndIf
 				\State $Avanzar(it)$ \Comment $\Theta(1)$				
 			\EndWhile
 			\medskip
-			\Statex \underline{Complejidad:} $\Theta(\sharp m.coordenadas)$
+			\Statex \underline{Complejidad:} $\Theta(Cardinal(m.coordenadas))$
     	\end{algorithmic}
 \end{algorithm}
 
@@ -169,14 +171,14 @@
     	\begin{algorithmic}[1]
 			\State $it \gets CrearIt(m.coordenadas)$ \Comment $\Theta(1)$
 			\State $max \gets 0$ \Comment $\Theta(1)$
-			\While {$HaySiguiente(it)$} \Comment $\O(\sharp m.coordenadas)$
-				\If {$max < campo_1(it \rightarrow siguiente)$} \Comment $\Theta(1)$
-					\State $max \gets campo_1(it \rightarrow siguiente)$ \Comment $\Theta(1)$					
+			\While {$HaySiguiente(it)$} \Comment $\Theta(Cardinal(m.coordenadas))$
+				\If {$max < Siguiente(it)_{1}$} \Comment $\Theta(1)$
+					\State $max \gets Siguiente(it)_{1}$ \Comment $\Theta(1)$					
 				\EndIf
 				\State $Avanzar(it)$ \Comment $\Theta(1)$				
 			\EndWhile
 			\medskip
-			\Statex \underline{Complejidad:} $\Theta(\sharp m.coordenadas)$
+			\Statex \underline{Complejidad:} $\Theta(Cardinal(m.coordenadas))$
     	\end{algorithmic}
 \end{algorithm}
 

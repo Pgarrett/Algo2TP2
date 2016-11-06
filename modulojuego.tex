@@ -451,8 +451,8 @@
 		\State i $\gets$ DamePos(latC, 2) \Comment $O(1)$		
 		\State longC $\gets$ Longitud(c)	\Comment $O(1)$
 		\State j $\gets$ DamePos(longC, 2) \Comment $O(1)$
-		\While {i $<$ latC + 2}	\Comment $O(1)$ {Vale porque estoy recorriendo un conjunto acotado de coordenadas}
-			\While {j $<$ longC + 2}	\Comment $O(1)$ {Vale porque estoy recorriendo un conjunto acotado de coordenadas}
+		\While {i $\leq$ latC + 2}	\Comment $O(1)$ {Vale porque estoy recorriendo un conjunto acotado de coordenadas}
+			\While {j $\leq$ longC + 2}	\Comment $O(1)$ {Vale porque estoy recorriendo un conjunto acotado de coordenadas}
 				\If {Definido?(j.posicionesPokemons, $<$i, j$>$) $\land$ DistEuclidea(c, $<$i, j$>$) $\leq$ 4}	\Comment $O(1)$
 					\State res $\gets$ $<$i, j$>$	\Comment $O(1)$ 
 				\EndIf
@@ -483,8 +483,8 @@
 		\State i $\gets$ DamePos(latC, 5) \Comment $O(1)$		
 		\State longC $\gets$ Longitud(c)	\Comment $O(1)$
 		\State j $\gets$ DamePos(longC, 5) \Comment $O(1)$
-		\While {i $<$ latC + 5}	\Comment $O(1)$ {Vale porque estoy recorriendo un conjunto acotado de coordenadas}
-			\While {j $<$ longC + 5 }	\Comment $O(1)$ {Vale porque estoy recorriendo un conjunto acotado de coordenadas}
+		\While {i $\leq$ latC + 5}	\Comment $O(1)$ {Vale porque estoy recorriendo un conjunto acotado de coordenadas}
+			\While {j $\leq$ longC + 5 }	\Comment $O(1)$ {Vale porque estoy recorriendo un conjunto acotado de coordenadas}
 				\If {Definido?(j.posicionesPokemons, $<$i, j$>$) $\land$ DistEuclidea(c, $<$i, j$>$) $\leq$ 25}	\Comment $O(1)$
 					\State res $\gets$ true	\Comment $O(1)$ 
 				\EndIf
@@ -561,15 +561,16 @@
     \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{DamePos}(\In{p}{Nat}, \In{step}{Nat}) $\to$ $res$ : $Nat$} 
+\begin{algorithm}[H]{\textbf{DamePos}(\In{p}{Nat}, \In{step}{Nat}) $\to$ res : Nat} 
 	{}
 	\begin{algorithmic}
 		\State i $\gets$ p	\Comment $O(1)$
 		\State fin $\gets$ false	\Comment $O(1)$
-		\State $res \gets i$	\Comment $O(1)$
+		\State res $\gets$ p	\Comment $O(1)$
 		\While {i $\neq$ 1 $\land \neg$ fin}	\Comment $O(1)$
 			\State i $\gets$ i - 1	\Comment $O(1)$
 			\If {i == p - step}	\Comment $O(1)$
+				\State res $\gets$ i \Comment O(1)
 				\State fin $\gets$ true	\Comment $O(1)$
 			\EndIf
 		\EndWhile
