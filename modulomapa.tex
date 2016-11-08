@@ -48,7 +48,7 @@
 		\begin{Tupla}[estr]
 			\tupItem{coordenadas}{ConjLineal(Coordenada)}%
 			\tupItem{ancho}{Nat}
-			\tupItem{secciones}{DiccMat($coor$, $Nat$)}
+			\tupItem{secciones}{DiccMat(Coordenada, Nat)}
 		\end{Tupla}
 	\end{Estructura}
 	
@@ -56,10 +56,10 @@
 	\begin{enumerate}
 		\item El ancho del mapa es igual al maximo del primer elemento de las coordenadas
 	\end{enumerate}
-	\Rep[estr][e]{(e.ancho = Max($campo_2$(coordenadas)) $\wedge$ ($\forall c: coor$) c $\in$ e.coordenadas $\impluego$ def?(c,e.secciones)}
+	\Rep[estr][e]{(e.ancho = Max((coordenadas)$_{2}$) $\land$ ($\forall c: Coordenada$) c $\in$ e.coordenadas $\impluego$ def?(c,e.secciones)}
 
 \subsubsection{Funci\'on de Abstracci\'on}
-	\AbsFc[estr]{mapa}[e]{($\forall m : Mapa$) e.coordenadas = coordenadas(m)}
+	\AbsFc[estr]{Mapa}[e]{($\forall$ m : Mapa) e.coordenadas = coordenadas(m)}
 
 \end{Representacion}
 

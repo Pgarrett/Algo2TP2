@@ -10,133 +10,133 @@
 
   \textbf{generos}: \TipoVariable{juego}.
 
-  \InterfazFuncion{CrearJuego}{\In{m}{mapa}}{juego}%
+  \InterfazFuncion{CrearJuego}{\In{m}{Mapa}}{Juego}%
   [true]
   {$res$ \igobs crearJuego($m_0$) $\land$ mapa($res$) \igobs $m_0$}
   [O((largo(m) x ancho(m)) + copy(m))]
   [Crea el nuevo juego]
 
-  \InterfazFuncion{AgregarPokemon}{\Inout{j}{juego}, \In{c}{coor}, \In{p}{pokemon}}{itConj}
+  \InterfazFuncion{AgregarPokemon}{\Inout{j}{Juego}, \In{c}{Coordenada}, \In{p}{Pokemon}}{itConj(Pokemon)}
   [$j \igobs j_0 \land puedoAgregarPokemon(c, j_0)$]
   {$j \igobs agregarPokemon(p, c, j_0)$}
   [$O(|P| + EC * log(EC))$]
   [EC es la maxima cantidad de jugadores esperando para atrapar un pokemon. |P| es el nombre mas largo para un pokemon en el juego]
 
-  \InterfazFuncion{AgregarJugador}{\Inout{j}{juego}}{Nat}
+  \InterfazFuncion{AgregarJugador}{\Inout{j}{Juego}}{Jugador}
   [$j \igobs j_0$]
   {$j \igobs agregarJugador(j_0) \land res = \#jugadores(j_0) + \#expulsados(j_0)$}
   [$O(J)$]
   [Agrega el jugador en el conjLineal, el iterador que devuelve el agregar se guarda en un vector donde la posicion es el id del jugador que voy a devolver]
   
-  \InterfazFuncion{Conectarse}{\Inout{j}{juego}, \In{id}{Nat}, \In{c}{coor}}{}
+  \InterfazFuncion{Conectarse}{\Inout{j}{Juego}, \In{id}{Jugador}, \In{c}{Coordenada}}{}
   [$j \igobs j_0 \land id \in jugadores(j_0) \yluego \neg estaConectado(id, j_0) \land posExistente(c, mapa(j_0))$]
   {$j \igobs conectarse(id, c, j_0)$}
   [$O(log(EC))$]
   [Conecta al jugador pasado por parametro en la coordenada indicada]
   
-  \InterfazFuncion{Desconectarse}{\Inout{j}{juego}, \In{id}{Nat}}{}
+  \InterfazFuncion{Desconectarse}{\Inout{j}{Juego}, \In{id}{Jugador}}{}
   [$j \igobs j_0 \land id \in jugadores(j_0) \yluego estaConectado(id, j_0)$]
   {$j \igobs desconectarse(id, j_0)$}
   [$O(log(EC))$]
   [Desconecta al jugador pasado por parametro]
   
-  \InterfazFuncion{Moverse}{\Inout{j}{juego}, \In{id}{Nat}, \In{c}{coor}}{}
+  \InterfazFuncion{Moverse}{\Inout{j}{Juego}, \In{id}{Jugador}, \In{c}{Coordenada}}{}
   [$j \igobs j_0 \land id \in jugadores(j_0) \yluego estaConectado(id, j_0) \land posExistente(c, mapa(j_0))$]
   {$j \igobs moverse(c, id, j_0)$}
   [$O((PS + PC) * |P| + log(EC))$]
   [Mueve al jugador pasado por parametro a la coordenada indicada]
 
-  \InterfazFuncion{Mapa}{\In{j}{juego}}{Mapa}
+  \InterfazFuncion{Mapa}{\In{j}{Juego}}{Mapa}
   [true]
   {$res \igobs mapa(j)$}
   [$O(copy(mapa(j)))$]
   [Devuelve el mapa del juego]
 
-  \InterfazFuncion{Jugadores}{\In{j}{juego}}{itConj(Jugador)}
+  \InterfazFuncion{Jugadores}{\In{j}{Juego}}{itConj(Jugador)}
   [true]
   {$res \igobs jugadores(j)$}
   [$\Theta(1)$]
   [Devuelve un iterador al conjunto de jugadores del juego]
 
-  \InterfazFuncion{estaConectado}{\In{j}{juego}, \In{id}{Nat}}{Bool}
+  \InterfazFuncion{estaConectado}{\In{j}{Juego}, \In{id}{Jugador}}{Bool}
   [id $\in$ jugadores(j)]
   {$res \igobs estaConetado(id,j)$}
   [$\Theta(1)$]
   [Devuelve si el jugador con id ingresado esta conectado o no]
 
-  \InterfazFuncion{posicion}{\In{j}{juego}, \In{id}{Nat}}{coor}
+  \InterfazFuncion{posicion}{\In{j}{Juego}, \In{id}{Jugador}}{Coordenada}
   [id $\in$ jugadores(j) $\yluego$ estaConectado(id,j)]
   {$res \igobs posicion(id,j)$}
   [$\Theta(1)$]
   [Devuelve la posicion actual del jugador con id ingresado si esta conectado]
 
-  \InterfazFuncion{pokemones}{\In{j}{juego}, \In{id}{Nat}}{itConj(itDiccString)} %%Para borrar todos los pokemones a la hora de eliminar al jugador tenemos complejidad lineal, pero hace falta una estructura que admita repetidos ya que lo que devuelve es un multiconjunto, no queremos hacer un modulo multiconjunto queremos ser felices. Despues debatimos
+  \InterfazFuncion{pokemones}{\In{j}{Juego}, \In{id}{Jugador}}{itConj($<$Pokemon, Nat$>$)} %%Para borrar todos los pokemones a la hora de eliminar al jugador tenemos complejidad lineal, pero hace falta una estructura que admita repetidos ya que lo que devuelve es un multiconjunto, no queremos hacer un modulo multiconjunto queremos ser felices. Despues debatimos
   [id $\in$ jugadores(j)]
   {$res \igobs pokemons(id,j)$}
   [$\Theta(1)$]
   [Devuelve un iterador a la estructura que almacena los punteros a pokemons del jugador del id ingresado]
 
-  \InterfazFuncion{expulsados}{\In{j}{juego}}{itConj(Jugador)}
+  \InterfazFuncion{expulsados}{\In{j}{Juego}}{itConj(Jugador)}
   [True]
   {$res \igobs expulsados(j)$}
   [$\Theta(1)$]
   [Devuelve un iterador al conjunto de jugadores expulsados del juego]
 
-  \InterfazFuncion{posConPokemones}{\In{j}{juego}}{itConj(Coor)}
+  \InterfazFuncion{posConPokemones}{\In{j}{Juego}}{itConj(Coordenada)}
   [True]
   {$res \igobs posConPokemons(j)$}
   [O(1)]
   [Devuelve un iterador al conjunto de coordenadas en donde hay pokemons]
 
-  \InterfazFuncion{pokemonEnPos}{\In{j}{juego}, \In{c}{Coor}}{itConj(infoPokemon)}
+  \InterfazFuncion{pokemonEnPos}{\In{j}{Juego}, \In{c}{Coordenada}}{Pokemon}
   [c $\in$ posConPokemons(j)]
   {$res \igobs pokemonEnPos(c,j)$}
   [$\Theta(1)$] %Pero podemos tomarlos lo que queramos
   [Devuelve un iterador al pokemon de la coordenada dada]
 
-  \InterfazFuncion{cantMovimientosParaCaptura}{\In{j}{juego}, \In{c}{Coor}}{Nat}
+  \InterfazFuncion{cantMovimientosParaCaptura}{\In{j}{Juego}, \In{c}{Coordenada}}{Nat}
   [c $\in$ posConPokemons(j)]
   {$res \igobs cantMovimientosParaCaptura(c,j)$}
   [$\Theta(1)$] %Pero podemos tomarnos lo que queramos (?) no, enrealidad no.
   [Devuelve la cantidad de movimientos acumulados hasta el momento, para atrapar al pokemon de la coordenada dada]
 
-  \InterfazFuncion{puedoAgregarPokemon}{\In{j}{juego}, \In{c}{Coor}}{Bool}
+  \InterfazFuncion{puedoAgregarPokemon}{\In{j}{Juego}, \In{c}{Coordenada}}{Bool}
   [True]
   {$res \igobs puedoAgregarPokemon(c,j)$}
   [$\Theta\left(\displaystyle\sum_{c' \in coordendas(mapa(j))}equal(c,c')\right)$]
   [Devuelve si la coordenada ingresada es valida para agregar un pokemon en ella]
 
-  \InterfazFuncion{hayPokemonCercano}{\In{j}{juego}, \In{c}{Coor}}{Bool}
+  \InterfazFuncion{hayPokemonCercano}{\In{j}{Juego}, \In{c}{Coordenada}}{Bool}
   [True]
   {$res \igobs hayPokemonCercano(c,j)$}
   [$\Theta(1)$] 
   [Devuelve si la coordenada ingresada pertenece al rango de un pokemon salvaje]   
 
-  \InterfazFuncion{posPokemonCercano}{\In{j}{juego}, \In{c}{Coor}}{Coor}
+  \InterfazFuncion{posPokemonCercano}{\In{j}{Juego}, \In{c}{Coordenada}}{Coordenada}
   [$hayPokemonCercano(c,j)$]
   {$res \igobs posPokemonCercano(c,j)$}
   [$\Theta(1)$] %Todas estas ultimas deberian ser O(1) gracias al magico DiccAcHashMagicTableListTupl pero por las dudas dejemo' la incognita hasta que sea oficial
   [Devuelve la coordenada mas del pokemon salvaje del rango siempre y cuando haya uno]   
 
-  \InterfazFuncion{entrenadoresPosibles}{\In{c}{coor}, \In{es}{conjLineal(jugador)}, \In{j}{juego}}{itConj(jugador)}
+  \InterfazFuncion{entrenadoresPosibles}{\In{c}{Coordenada}, \In{es}{conjLineal(itConj(Jugador))}, \In{j}{Juego}}{itConj(Jugador)}
   [$hayPokemonCercano(c,j) \yluego pokemonEnPos(posPokemonCercano(c,j),j).jugadoresEnRango \subseteq jugadoresConectados(c,j)$]
   {$res \igobs entrenadoresPosibles(c,pokemonEnPos(posPokemonCercano(c,j),j).jugadoresEnRango,j)$}
   [$O(Cardinal(es))$] 
   [Devuelve un iterador a los jugadores que estan esperando para atrapar al pokemon mas cercano a la coordenada ingresada]   
 
-  \InterfazFuncion{indiceRareza}{\In{j}{juego}, \In{p}{Pokemon}}{Nat}
+  \InterfazFuncion{indiceRareza}{\In{j}{Juego}, \In{p}{Pokemon}}{Nat}
   [$p \in todosLosPokemons(j)$]
   {$res \igobs indiceRareza(p,j)$}
   [$O(|P|)$] 
   [Devuelve el indice de rareza del pokemon del juego ingresado]
 
-  \InterfazFuncion{cantPokemonesTotales}{\In{j}{juego}}{Nat}
+  \InterfazFuncion{cantPokemonesTotales}{\In{j}{Juego}}{Nat}
   [true]
   {$res \igobs cantPokemonsTotales(p)$}
   [$\Theta(1)$] 
   [Devuelve la cantidad de pokemones que hay en el juego]
 
-  \InterfazFuncion{cantMismaEspecie}{\In{j}{juego}, \In{p}{Pokemon}}{Nat}
+  \InterfazFuncion{cantMismaEspecie}{\In{j}{Juego}, \In{p}{Pokemon}}{Nat}
   [true]
   {$res \igobs cantMismaEspecie(p, pokemons(j), j$}
   [$O(|P|)$] 
@@ -147,21 +147,28 @@
 
 \begin{Representacion}
 \subsubsection{Representación de Juego}
+
+	\begin{Estructura}{Jugador}[Nat]
+	\end{Estructura}
+	
+	\begin{Estructura}{Pokemon}[String]
+	\end{Estructura}
+	
 	\begin{Estructura}{Juego}[estr]
 		\begin{Tupla}[estr]
-			\tupItem{pokemones}{diccString(String, ListaPorTipo(itConj(infoPokemon)))}%
+			\tupItem{pokemones}{diccString(Pokemon, ListaPorTipo(itConj(infoPokemon)))}%
 			\tupItem{todosLosPokemones}{conjLineal(infoPokemon)}
 			\tupItem{jugadores}{conjLineal(infoJugador)}
 			\tupItem{expulsados}{conjLineal(Nat)}
-			\tupItem{jugadoresPorID}{Vector($<$itConj(infoJugador), itColaPrior(jugador)$>$)} %% itConj es un iterador a jugadores, itColaPrior es un iterador al heap en el que esta el jugador
-			\tupItem{posicionesPokemons}{DiccMat(coor, itConj(infoPokemon))} %% itConj es un iterador al conjunto de todosLosPokemones
-			\tupItem{posicionesJugadores}{DiccMat(coor, conjLineal(Nat))} %% cada coordenada tiene un conjunto de jugadores. con el jugador se lo puede busacr en jugadoresPorID, donde la primer coordenada se agrega al heap del pokemon, lo que devuelve el agregar al heap es el segundo valor en la tupla
+			\tupItem{jugadoresPorID}{Vector($<$itConj(infoJugador), itColaPrior(Jugador)$>$)} %% itConj es un iterador a jugadores, itColaPrior es un iterador al heap en el que esta el jugador
+			\tupItem{posicionesPokemons}{DiccMat(Coordenada, $<$Pokemon, itConj(infoPokemon)$>$)} %% itConj es un iterador al conjunto de todosLosPokemones
+			\tupItem{posicionesJugadores}{DiccMat(Coordenada, conjLineal(Jugador))} %% cada coordenada tiene un conjunto de jugadores. con el jugador se lo puede busacr en jugadoresPorID, donde la primer coordenada se agrega al heap del pokemon, lo que devuelve el agregar al heap es el segundo valor en la tupla
 			\tupItem{mapa}{Mapa}
 		\end{Tupla}
 	\end{Estructura}
 	
 		\begin{Tupla}[infoJugador]
-			\tupItem{id}{Nat}
+			\tupItem{id}{Jugador}
 			\tupItem{estaConectado}{Bool}
 			\tupItem{sanciones}{Nat}
 			\tupItem{pokeCapturados}{conjLineal(itConj(infoPokemon))} %% Revisar si es infoPokemon o pokemones. tiene que apuntar al conjunto de todos los pokemones
@@ -217,9 +224,9 @@
 
 \subsection{Algoritmos}
 
-\begin{algorithm}[H]{\textbf{iCrearJuego}(\In{m}{Mapa)}) $\to$ $res$ : $Juego$}
+\begin{algorithm}[H]{\textbf{iCrearJuego}(\In{m}{Mapa}) $\to$ res : estr}
 	\begin{algorithmic}
-		\State $Juego : j$	\Comment O(1)
+		\State estr : j	\Comment O(1)
 		\State j.pokemones $\gets$ CrearDiccionario()	\Comment O(1)
 		\State j.todosLosPokemones $\gets$ Vacio()	\Comment O(1)
 		\State j.jugadores $\gets$ Vacio()	\Comment O(1)
@@ -237,7 +244,7 @@
     \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iAgregarPokemon}(\Inout{j}{estr)}, \In{c}{coor)}, \In{p}{pokemon)}) $\to$ $res$ : $itPokemon$}
+\begin{algorithm}[H]{\textbf{iAgregarPokemon}(\Inout{j}{estr}, \In{c}{Coordenada}, \In{p}{Pokemon}) $\to$ res : itConj(Pokemon)}
 	\begin{algorithmic}
 	
 	\State $ItColaPrior(itJugador) it \gets entrenadoresPosibles(j,c) $ \Comment $O(|1|)$
@@ -298,7 +305,7 @@
     \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iDesconectarse}(\Inout{j}{juego)}, \In{id}{Nat)}} 
+\begin{algorithm}[H]{\textbf{iDesconectarse}(\Inout{j}{estr}, \In{id}{Jugador})} 
 	\begin{algorithmic}
 		\State tupJug $\gets$ j.jugadoresPorId[e]	\Comment O(1)
 		\If {HayPokemonCercano(j, c)}	\Comment O(1)
@@ -312,7 +319,7 @@
     \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{Moverse}(\Inout{j}{juego}, \In{id}{Nat}, \In{c}{coor})}{}
+\begin{algorithm}[H]{\textbf{Moverse}(\Inout{j}{estr}, \In{id}{Jugador}, \In{c}{Coordenada})}{}
 	\begin{algorithmic}
 	\If {debeSancionarse$?$(Siguiente(jugadoresPorID[id]), c, j)} \Comment $O(|P|)$
 		\If {$campo_1(Siguiente(jugadoresPorID[id])).sanciones$ < 4}
@@ -332,7 +339,7 @@
 \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iDebeSancionarse}(\In{e}{jugador}, \In{c}{coor}, \In{j}{juego}) $\to$ $res$ : $Bool$} 
+\begin{algorithm}[H]{\textbf{iDebeSancionarse}(\In{e}{Jugador}, \In{c}{Coordenada}, \In{j}{estr}) $\to$ res : Bool} 
 	\begin{algorithmic}
 		\State $res \gets \neg HayCamino(e.posicion, c, j.mapa) \lor DistEuclidea(e.posicion, c, mapa) > 100 $ \Comment O(1)
 	
@@ -342,18 +349,18 @@
     \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iMapa}(\In{j}{juego}) $\to$ $res$ : $Mapa$} 
+\begin{algorithm}[H]{\textbf{iMapa}(\In{j}{estr}) $\to$ res : Mapa} 
 	{}
 	\begin{algorithmic}
-		\State $res \gets j.mapa $ \Comment $O(copy(mapa(j)))$
+		\State $res \gets j.mapa $ \Comment O(copy(mapa(j)))
 	
 		\medskip
-		\Statex \underline{Complejidad:} $O(copy(mapa(j)))$
+		\Statex \underline{Complejidad:} O(copy(mapa(j)))
 		\Statex \underline{Justificación:} Devuelve el mapa del juego por copia.
     \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iJugadores}(\In{j}{juego}) $\to$ $res$ : $itConj(jugador)$} 
+\begin{algorithm}[H]{\textbf{iJugadores}(\In{j}{estr}) $\to$ res : itConj(Jugador)} 
 	{}
 	\begin{algorithmic}
 		\State $res \gets CrearIt(j.jugadores) $ \Comment O(1)
@@ -364,7 +371,7 @@
     \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iEstaConectado}(\In{j}{juego}, \In{id}{Nat}) $\to$ $res$ : Bool} 
+\begin{algorithm}[H]{\textbf{iEstaConectado}(\In{j}{estr}, \In{id}{Jugador}) $\to$ res : Bool} 
 	{}
 	\begin{algorithmic}
 		\State $res \gets Siguiente(j.jugadoresPorID[id]_0).estaConectado $ \Comment O(1)
@@ -375,18 +382,18 @@
     \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iPosicion}(\In{j}{juego}, \In{id}{Nat}) $\to$ $res$ : coor} 
+\begin{algorithm}[H]{\textbf{iPosicion}(\In{j}{estr}, \In{id}{Jugador}) $\to$ res : Coordenada} 
 	{}
 	\begin{algorithmic}
 		\State $res \gets Siguiente(j.jugadoresPorID[id]_0).posicion $ \Comment O(1)
 	
 		\medskip
 		\Statex \underline{Complejidad:} O(1)
-		\Statex \underline{Justificación:} Devuelve si el jugador esta conectado.
+		\Statex \underline{Justificación:} Devuelve la posicion del jugador.
     \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iPokemones}(\In{j}{juego}, \In{id}{Nat}) $\to$ $res$ : itConj(itDiccString)} 
+\begin{algorithm}[H]{\textbf{iPokemones}(\In{j}{estr}, \In{id}{Jugador}) $\to$ res : itConj($<$Pokemon, Nat$>$)} 
 	{}
 	\begin{algorithmic}
 		\State $res \gets CrearIt(Siguiente(j.jugadoresPorID[id]_0).pokeCapturados) $ \Comment O(1)
@@ -397,7 +404,7 @@
     \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iExpulsados}(\In{j}{juego}) $\to$ $res$ : $itConj(Jugador)$} 
+\begin{algorithm}[H]{\textbf{iExpulsados}(\In{j}{estr}) $\to$ res : itConj(Jugador)} 
 	{}
 	\begin{algorithmic}
 		\State $res \gets CrearIt(j.expulsados) $ \Comment O(1)
@@ -408,7 +415,7 @@
     \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iPosConPokemones}(\In{j}{juego}) $\to$ $res$ : $itConj(Coor)$} 
+\begin{algorithm}[H]{\textbf{iPosConPokemones}(\In{j}{estr}) $\to$ res : itConj(Coordenada)} 
 	{}
 	\begin{algorithmic}
 		\State $res \gets CrearIt(Coordenadas(j.posicionesPokemons)) $ \Comment O(1)
@@ -419,10 +426,10 @@
     \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iPokemonEnPos}(\In{j}{juego}, \In{c}{coor}) $\to$ $res$ : $itConj(Pokemon)$} 
+\begin{algorithm}[H]{\textbf{iPokemonEnPos}(\In{j}{estr}, \In{c}{Coordenada}) $\to$ res : Pokemon} 
 	{}
 	\begin{algorithmic}
-		\State $res \gets Significado(j.posicionesPokemons, c) $ \Comment O(1)
+		\State $res \gets Significado(j.posicionesPokemons, c)_{1} $ \Comment O(1)
 	
 		\medskip
 		\Statex \underline{Complejidad:} O(1)
@@ -430,7 +437,7 @@
     \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iCantMovimientosParaCaptura}(\In{j}{juego}, \In{c}{coor}) $\to$ $res$ : $Nat$} 
+\begin{algorithm}[H]{\textbf{iCantMovimientosParaCaptura}(\In{j}{estr}, \In{c}{Coordenada}) $\to$ res : Nat} 
 	{}
 	\begin{algorithmic}
 		\State res $\gets$ 10 - Siguiente(Significado(j.posicionesPokemons, c)).contador  \Comment O(1)
@@ -441,7 +448,7 @@
     \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iPosPokemonCercano}(\In{j}{juego}, \In{c}{Coor})  $\to$ $res$ : $coor$} 
+\begin{algorithm}[H]{\textbf{iPosPokemonCercano}(\In{j}{estr}, \In{c}{Coordenada})  $\to$ res : Coordenada} 
 	{}
 	\begin{algorithmic}
 		\State i $\gets$ 0 \Comment O(1)
@@ -464,7 +471,7 @@
     \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iPuedoAgregarPokemon}(\In{j}{juego}, \In{c}{coor}) $\to$ $res$ : $bool$} 
+\begin{algorithm}[H]{\textbf{iPuedoAgregarPokemon}(\In{j}{estr}, \In{c}{Coordenada}) $\to$ res : Bool} 
 	\begin{algorithmic}
 		\State res $\gets$ PosExistente(c, j.mapa) $\land$ $\lnot$(Definido?(j.posicionesPokemons, c)) $\land$ $\lnot$(HayPokemonCercano(j, c))  \Comment $\Theta\left(\displaystyle\sum_{c' \in coordendas(mapa(j))}equal(c,c')\right)$
 	
@@ -474,7 +481,7 @@
      \end{algorithmic}
  \end{algorithm}
  
- \begin{algorithm}[H]{\textbf{HayPokemonCercano}(\In{j}{juego}, \In{c}{coor}) $\to$ $res$ : $bool$} 
+ \begin{algorithm}[H]{\textbf{iHayPokemonCercano}(\In{j}{estr}, \In{c}{Coordenada}) $\to$ res : Bool} 
 	\begin{algorithmic}
 		\State res $\gets$ false	\Comment O(1) 
 		\State latC $\gets$ Latitud(c)	\Comment O(1)
@@ -497,7 +504,7 @@
      \end{algorithmic}
  \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iEntrenadoresPosibles}(\In{c}{coor}, \In{es}{conjLineal(jugador)}, \In{j}{juego})  $\to$ $res$ : $conjLineal(itConj)$} 
+\begin{algorithm}[H]{\textbf{iEntrenadoresPosibles}(\In{c}{Coordenada}, \In{es}{conjLineal(Jugador)}, \In{j}{estr})  $\to$ res : conjLineal(itConj(Jugador))} 
 	{}
 	\begin{algorithmic}
 		\State ePosibles $\gets$ Vacia()  \Comment O(1) {Crea un conjunto de iteradores vacio}
@@ -521,7 +528,7 @@
     \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iIndiceRareza}(\In{j}{juego}, \In{p}{pokemon})  $\to$ $res$ : $Nat$} 
+\begin{algorithm}[H]{\textbf{iIndiceRareza}(\In{j}{estr}, \In{p}{Pokemon})  $\to$ res : Nat} 
 	{}
 	\begin{algorithmic}
 		\State $cuantosP \gets iCantMismaEspecie(j, p) $ \Comment $O(|p.tipo|)$
@@ -533,7 +540,7 @@
     \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iCantPokemonesTotales}(\In{j}{juego}) $\to$ $res$ : $Nat$} 
+\begin{algorithm}[H]{\textbf{iCantPokemonesTotales}(\In{j}{estr}) $\to$ res : Nat} 
 	{}
 	\begin{algorithmic}
 		\State $res \gets cardinal(j.todosLosPokemones) $ \Comment O(1)
@@ -544,7 +551,7 @@
     \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iCantMismaEspecie}(\In{j}{juego}, \In{p}{Pokemon}) $\to$ $res$ : $Nat$} 
+\begin{algorithm}[H]{\textbf{iCantMismaEspecie}(\In{j}{estr}, \In{p}{Pokemon}) $\to$ res : Nat} 
 	{}
 	\begin{algorithmic}
 		\If {Definido?(j.pokemones, p.tipo)} \Comment $O(|P|)$
