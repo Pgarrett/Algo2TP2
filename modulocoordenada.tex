@@ -10,49 +10,49 @@
 
   \textbf{generos}: \TipoVariable{coor}.
 
-  \InterfazFuncion{CrearCoor}{\In{x}{Nat}, \In{y}{Nat}}{coor}%
+  \InterfazFuncion{CrearCoor}{\In{x}{Nat}, \In{y}{Nat}}{Coordenada}%
   [true]
   {$res \igobs crearCoor(x, y)$}
   [$\Theta(1)$]
   [Crea una nueva coordenada]
 
-  \InterfazFuncion{Latitud}{\In{c}{coor}}{Nat}
+  \InterfazFuncion{Latitud}{\In{c}{Coordenada}}{Nat}
   [true]
   {$res \igobs latitud(c)$}
   [$O(1)$]
   [Devuelve la latitud de la coordenada pasada por parametro]
 
-  \InterfazFuncion{Longitud}{\In{c}{coor}}{Nat}
+  \InterfazFuncion{Longitud}{\In{c}{Coordenada}}{Nat}
   [true]
   {$res \igobs longitud(c)$}
   [$O(1)$]
   [Devuelve la longitud de la coordenada pasada por parametro]
   
-  \InterfazFuncion{DistEuclidea}{\In{c1}{coor}, \In{c2}{coor}}{Nat}
+  \InterfazFuncion{DistEuclidea}{\In{c1}{Coordenada}, \In{c2}{Coordenada}}{Nat}
   [true]
   {$res \igobs distEuclidea(c1, c2)$}
   [$O(1)$]
   [Devuelve la distancia euclidea entre las dos coordenadas]
   
-  \InterfazFuncion{CoordenadaArriba}{\In{c}{coor}}{coor}
+  \InterfazFuncion{CoordenadaArriba}{\In{c}{Coordenada}}{Coordenada}
   [true]
   {$res \igobs coordenadaArriba(c)$}
   [$O(1)$]
   [Devuelve la coordenada de arriba]
   
-  \InterfazFuncion{CoordenadaAbajo}{\In{c}{coor}}{coor}
+  \InterfazFuncion{CoordenadaAbajo}{\In{c}{Coordenada}}{Coordenada}
   [$latitud(c) > 0$]
   {$res \igobs coordenadaAbajo(c)$}
   [$O(1)$]
   [Devuelve la coordenada de abajo]
 
-  \InterfazFuncion{CoordenadaALaDerecha}{\In{c}{coor}}{coor}
+  \InterfazFuncion{CoordenadaALaDerecha}{\In{c}{Coordenada}}{Coordenada}
   [true]
   {$res \igobs coordenadaALaDerecha(c)$}
   [$O(1)$]
   [Devuelve la coordenada de la derecha]
   
-  \InterfazFuncion{CoordenadaALaIzquierda}{\In{c}{coor}}{coor}
+  \InterfazFuncion{CoordenadaALaIzquierda}{\In{c}{Coordenada}}{Coordenada}
   [$longitud(c) > 0$]
   {$res \igobs coordenadaALaIzquierda(c)$}
   [$O(1)$]
@@ -83,7 +83,7 @@
  \Titulo{Algoritmos del modulo}
   	\medskip
   
-\begin{algorithm}[H]{\textbf{iCrearCoor}(\In {x}{Nat}, \In {y}{Nat}) $\to$ $res$ : coor}
+\begin{algorithm}[H]{\textbf{iCrearCoor}(\In {x}{Nat}, \In {y}{Nat}) $\to$ $res$ : estr}
     	\begin{algorithmic}[1]
 			\State $res.la \gets x$ \Comment $\Theta(1)$
 			\State $res.lo \gets y$ \Comment $\Theta(1)$
@@ -93,7 +93,7 @@
     	\end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iLatitud}(\In {c}{coor}) $\to$ $res$ : Nat}
+\begin{algorithm}[H]{\textbf{iLatitud}(\In {c}{estr}) $\to$ $res$ : Nat}
     	\begin{algorithmic}[1]
 			\State $res \gets c.la$ \Comment $\Theta(1)$
 			
@@ -102,7 +102,7 @@
     	\end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iLongitud}(\In {c}{coor}) $\to$ $res$ : Nat}
+\begin{algorithm}[H]{\textbf{iLongitud}(\In {c}{estr}) $\to$ $res$ : Nat}
     	\begin{algorithmic}[1]
 			\State $res \gets c.lo$ \Comment $\Theta(1)$
 			
@@ -111,7 +111,7 @@
     	\end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iDistEuclidea}(\In {c1}{coor}, \In {c2}{coor}) $\to$ $res$ : Nat}
+\begin{algorithm}[H]{\textbf{iDistEuclidea}(\In {c1}{estr}, \In {c2}{estr}) $\to$ $res$ : Nat}
     	\begin{algorithmic}[1]
 			\State rLa $\gets$ 0	\Comment $\Theta(1)$
 			\State rLo $\gets$ 0	\Comment $\Theta(1)$
@@ -131,7 +131,7 @@
     	\end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iCoordenadaArriba}(\In {c}{coor}) $\to$ $res$ : coor}
+\begin{algorithm}[H]{\textbf{iCoordenadaArriba}(\In {c}{estr}) $\to$ $res$ : estr}
     	\begin{algorithmic}[1]
 			\State $res \gets iCrearCoor(c.la + 1, c.lo)$ \Comment $\Theta(1)$
 			
@@ -140,7 +140,7 @@
     	\end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iCoordenadaAbajo}(\In {c}{coor}) $\to$ $res$ : coor}
+\begin{algorithm}[H]{\textbf{iCoordenadaAbajo}(\In {c}{estr}) $\to$ $res$ : estr}
     	\begin{algorithmic}[1]
 			\State $res \gets iCrearCoor(c.la - 1, c.lo)$ \Comment $\Theta(1)$
 			
@@ -149,7 +149,7 @@
     	\end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iCoordenadaALaDerecha}(\In {c}{coor}) $\to$ $res$ : coor}
+\begin{algorithm}[H]{\textbf{iCoordenadaALaDerecha}(\In {c}{estr}) $\to$ $res$ : estr}
     	\begin{algorithmic}[1]
 			\State $res \gets iCrearCoor(c.la, c.lo + 1)$ \Comment $\Theta(1)$
 			
@@ -158,7 +158,7 @@
     	\end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iCoordenadaALaIzquierda}(\In {c}{coor}) $\to$ $res$ : coor}
+\begin{algorithm}[H]{\textbf{iCoordenadaALaIzquierda}(\In {c}{estr}) $\to$ $res$ : estr}
     	\begin{algorithmic}[1]
 			\State $res \gets iCrearCoor(c.la, c.lo - 1)$ \Comment $\Theta(1)$
 			
