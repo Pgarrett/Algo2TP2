@@ -128,13 +128,17 @@ El principal costo se paga al crear la estructura o borrar un dato, dado que cue
 	\end{Estructura}
 	
 	\tadAlinearFunciones{Rep}{estr}
-	\tadAlinearAxiomas{Rep(e)}
+	\tadAlinearAxiomas{Rep(d)}
 
-	\Rep[estr][e]{$longitud(e.posiciones) = cardinal(e.claves)$}
+	\Rep[dicc][d]{
+    \\(tam(d.posiciones) $\igobs$ (d.ancho x d.largo)) $\land_L$
+		\\(($\forall c:$ coor) ($c$ \in d.claves) $\Leftrightarrow$ 
+    \\  definido?(d.posiciones, n) $\land_L$ $d.posiciones[n]_1$ $\igobs$ true)
+    }\mbox{}
 	
-	\tadAlinearFunciones{Abs}{Estr/e}	
+	\tadAlinearFunciones{Abs}{dicc/d}	
 	
-	\Abs[estr]{diccMat}[e]{d}{($\forall d : diccMat$) $e$.claves = coordenadas(d) $\land$ $e$.ancho = ancho(d) $\land$ $e$.largo = largo(d) $\land$ ($\forall c \gets e.claves$) e.posiciones[$c.campo_1 * e.ancho + c.campo_2 $] = siginificado(c,d)}
+	\Abs[dicc]{diccMat}[d]{d'}{$d$.claves = claves(d') $\land$ $d$.ancho = ancho(d') $\land$ $d$.largo = largo(d') $\land$ ($\forall c \gets d.claves$) d.posiciones[$c.campo_1 * d.ancho + c.campo_2 $] = siginificado($c_1$, $c_2$, d')}
 	
 
 \end{Representacion}
@@ -148,7 +152,7 @@ El principal costo se paga al crear la estructura o borrar un dato, dado que cue
  \Titulo{Algoritmos del modulo}
   	\medskip
   
-\begin{algorithm}[H]{\textbf{iVacio}(\In {l}{Nat},\In {a}{Nat}) $\to$ $res$ : diccMat}
+\begin{algorithm}[H]{\textbf{iVacio}(\In {l}{Nat},\In {a}{Nat}) $\to$ $res$ : dicc}
     	\begin{algorithmic}[1]
 			\State $res.largo \gets l$ \Comment $\Theta(1)$
 			\State $res.ancho \gets a$ \Comment $\Theta(1)$
@@ -159,7 +163,7 @@ El principal costo se paga al crear la estructura o borrar un dato, dado que cue
         \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iDefinir}(\Inout {d}{diccMat}, \In {c}{coor}, \In {s}{$\sigma$})}
+\begin{algorithm}[H]{\textbf{iDefinir}(\Inout {d}{dicc}, \In {c}{coor}, \In {s}{$\sigma$})}
     	\begin{algorithmic}[1]
             \If{$\lnot(Definido?(d, Aplanar(d,c)))$}
                 \State $AgregarRapido(d.claves, c)$ \Comment $\Theta(copy(s))$
@@ -172,7 +176,7 @@ El principal costo se paga al crear la estructura o borrar un dato, dado que cue
         \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iDefinido?}(\In {d}{diccMat}, \In {c}{coor}) $\to$ $res$ : $bool$}
+\begin{algorithm}[H]{\textbf{iDefinido?}(\In {d}{dicc}, \In {c}{coor}) $\to$ $res$ : $bool$}
     	\begin{algorithmic}[1]
         \State {$res \gets Definido?(d.posiciones, Aplanar(d, c)) \land_L d.posiciones[Aplanar(d, c)]_1$ } \Comment{Si no esta definido o esta marcado como borrado, se devuelve que no esta definido} $\Theta(1)$
 			\medskip
@@ -181,7 +185,7 @@ El principal costo se paga al crear la estructura o borrar un dato, dado que cue
         \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iSignificado}(\In {d}{diccMat}, \In {c}{coor}) $\to$ $res$ : $\sigma$}
+\begin{algorithm}[H]{\textbf{iSignificado}(\In {d}{dicc}, \In {c}{coor}) $\to$ $res$ : $\sigma$}
     	\begin{algorithmic}[1]
             \State $res \gets d.posiciones[Aplanar(d, c)]$ \Comment $\Theta(1)$
 			
@@ -190,7 +194,7 @@ El principal costo se paga al crear la estructura o borrar un dato, dado que cue
         \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iBorrar}(\Inout {d}{diccMat}, \In {c}{coor})}
+\begin{algorithm}[H]{\textbf{iBorrar}(\Inout {d}{dicc}, \In {c}{coor})}
     	\begin{algorithmic}[1]
             \State $Eliminar(d.claves, c)$ \Comment $\Theta\left(\displaystyle\sum_{c' \in d.claves}equal(c,c')\right)$
             \State $d.posiciones[Aplanar(d, c)] \gets <false, d.posiciones[Aplanar(d, c)]$ \Comment $\Theta(1)$
@@ -199,7 +203,7 @@ El principal costo se paga al crear la estructura o borrar un dato, dado que cue
         \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iCoordenadas}(\In {d}{diccMat}) $\to$ $res$ : $itConj(coor)$}
+\begin{algorithm}[H]{\textbf{iCoordenadas}(\In {d}{dicc}) $\to$ $res$ : $itConj(coor)$}
     	\begin{algorithmic}[1]
             \State $res \gets CrearIt(d.claves)$ \Comment $\Theta(1)$
 
@@ -208,7 +212,7 @@ El principal costo se paga al crear la estructura o borrar un dato, dado que cue
         \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iAplanar}(\In {d}{diccMat}, \In {c}{coor}) $\to$ $res$ : $nat$}
+\begin{algorithm}[H]{\textbf{iAplanar}(\In {d}{dicc}, \In {c}{coor}) $\to$ $res$ : $nat$}
     	\begin{algorithmic}[1]
 			\State $res \gets c.campo_1 * d.ancho + c.campo_2 $ \Comment $\Theta(1)$
 			
@@ -218,7 +222,7 @@ El principal costo se paga al crear la estructura o borrar un dato, dado que cue
         \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iLargo}(\In{d}{diccMat}) $\to$ $res$ : $nat$}
+\begin{algorithm}[H]{\textbf{iLargo}(\In{d}{dicc}) $\to$ $res$ : $nat$}
     	\begin{algorithmic}[1]
             \State $res \gets d.largo$ \Comment $\Theta(1)$
 
@@ -227,7 +231,7 @@ El principal costo se paga al crear la estructura o borrar un dato, dado que cue
         \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iAncho}(\In{d}{diccMat}) $\to$ $res$ : $nat$}
+\begin{algorithm}[H]{\textbf{iAncho}(\In{d}{dicc}) $\to$ $res$ : $nat$}
     	\begin{algorithmic}[1]
             \State $res \gets d.ancho$ \Comment $\Theta(1)$
 
