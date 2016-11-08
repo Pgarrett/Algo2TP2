@@ -85,7 +85,7 @@
   \InterfazFuncion{posConPokemones}{\In{j}{juego}}{itConj(Coor)}
   [True]
   {$res \igobs posConPokemons(j)$}
-  [$O(1)$]
+  [O(1)]
   [Devuelve un iterador al conjunto de coordenadas en donde hay pokemons]
 
   \InterfazFuncion{pokemonEnPos}{\In{j}{juego}, \In{c}{Coor}}{itConj(infoPokemon)}
@@ -219,17 +219,17 @@
 
 \begin{algorithm}[H]{\textbf{iCrearJuego}(\In{m}{Mapa)}) $\to$ $res$ : $Juego$}
 	\begin{algorithmic}
-		\State $Juego : j$	\Comment $O(1)$
-		\State j.pokemones $\gets$ CrearDiccionario()	\Comment $O(1)$
-		\State j.todosLosPokemones $\gets$ Vacio()	\Comment $O(1)$
-		\State j.jugadores $\gets$ Vacio()	\Comment $O(1)$
-		\State j.expulsados $\gets$ Vacio()	\Comment $O(1)$
-		\State j.jugadoresPorID $\gets$ Vacia()	\Comment $O(1)$
+		\State $Juego : j$	\Comment O(1)
+		\State j.pokemones $\gets$ CrearDiccionario()	\Comment O(1)
+		\State j.todosLosPokemones $\gets$ Vacio()	\Comment O(1)
+		\State j.jugadores $\gets$ Vacio()	\Comment O(1)
+		\State j.expulsados $\gets$ Vacio()	\Comment O(1)
+		\State j.jugadoresPorID $\gets$ Vacia()	\Comment O(1)
 		\State j.posicionesPokemons $\gets$	Vacio(largo(m), ancho(m))	\Comment O(largo(m) x ancho(m))
 		\State j.posicionesJugadores $\gets$	Vacio(largo(m), ancho(m))	\Comment O(largo(m) x ancho(m))
 		\State j.mapa $\gets$ m	\Comment $O(copy(m))$
 
-		\State $res \gets j$ \Comment $O(1)$
+		\State $res \gets j$ \Comment O(1)
 		\medskip
 		\Statex \underline{Complejidad:} O((largo(m) x ancho(m)) + copy(m))
 		\Statex \underline{Justificación:} 
@@ -237,11 +237,11 @@
     \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iAgregarPokemon}(\Inout{j}{juego)}, \In{c}{coor)}, \In{p}{pokemon)}) $\to$ $res$ : $itPokemon$}
+\begin{algorithm}[H]{\textbf{iAgregarPokemon}(\Inout{j}{estr)}, \In{c}{coor)}, \In{p}{pokemon)}) $\to$ $res$ : $itPokemon$}
 	\begin{algorithmic}
 	
 	\State $ItColaPrior(itJugador) it \gets entrenadoresPosibles(j,c) $ \Comment $O(|1|)$
-	\While {it.HaySiguiente()} \Comment $O(1)$
+	\While {it.HaySiguiente()} \Comment O(1)
 		\State $Definir(p.jugadoresEnRango, it.Siguiente().id, it.Siguiente()) $ \Comment $O(log(|entrenadoresPosibles|))$
 	\EndWhile
 	\State $p.salvaje \gets TRUE $ \Comment $O(|1|)$
@@ -266,7 +266,7 @@
     \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iAgregarJugador}(\Inout{j}{juego}) $\to$ res : Nat}
+\begin{algorithm}[H]{\textbf{iAgregarJugador}(\Inout{j}{estr}) $\to$ res : Jugador}
 	\begin{algorithmic}
 		\State id $\gets$ Cardinal(j.jugadores) + Cardinal(j.expulsados) \Comment O(1)
 		\State infoJ $\gets$ $<$id, false, 0, Vacio()$>$ \Comment O(1) {El jugador es creado vacio, sin sanciones y sin pokemones atrapados}
@@ -275,37 +275,36 @@
 		\State res $\gets$ id \Comment O(1)
 					
 		\medskip
-		\Statex \underline{Complejidad:} $O(J)$
-		\Statex \underline{Justificación:} O(copy(jug)) es igual a O(1) ya que solamente es copiar Nat, Bool y un conjunto vacio.
+		\Statex \underline{Complejidad:} $O(J)$ donde J es la cantidad de jugadores
+		\Statex \underline{Justificación:} O(copy(Jugador)) es igual a O(1) ya que solamente es copiar Nat, Bool y un conjunto vacio.
     \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iConectarse}(\Inout{j}{juego}, \In{e}{Nat}, \In{c}{Coor})}
+\begin{algorithm}[H]{\textbf{iConectarse}(\Inout{j}{estr}, \In{e}{Jugador}, \In{c}{Coordenada})}
 	\begin{algorithmic}
-		\State tupJug $\gets$ j.jugadoresPorId[e]	\Comment $O(1)$
-		\State itJug $\gets$ tupJug[1]	\Comment $O(1)$
-		\State jug $\gets$ Siguiente(itJug)	\Comment $O(1)$
-		\State jug.estaConectado $\gets$ true	\Comment $O(1)$
-		\State jug.posicion $\gets$ c	\Comment $O(1)$
-		\If {HayPokemonCercano(j, c)}	\Comment $O(1)$
-			\State p $\gets$ Siguiente(Significado(j.posicionesPokemons, PosPokemonCercano(j, c)))	\Comment $O(1)$
-			\State tupJug[2] $\gets$ Encolar(p.jugadoresEnRango, Cardinal(jug.pokeCapturados), itJug)	\Comment $O(log(EC))$
-			\State p.contador $\gets$ 0	\Comment $O(1)$
+		\State tupJug $\gets$ j.jugadoresPorId[e]	\Comment O(1)
+		\State itJug $\gets$ $tupJug_{1}$	\Comment O(1)
+		\State Siguiente($j.jugadoresPorID[e]_{1}$).estaConectado $\gets$ true \Comment O(1)
+		\State Siguiente($j.jugadoresPorID[e]_{1}$).posicion $\gets$ c	\Comment O(1)
+		\If {HayPokemonCercano(j, c)}	\Comment O(1)
+			\State p $\gets$ Siguiente(Significado(j.posicionesPokemons, PosPokemonCercano(j, c)))	\Comment O(1)
+			\State $j.jugadoresPorID[e]_{1}$ $\gets$ Encolar(p.jugadoresEnRango, Cardinal(jug.pokeCapturados), itJug)	\Comment O(log(EC))
+			\State p.contador $\gets$ 0	\Comment O(1)
 		\EndIf
 	
 		\medskip
-		\Statex \underline{Complejidad:} $O(log(EC))$
+		\Statex \underline{Complejidad:} O(log(EC))
 		\Statex \underline{Justificación:} EC es la maxima cantidad de jugadores esperando para atrapar un pokemon. En el peor caso, el heap al que entra el jugador es el que mas jugadores esperando tiene.
     \end{algorithmic}
 \end{algorithm}
 
 \begin{algorithm}[H]{\textbf{iDesconectarse}(\Inout{j}{juego)}, \In{id}{Nat)}} 
 	\begin{algorithmic}
-		\State tupJug $\gets$ j.jugadoresPorId[e]	\Comment $O(1)$
-		\If {HayPokemonCercano(j, c)}	\Comment $O(1)$
+		\State tupJug $\gets$ j.jugadoresPorId[e]	\Comment O(1)
+		\If {HayPokemonCercano(j, c)}	\Comment O(1)
 			\State tupJug[2] $\gets$ EliminarSiguiente(tupJug[2])	\Comment $O(log(EC))$
 		\EndIf
-		\State Siguiente(tupJug[1]).estaConectado $\gets$ false	\Comment $O(1)$
+		\State Siguiente(tupJug[1]).estaConectado $\gets$ false	\Comment O(1)
 	
 		\medskip
 		\Statex \underline{Complejidad:} $O(log(EC))$
@@ -335,10 +334,10 @@
 
 \begin{algorithm}[H]{\textbf{iDebeSancionarse}(\In{e}{jugador}, \In{c}{coor}, \In{j}{juego}) $\to$ $res$ : $Bool$} 
 	\begin{algorithmic}
-		\State $res \gets \neg HayCamino(e.posicion, c, j.mapa) \lor DistEuclidea(e.posicion, c, mapa) > 100 $ \Comment $O(1)$
+		\State $res \gets \neg HayCamino(e.posicion, c, j.mapa) \lor DistEuclidea(e.posicion, c, mapa) > 100 $ \Comment O(1)
 	
 		\medskip
-		\Statex \underline{Complejidad:} $O(1)$
+		\Statex \underline{Complejidad:} O(1)
 		\Statex \underline{Justificación:} Checkea si el jugador hizo un movimiento invalido.
     \end{algorithmic}
 \end{algorithm}
@@ -357,10 +356,10 @@
 \begin{algorithm}[H]{\textbf{iJugadores}(\In{j}{juego}) $\to$ $res$ : $itConj(jugador)$} 
 	{}
 	\begin{algorithmic}
-		\State $res \gets CrearIt(j.jugadores) $ \Comment $O(1)$
+		\State $res \gets CrearIt(j.jugadores) $ \Comment O(1)
 	
 		\medskip
-		\Statex \underline{Complejidad:} $O(1)$
+		\Statex \underline{Complejidad:} O(1)
 		\Statex \underline{Justificación:} Devuelve el mapa del juego.
     \end{algorithmic}
 \end{algorithm}
@@ -368,10 +367,10 @@
 \begin{algorithm}[H]{\textbf{iEstaConectado}(\In{j}{juego}, \In{id}{Nat}) $\to$ $res$ : Bool} 
 	{}
 	\begin{algorithmic}
-		\State $res \gets Siguiente(j.jugadoresPorID[id]_0).estaConectado $ \Comment $O(1)$
+		\State $res \gets Siguiente(j.jugadoresPorID[id]_0).estaConectado $ \Comment O(1)
 	
 		\medskip
-		\Statex \underline{Complejidad:} $O(1)$
+		\Statex \underline{Complejidad:} O(1)
 		\Statex \underline{Justificación:} Devuelve si el jugador esta conectado.
     \end{algorithmic}
 \end{algorithm}
@@ -379,10 +378,10 @@
 \begin{algorithm}[H]{\textbf{iPosicion}(\In{j}{juego}, \In{id}{Nat}) $\to$ $res$ : coor} 
 	{}
 	\begin{algorithmic}
-		\State $res \gets Siguiente(j.jugadoresPorID[id]_0).posicion $ \Comment $O(1)$
+		\State $res \gets Siguiente(j.jugadoresPorID[id]_0).posicion $ \Comment O(1)
 	
 		\medskip
-		\Statex \underline{Complejidad:} $O(1)$
+		\Statex \underline{Complejidad:} O(1)
 		\Statex \underline{Justificación:} Devuelve si el jugador esta conectado.
     \end{algorithmic}
 \end{algorithm}
@@ -390,10 +389,10 @@
 \begin{algorithm}[H]{\textbf{iPokemones}(\In{j}{juego}, \In{id}{Nat}) $\to$ $res$ : itConj(itDiccString)} 
 	{}
 	\begin{algorithmic}
-		\State $res \gets CrearIt(Siguiente(j.jugadoresPorID[id]_0).pokeCapturados) $ \Comment $O(1)$
+		\State $res \gets CrearIt(Siguiente(j.jugadoresPorID[id]_0).pokeCapturados) $ \Comment O(1)
 	
 		\medskip
-		\Statex \underline{Complejidad:} $O(1)$
+		\Statex \underline{Complejidad:} O(1)
 		\Statex \underline{Justificación:} Devuelve un iterador al conjunto de pokemones atrapados por el jugador.
     \end{algorithmic}
 \end{algorithm}
@@ -401,10 +400,10 @@
 \begin{algorithm}[H]{\textbf{iExpulsados}(\In{j}{juego}) $\to$ $res$ : $itConj(Jugador)$} 
 	{}
 	\begin{algorithmic}
-		\State $res \gets CrearIt(j.expulsados) $ \Comment $O(1)$
+		\State $res \gets CrearIt(j.expulsados) $ \Comment O(1)
 	
 		\medskip
-		\Statex \underline{Complejidad:} $O(1)$
+		\Statex \underline{Complejidad:} O(1)
 		\Statex \underline{Justificación:} Devuelve un iterador al conjunto de jugadores expulsados.
     \end{algorithmic}
 \end{algorithm}
@@ -412,10 +411,10 @@
 \begin{algorithm}[H]{\textbf{iPosConPokemones}(\In{j}{juego}) $\to$ $res$ : $itConj(Coor)$} 
 	{}
 	\begin{algorithmic}
-		\State $res \gets CrearIt(Coordenadas(j.posicionesPokemons)) $ \Comment $O(1)$
+		\State $res \gets CrearIt(Coordenadas(j.posicionesPokemons)) $ \Comment O(1)
 	
 		\medskip
-		\Statex \underline{Complejidad:} $O(1)$
+		\Statex \underline{Complejidad:} O(1)
 		\Statex \underline{Justificación:} Devuelve las posiciones con pokemones.
     \end{algorithmic}
 \end{algorithm}
@@ -423,10 +422,10 @@
 \begin{algorithm}[H]{\textbf{iPokemonEnPos}(\In{j}{juego}, \In{c}{coor}) $\to$ $res$ : $itConj(Pokemon)$} 
 	{}
 	\begin{algorithmic}
-		\State $res \gets Significado(j.posicionesPokemons, c) $ \Comment $O(1)$
+		\State $res \gets Significado(j.posicionesPokemons, c) $ \Comment O(1)
 	
 		\medskip
-		\Statex \underline{Complejidad:} $O(1)$
+		\Statex \underline{Complejidad:} O(1)
 		\Statex \underline{Justificación:} Devuelve el mapa del juego.
     \end{algorithmic}
 \end{algorithm}
@@ -434,10 +433,10 @@
 \begin{algorithm}[H]{\textbf{iCantMovimientosParaCaptura}(\In{j}{juego}, \In{c}{coor}) $\to$ $res$ : $Nat$} 
 	{}
 	\begin{algorithmic}
-		\State res $\gets$ 10 - Siguiente(Significado(j.posicionesPokemons, c)).contador  \Comment $O(1)$
+		\State res $\gets$ 10 - Siguiente(Significado(j.posicionesPokemons, c)).contador  \Comment O(1)
 	
 		\medskip
-		\Statex \underline{Complejidad:} $O(1)$
+		\Statex \underline{Complejidad:} O(1)
 		\Statex \underline{Justificación:} Devuelve cuantos movimientos faltan para capturar al pokemon.
     \end{algorithmic}
 \end{algorithm}
@@ -445,22 +444,22 @@
 \begin{algorithm}[H]{\textbf{iPosPokemonCercano}(\In{j}{juego}, \In{c}{Coor})  $\to$ $res$ : $coor$} 
 	{}
 	\begin{algorithmic}
-		\State i $\gets$ 0 \Comment $O(1)$
-		\State latC $\gets$ Latitud(c)	\Comment $O(1)$
-		\State i $\gets$ DamePos(latC, 2) \Comment $O(1)$		
-		\State longC $\gets$ Longitud(c)	\Comment $O(1)$
-		\State j $\gets$ DamePos(longC, 2) \Comment $O(1)$
-		\While {i $\leq$ latC + 2}	\Comment $O(1)$ {Vale porque estoy recorriendo un conjunto acotado de coordenadas}
-			\While {j $\leq$ longC + 2}	\Comment $O(1)$ {Vale porque estoy recorriendo un conjunto acotado de coordenadas}
-				\If {Definido?(j.posicionesPokemons, $<$i, j$>$) $\land$ DistEuclidea(c, $<$i, j$>$) $\leq$ 4}	\Comment $O(1)$
-					\State res $\gets$ $<$i, j$>$	\Comment $O(1)$ 
+		\State i $\gets$ 0 \Comment O(1)
+		\State latC $\gets$ Latitud(c)	\Comment O(1)
+		\State i $\gets$ DamePos(latC, 2) \Comment O(1)		
+		\State longC $\gets$ Longitud(c)	\Comment O(1)
+		\State j $\gets$ DamePos(longC, 2) \Comment O(1)
+		\While {i $\leq$ latC + 2}	\Comment O(1) {Vale porque estoy recorriendo un conjunto acotado de coordenadas}
+			\While {j $\leq$ longC + 2}	\Comment O(1) {Vale porque estoy recorriendo un conjunto acotado de coordenadas}
+				\If {Definido?(j.posicionesPokemons, $<$i, j$>$) $\land$ DistEuclidea(c, $<$i, j$>$) $\leq$ 4}	\Comment O(1)
+					\State res $\gets$ $<$i, j$>$	\Comment O(1) 
 				\EndIf
-				\State j $\gets$ j + 1	\Comment $O(1)$
+				\State j $\gets$ j + 1	\Comment O(1)
 			\EndWhile
-			\State i $\gets$ i + 1	\Comment $O(1)$
+			\State i $\gets$ i + 1	\Comment O(1)
 		\EndWhile
 		\medskip
-		\Statex \underline{Complejidad:} $O(1)$
+		\Statex \underline{Complejidad:} O(1)
 		\Statex \underline{Justificación:} Como el rango a recorrer es una constante, se puede decir que es de la clase $\Theta(1)$ 
     \end{algorithmic}
 \end{algorithm}
@@ -477,19 +476,19 @@
  
  \begin{algorithm}[H]{\textbf{HayPokemonCercano}(\In{j}{juego}, \In{c}{coor}) $\to$ $res$ : $bool$} 
 	\begin{algorithmic}
-		\State res $\gets$ false	\Comment $O(1)$ 
-		\State latC $\gets$ Latitud(c)	\Comment $O(1)$
-		\State i $\gets$ DamePos(latC, 5) \Comment $O(1)$		
-		\State longC $\gets$ Longitud(c)	\Comment $O(1)$
-		\State j $\gets$ DamePos(longC, 5) \Comment $O(1)$
-		\While {i $\leq$ latC + 5}	\Comment $O(1)$ {Vale porque estoy recorriendo un conjunto acotado de coordenadas}
-			\While {j $\leq$ longC + 5 }	\Comment $O(1)$ {Vale porque estoy recorriendo un conjunto acotado de coordenadas}
-				\If {Definido?(j.posicionesPokemons, $<$i, j$>$) $\land$ DistEuclidea(c, $<$i, j$>$) $\leq$ 25}	\Comment $O(1)$
-					\State res $\gets$ true	\Comment $O(1)$ 
+		\State res $\gets$ false	\Comment O(1) 
+		\State latC $\gets$ Latitud(c)	\Comment O(1)
+		\State i $\gets$ DamePos(latC, 5) \Comment O(1)		
+		\State longC $\gets$ Longitud(c)	\Comment O(1)
+		\State j $\gets$ DamePos(longC, 5) \Comment O(1)
+		\While {i $\leq$ latC + 5}	\Comment O(1) {Vale porque estoy recorriendo un conjunto acotado de coordenadas}
+			\While {j $\leq$ longC + 5 }	\Comment O(1) {Vale porque estoy recorriendo un conjunto acotado de coordenadas}
+				\If {Definido?(j.posicionesPokemons, $<$i, j$>$) $\land$ DistEuclidea(c, $<$i, j$>$) $\leq$ 25}	\Comment O(1)
+					\State res $\gets$ true	\Comment O(1) 
 				\EndIf
-				\State j $\gets$ j + 1	\Comment $O(1)$
+				\State j $\gets$ j + 1	\Comment O(1)
 			\EndWhile
-			\State i $\gets$ i + 1	\Comment $O(1)$
+			\State i $\gets$ i + 1	\Comment O(1)
 		\EndWhile
 	
 		\medskip
@@ -501,20 +500,20 @@
 \begin{algorithm}[H]{\textbf{iEntrenadoresPosibles}(\In{c}{coor}, \In{es}{conjLineal(jugador)}, \In{j}{juego})  $\to$ $res$ : $conjLineal(itConj)$} 
 	{}
 	\begin{algorithmic}
-		\State ePosibles $\gets$ Vacia()  \Comment $O(1)$ {Crea un conjunto de iteradores vacio}
-		\If {Cardinal(es) $!=$ 0}	\Comment $O(1)$
-			\State itE $\gets$ CrearIt(es)	\Comment $O(1)$
+		\State ePosibles $\gets$ Vacia()  \Comment O(1) {Crea un conjunto de iteradores vacio}
+		\If {Cardinal(es) $!=$ 0}	\Comment O(1)
+			\State itE $\gets$ CrearIt(es)	\Comment O(1)
 			\While {HaySiguiente(itE)} \Comment $O(Cardinal(es))$ {Es la cantidad de jugadores que haya en el conjunto es}
-				\State posJugador $\gets$ Siguiente(itE).posicion	\Comment $O(1)$
-				\If {(iHayPokemonCercano(posJugador, j) $\yluego$ \Comment $O(1)$
-				 \State iPosPokemonCercano(posJugador, j) == c $\land$ \Comment $O(1)$
-				 \State iHayCamino(c, posJugador, Mapa(j)))} \Comment $O(1)$
-					\State AgregarRapido(ePosibles, Siguiente(itE))	\Comment $O(1)$ {Copiar un iterador es O(1)}
+				\State posJugador $\gets$ Siguiente(itE).posicion	\Comment O(1)
+				\If {(iHayPokemonCercano(posJugador, j) $\yluego$ \Comment O(1)
+				 \State iPosPokemonCercano(posJugador, j) == c $\land$ \Comment O(1)
+				 \State iHayCamino(c, posJugador, Mapa(j)))} \Comment O(1)
+					\State AgregarRapido(ePosibles, Siguiente(itE))	\Comment O(1) {Copiar un iterador es O(1)}
 				\EndIf
-				\State Avanzar(itE)	\Comment $O(1)$
+				\State Avanzar(itE)	\Comment O(1)
 			\EndWhile
 		\EndIf
-		\State $res \gets ePosibles$ \Comment $O(1)$
+		\State $res \gets ePosibles$ \Comment O(1)
 	
 		\medskip
 		\Statex \underline{Complejidad:} $O(Cardinal(es))$
@@ -526,7 +525,7 @@
 	{}
 	\begin{algorithmic}
 		\State $cuantosP \gets iCantMismaEspecie(j, p) $ \Comment $O(|p.tipo|)$
-		\State res $\gets$ 100 - (100 x cuantosP / iCantPokemonesTotales)  \Comment $O(1)$
+		\State res $\gets$ 100 - (100 x cuantosP / iCantPokemonesTotales)  \Comment O(1)
 	
 		\medskip
 		\Statex \underline{Complejidad:} $O(|P|)$
@@ -537,10 +536,10 @@
 \begin{algorithm}[H]{\textbf{iCantPokemonesTotales}(\In{j}{juego}) $\to$ $res$ : $Nat$} 
 	{}
 	\begin{algorithmic}
-		\State $res \gets cardinal(j.todosLosPokemones) $ \Comment $O(1)$
+		\State $res \gets cardinal(j.todosLosPokemones) $ \Comment O(1)
 	
 		\medskip
-		\Statex \underline{Complejidad:} $O(1)$
+		\Statex \underline{Complejidad:} O(1)
 		\Statex \underline{Justificación:} Pide el cardinal de un conjunto.
     \end{algorithmic}
 \end{algorithm}
@@ -551,7 +550,7 @@
 		\If {Definido?(j.pokemones, p.tipo)} \Comment $O(|P|)$
 		\State $res \gets Obtener(j.pokemones, p.tipo)$ \Comment $O(|P|)$
 		\Else
-		\State $res \gets 0 $ \Comment $O(1)$
+		\State $res \gets 0 $ \Comment O(1)
 		\EndIf
 	
 		\medskip
@@ -563,19 +562,19 @@
 \begin{algorithm}[H]{\textbf{DamePos}(\In{p}{Nat}, \In{step}{Nat}) $\to$ res : Nat} 
 	{}
 	\begin{algorithmic}
-		\State i $\gets$ p	\Comment $O(1)$
-		\State fin $\gets$ false	\Comment $O(1)$
-		\State res $\gets$ p	\Comment $O(1)$
-		\While {i $\neq$ 1 $\land \neg$ fin}	\Comment $O(1)$
-			\State i $\gets$ i - 1	\Comment $O(1)$
-			\If {i == p - step}	\Comment $O(1)$
+		\State i $\gets$ p	\Comment O(1)
+		\State fin $\gets$ false	\Comment O(1)
+		\State res $\gets$ p	\Comment O(1)
+		\While {i $\neq$ 1 $\land \neg$ fin}	\Comment O(1)
+			\State i $\gets$ i - 1	\Comment O(1)
+			\If {i == p - step}	\Comment O(1)
 				\State res $\gets$ i \Comment O(1)
-				\State fin $\gets$ true	\Comment $O(1)$
+				\State fin $\gets$ true	\Comment O(1)
 			\EndIf
 		\EndWhile
 	
 		\medskip
-		\Statex \underline{Complejidad:} $O(1)$
+		\Statex \underline{Complejidad:} O(1)
 		\Statex \underline{Justificación:} Recorre un rango acotado.
     \end{algorithmic}
 \end{algorithm}
