@@ -297,23 +297,14 @@
 
 \begin{algorithm}[H]{\textbf{iConectarse}(\Inout{j}{estr}, \In{e}{Jugador}, \In{c}{coor})}
 	\begin{algorithmic}
-		\State tupJug $\gets$ j.jugadoresPorId[e]	\Comment O(1)
-		\State itJug $\gets$ $tupJug_{1}$	\Comment O(1)
-		\State Siguiente($j.jugadoresPorID[e]_{1}$).estaConectado $\gets$ true \Comment O(1)
-    
-    
-    \State conLineal(Jugador) : jugsEnPos \Comment O(1)
-    \If {$\lnot$ Definido?(j.posicionesJugadores, c)}	\Comment O(1)
-        \State Definir(j.posicionesJugadores, c, $\&Vacio()$) \Comment O(1)
-    \EndIf
-    \State jugsEnPos $\gets$ *(Significado(j.posicionesJugadores, c)) \Comment O(1)
-    \State Siguiente($j.jugadoresPorID[e]_{1}$).posicion $\gets$ AgregarRapido(jugsEnPos, e) \Comment O(1) 
-
-     
-    \State Siguiente($j.jugadoresPorID[e]_{1}$).estaConectado $\gets$ true \Comment O(1)
+		\State itJug $\gets$ $j.jugadoresPorId[e]_{1}$	\Comment O(1)
+    \State infoJ $\gets$ Siguiente(itJug) \Comment O(1) 
+		\State infoJ.estaConectado $\gets$ true \Comment O(1)
+    \State AgregarJugadorEnPos(j.posicionesJugadores, infoJ, c) \Comment O(1)
+    \State infoJ.estaConectado $\gets$ true \Comment O(1)
 		\If {HayPokemonCercano(j, c)}	\Comment O(1)
 			\State p $\gets$ Siguiente(Significado(j.posicionesPokemons, PosPokemonCercano(j, c)))	\Comment O(1)
-			\State $j.jugadoresPorID[e]_{1}$ $\gets$ Encolar(p.jugadoresEnRango, Cardinal(jug.pokeCapturados), itJug)	\Comment O(log(EC))
+			\State itJug $\gets$ Encolar(p.jugadoresEnRango, Cardinal(jug.pokeCapturados), itJug)	\Comment O(log(EC))
 			\State p.contador $\gets$ 0	\Comment O(1)
 		\EndIf
 	
@@ -323,17 +314,29 @@
     \end{algorithmic}
 \end{algorithm}
 
+
+\begin{algorithm}[H]{\textbf{iAgregarJugadorAPos}(\Inout{d}{DiccMat(coor, puntero(conjLineal(Jugador)))}, \Inout{j}{infoJugador}, \In{c}{coor})} 
+	\begin{algorithmic}
+      \State conLineal(Jugador) : jugsEnPos \Comment O(1)
+      \If {$\lnot$ Definido?(d, c)}	\Comment O(1)
+          \State Definir(d, c, $\&Vacio()$) \Comment O(1)
+      \EndIf
+      \State jugsEnPos $\gets$ *(Significado(d, c)) \Comment O(1)
+      \State j.posicion $\gets$ AgregarRapido(jugsEnPos, j.id) \Comment O(1)
+		\Statex \underline{Complejidad:} O(1) 
+    \end{algorithmic}
+\end{algorithm}
+
 \begin{algorithm}[H]{\textbf{iDesconectarse}(\Inout{j}{estr}, \In{id}{Jugador})} 
 	\begin{algorithmic}
 		\State tupJug $\gets$ j.jugadoresPorId[e]	\Comment O(1)
 		\If {HayPokemonCercano(j, c)}	\Comment O(1)
-            \State $tupJug_{2}$ $\gets$ EliminarSiguiente($tupJug_{2}$)	\Comment $O(log(EC))$
+			\State $tupJug_{2}$ $\gets$ EliminarSiguiente($tupJug_{2}$)	\Comment $O(log(EC))$
 		\EndIf
-        \State Siguiente($tupJug_{1}$).estaConectado $\gets$ false	\Comment O(1)
-	  
-        \State EliminarSiguiente(Siguiente($tupJug_{1}$).posicion) \Comment O(1)
-        \State Siguiente($tupJug_{1}$).posicion $\gets$ CrearIt(Vacio())	\Comment O(1)
-	  
+    \State infoJ $\gets$ Siguiente($tupJug_{1}$) \Comment O(1) 
+		\State infoJ.estaConectado $\gets$ false	\Comment O(1)
+    \State EliminarSiguiente(infoJ.posicion) \Comment O(1)
+    \State infoJ.posicion $\gets$ CrearIt(Vacio())	\Comment O(1)
 		\medskip
 		\Statex \underline{Complejidad:} $O(log(EC))$
 		\Statex \underline{Justificación:} EC es la maxima cantidad de jugadores esperando para atrapar un pokemon. En el peor caso, el heap del que sale el jugador es el que mas jugadores esperando tiene.
@@ -342,13 +345,17 @@
 
 \begin{algorithm}[H]{\textbf{Moverse}(\Inout{j}{estr}, \In{id}{Jugador}, \In{c}{coor})}{}
 	\begin{algorithmic}
+  \State 
+  \State tupJug $\gets$ j.jugadoresPorID[id]	\Comment O(1)
+	\State infoJ $\gets$ Siguiente(tupJug$_{1}$)	\Comment O(1)
+	\State EliminarSiguiente(infoJ.posicion) \Comment O(1)
+  \State AgregarJugadorEnPos(j.posicionesJugadores, infoJ, c) \Comment O(1)
 	\If {iEntroAUnRango(j, id, c)}
 		\State p $\gets$ iPosPokemonCercano(j, c)	\Comment O(1)
 		\State iActualizarMenos(p, j)
 		\State infoP $\gets$ Siguiente(Significado(j.posicionesPokemons, p)$_{2}$)	\Comment O(1)
 		\State infoP.contador $\gets$ 0 \Comment O(1)
-		\State tupJug $\gets$ j.jugadoresPorID[id]	\Comment O(1)
-		\State cantPokemonesJug $\gets$ Cardinal(Siguiente(tupJugId$_{1}$).pokemonesCapturados)	\Comment O(1)
+		\State cantPokemonesJug $\gets$ Cardinal(infoJ.pokemonesCapturados)	\Comment O(1)
 		\State itCola $\gets$ iEncolar(Siguiente(itPokemon).jugadoresEnRango, cantPokemonesJug, e)	\Comment O(log(EC) + copy(e))
 		\State tupJugId$_{2}$ $\gets$ itCola	\Comment O(1)
 	\Else
@@ -357,12 +364,10 @@
 		\EndIf
 		\State iActualizarTodos(j)
 	\EndIf
-	\If {debeSancionarse?(Siguiente(jugadoresPorID[id]), c, j)}
-		\State infoJ $\gets$ Siguiente(j.jugadoresPorID[id]$_{1}$)	\Comment O(1)
+	\If {debeSancionarse?(id, c, j)}
 		\If {infoJ.sanciones $<$ 4}	\Comment O(1)
 			\State infoJ.sanciones $\gets$ infoJ.sanciones + 1	\Comment O(1)
 		\Else
-			\State tupJug $\gets$ j.jugadoresPorID[id]	\Comment O(1)
 			\State iEliminarSiguiente(tupJug$_{1}$)	\Comment O(1) {Saca al jugador del conjunto de jugadores}
 			\State AgregarRapido(j.expulsados, id)	\Comment O(copy(id)) {Copiar un nat es O(1)}
 			\If {iHayPokemonCercano(j, c)}	\Comment O(1)
@@ -380,7 +385,9 @@
 
 \begin{algorithm}[H]{\textbf{iDebeSancionarse}(\In{e}{Jugador}, \In{c}{coor}, \In{j}{estr}) $\to$ res : Bool} 
 	\begin{algorithmic}
-		\State $res \gets \neg HayCamino(e.posicion, c, j.mapa) \lor DistEuclidea(e.posicion, c, mapa) > 100 $ \Comment O(1)
+    \State tupJug $\gets$ j.jugadoresPorID[e]	\Comment O(1)
+  	\State infoJ $\gets$ Siguiente(tupJug$_{1}$)	\Comment O(1)
+		\State $res \gets \neg HayCamino(infoJ.posicion, c, j.mapa) \lor DistEuclidea(infoJ.posicion, c, j.mapa) > 100 $ \Comment O(1)
 	
 		\medskip
 		\Statex \underline{Complejidad:} O(1)
