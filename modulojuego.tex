@@ -284,7 +284,7 @@
 \begin{algorithm}[H]{\textbf{iAgregarJugador}(\Inout{j}{estr}) $\to$ res : Jugador}
 	\begin{algorithmic}
 		\State id $\gets$ Cardinal(j.jugadores) + Cardinal(j.expulsados) \Comment O(1)
-		\State infoJ $\gets$ $<$id, false, 0, Vacio(), CrearIt(Vacio)$>$ \Comment O(1) {El jugador es creado vacio, sin sanciones y sin pokemones atrapados}
+		\State infoJ $\gets$ $<$id, false, 0, Vacio(), CrearIt(Vacio())$>$ \Comment O(1) {El jugador es creado vacio, sin sanciones y sin pokemones atrapados}
 		\State itJ $\gets$ AgregarRapido(j.jugadores, infoJ) \Comment O(copy(infoJ))
 		\State AgregarAtras(j.jugadoresPorID, <itJ, NULL>) \Comment O(J) {Donde J es la cantidad total de jugadores que fueron agregados al juego} %% O(J)??? revisar!
 		\State res $\gets$ id \Comment O(1)
@@ -303,13 +303,12 @@
     
     
     \State conLineal(Jugador) : jugsEnPos \Comment O(1)
-    \If {Definido?(j.posicionesJugadores, c)}	\Comment O(1)
-      \State jugsEnPos $\gets$ *(Significado(j.posicionesJugadores, c)) \Comment O(1)
-    \Else
-      \State jugsEnPos $\gets$ Vacio() \Comment O(1)
-    \Endif 
+    \If {$\lnot$ Definido?(j.posicionesJugadores, c)}	\Comment O(1)
+        \State Definir(j.posicionesJugadores, c, $\&Vacio()$) \Comment O(1)
+    \EndIf
+    \State jugsEnPos $\gets$ *(Significado(j.posicionesJugadores, c)) \Comment O(1)
     \State Siguiente($j.jugadoresPorID[e]_{1}$).posicion $\gets$ AgregarRapido(jugsEnPos, e) \Comment O(1) 
-    \State Definir(j.posicionesJugadores, c, $\&jugsEnPos$) \Comment O(1)
+
      
     \State Siguiente($j.jugadoresPorID[e]_{1}$).estaConectado $\gets$ true \Comment O(1)
 		\If {HayPokemonCercano(j, c)}	\Comment O(1)
@@ -328,10 +327,13 @@
 	\begin{algorithmic}
 		\State tupJug $\gets$ j.jugadoresPorId[e]	\Comment O(1)
 		\If {HayPokemonCercano(j, c)}	\Comment O(1)
-			\State tupJug[2] $\gets$ EliminarSiguiente(tupJug[2])	\Comment $O(log(EC))$
+            \State $tupJug_{2}$ $\gets$ EliminarSiguiente($tupJug_{2}$)	\Comment $O(log(EC))$
 		\EndIf
-		\State Siguiente(tupJug[1]).estaConectado $\gets$ false	\Comment O(1)
-	
+        \State Siguiente($tupJug_{1}$).estaConectado $\gets$ false	\Comment O(1)
+	  
+        \State EliminarSiguiente(Siguiente($tupJug_{1}$).posicion) \Comment O(1)
+        \State Siguiente($tupJug_{1}$).posicion $\gets$ CrearIt(Vacio())	\Comment O(1)
+	  
 		\medskip
 		\Statex \underline{Complejidad:} $O(log(EC))$
 		\Statex \underline{Justificación:} EC es la maxima cantidad de jugadores esperando para atrapar un pokemon. En el peor caso, el heap del que sale el jugador es el que mas jugadores esperando tiene.
