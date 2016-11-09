@@ -130,11 +130,7 @@ El principal costo se paga al crear la estructura o borrar un dato, dado que cue
 	\tadAlinearFunciones{Rep}{estr}
 	\tadAlinearAxiomas{Rep(d)}
 
-	\Rep[dicc][d]{
-    \\(tam(d.posiciones) $\igobs$ (d.ancho x d.largo)) $\land_L$
-		\\(($\forall c:$ coor) ($c$ \in d.claves) $\Leftrightarrow$ 
-    \\  definido?(d.posiciones, n) $\land_L$ $d.posiciones[n]_1$ $\igobs$ true)
-    }\mbox{}
+	\Rep[dicc][d]{(tam(d.posiciones) $\igobs$ (d.ancho x d.largo)) $\yluego$(($\forall c:$ coor) (c $\in$ d.claves) $\Leftrightarrow$ definido?(d.posiciones, n) $\yluego$ d.posiciones[n]$_{1}$ $\igobs$ true)}%\mbox{}
 	
 	\tadAlinearFunciones{Abs}{dicc/d}	
 	

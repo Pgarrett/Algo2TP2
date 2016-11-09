@@ -10,31 +10,31 @@
 
   \textbf{generos}: \TipoVariable{map}.
 
-  \InterfazFuncion{CrearMapa}{}{Mapa}%
+  \InterfazFuncion{CrearMapa}{}{map}%
   [true]
   {$res \igobs crearMapa()$}
   [$O(1)$]
   [Crea un nuevo mapa]
 
-  \InterfazFuncion{AgregarCoordenada}{\Inout{m}{Mapa}, \In{c}{Coordenada}}{itConj(Coordenada)}
+  \InterfazFuncion{AgregarCoordenada}{\Inout{m}{map}, \In{c}{Coordenada}}{itConj(Coordenada)}
   [$m \igobs m_0$]
   {$m \igobs agregarCoor(c, m_0)$}
   [$\Theta\left(\displaystyle\sum_{c' \in coordendas(m)}equal(c,c')\right)$]
   [Agrega una coordenada al mapa y devuelve el iterador a la coordenada agregada. Su complejidad es la de agregar un elemento al conjunto lineal.]
 
-  \InterfazFuncion{Coordenadas}{\In{m}{Mapa}}{itConj(Coordenada)}
+  \InterfazFuncion{Coordenadas}{\In{m}{map}}{itConj(Coordenada)}
   [true]
   {$res \igobs coordenadas(m)$}
   [$O(1)$]
   [Devuelve un iterador al conjunto de coordenadas del mapa]
   
-  \InterfazFuncion{PosExistente}{\In{c}{Coordenada}, \In{m}{Mapa}}{Bool}
+  \InterfazFuncion{PosExistente}{\In{c}{Coordenada}, \In{m}{map}}{Bool}
   [true]
   {$res \igobs posExistente(c, m)$}
   [$\Theta\left(\displaystyle\sum_{c' \in coordendas(m)}equal(c,c')\right)$]
   [Devuelve verdadero si la coordenada esta en el conjunto de coordenadas del mapa]
   
-  \InterfazFuncion{HayCamino}{\In{c1}{Coordenada}, \In{c2}{Coordenada}, \In{m}{Mapa}}{Bool}
+  \InterfazFuncion{HayCamino}{\In{c1}{Coordenada}, \In{c2}{Coordenada}, \In{m}{map}}{Bool}
   [$c1 \in coordenadas(m) \land c2 \in coordenadas(m)$]
   {$res \igobs hayCamino(c1, c2, m)$}
   [$\Theta(1)$]
