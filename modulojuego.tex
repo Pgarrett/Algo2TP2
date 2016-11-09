@@ -338,10 +338,24 @@
 		\State itCola $\gets$ iEncolar(Siguiente(itPokemon).jugadoresEnRango, cantPokemonesJug, e)	\Comment O(log(EC) + copy(e))
 		\State tupJugId$_{2}$ $\gets$ itCola	\Comment O(1)
 	\Else
+		\If {iSaleDelRango(j, c, id)}
+			\State borrarlo del heap
+		\EndIf
 		\State iActualizarTodos(j)
 	\EndIf
 	\If {debeSancionarse?(Siguiente(jugadoresPorID[id]), c, j)}
-	
+		\State infoJ $\gets$ Siguiente(j.jugadoresPorID[id]$_{1}$)	\Comment O(1)
+		\If {infoJ.sanciones $<$ 4}	\Comment O(1)
+			\State infoJ.sanciones $\gets$ infoJ.sanciones + 1	\Comment O(1)
+		\Else
+			\State tupJug $\gets$ j.jugadoresPorID[id]	\Comment O(1)
+			\State iEliminarSiguiente(tupJug$_{1}$)	\Comment O(1) {Saca al jugador del conjunto de jugadores}
+			\State AgregarRapido(j.expulsados, id)	\Comment O(copy(id)) {Copiar un nat es O(1)}
+			\If {iHayPokemonCercano(j, c)}	\Comment O(1)
+				\State iEliminarSiguiente(tupJug$_{2}$)	\Comment O(log(EC)) {Elimina al jugador del heap donde estaba esperando}
+			\EndIf
+			
+		\EndIf
 	\EndIf
 
 \medskip
