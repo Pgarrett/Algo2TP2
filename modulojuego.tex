@@ -272,6 +272,7 @@
 			\State Definir(j.pokemones, p, Vacia())	\Comment O(|P|)
 		\EndIf
 		\State AgregarAtras(Obtener(j.pokemones, p), itPokemon)	\Comment O(|P| + copy(itPokemon)) {Copiar el iterador es O(1)}
+		\State res $\gets$ itPokemon	\Comment O(1)
 	
 		\medskip
 		\Statex \underline{Complejidad:} $O(|P| + |EC| * log(|EC|))$
@@ -327,16 +328,20 @@
 
 \begin{algorithm}[H]{\textbf{Moverse}(\Inout{j}{estr}, \In{id}{Jugador}, \In{c}{Coordenada})}{}
 	\begin{algorithmic}
-	\If {debeSancionarse$?$(Siguiente(jugadoresPorID[id]), c, j)} \Comment $O(|P|)$
-		\If {$campo_1(Siguiente(jugadoresPorID[id])).sanciones$ < 4}
-			\State $campo_1(jugadoresPorID[id]->eliminarSiguiente)$
-			\If {hayPokemonCercano(j, c)}
-				\State $(PokemonEnPos \rightarrow siguiente).jugadoresEnRango.Eliminar(campo_2(jugadoresPorID[id])$
-				\State $campo_2(jugadoresPorID[id]->eliminarSiguiente)$
-			\Else
-				\State $campo_1(jugadoresPorID[id]->siguiente).sanciones$ $\gets$ $campo_1(jugadoresPorID[id]->siguiente).sanciones$ + 1
-			\EndIf
-		\EndIf
+	\If {iEntroAUnRango(j, id, c)}
+		\State p $\gets$ iPosPokemonCercano(j, c)	\Comment O(1)
+		\State iActualizarMenos(p, j)
+		\State infoP $\gets$ Siguiente(Significado(j.posicionesPokemons, p)$_{2}$)	\Comment O(1)
+		\State infoP.contador $\gets$ 0 \Comment O(1)
+		\State tupJug $\gets$ j.jugadoresPorID[id]	\Comment O(1)
+		\State cantPokemonesJug $\gets$ Cardinal(Siguiente(tupJugId$_{1}$).pokemonesCapturados)	\Comment O(1)
+		\State itCola $\gets$ iEncolar(Siguiente(itPokemon).jugadoresEnRango, cantPokemonesJug, e)	\Comment O(log(EC) + copy(e))
+		\State tupJugId$_{2}$ $\gets$ itCola	\Comment O(1)
+	\Else
+		\State iActualizarTodos(j)
+	\EndIf
+	\If {debeSancionarse?(Siguiente(jugadoresPorID[id]), c, j)}
+	
 	\EndIf
 
 \medskip
