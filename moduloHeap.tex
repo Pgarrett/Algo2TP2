@@ -51,30 +51,30 @@
 
 	\textbf{se explica con}: \tadNombre{Cola de mínima prioridad(nat)}.
 
-	\textbf{géneros}: \TipoVariable{colaMin($\alpha$)}.
+	\textbf{géneros}: \TipoVariable{colaMinPrior($\alpha$)}.
 
 \subsubsection{Operaciones básicas de ColaMinPrior}
 
-	\InterfazFuncion{Vacía}{}{colaMin($\alpha$)}
+	\InterfazFuncion{Vacía}{}{colaMinPrior($\alpha$)}
 	[true]
 	{$res$ $\igobs$ vacía}
 	[O(1)]
 	[Crea una cola de prioridad vacía]
 
-	\InterfazFuncion{Vacía?}{\In{c}{colaMin($\alpha$)}}{bool}
+	\InterfazFuncion{Vacía?}{\In{c}{colaMinPrior($\alpha$)}}{bool}
 	[true]
 	{$res$ $\igobs$ vacía?(c)}
 	[O(1)]
 	[Devuelve \TipoVariable{true} si y sólo si la cola está vacía]
 
-	\InterfazFuncion{Próximo}{\In{c}{colaMin($\alpha$)}}{$\alpha$}
+	\InterfazFuncion{Próximo}{\In{c}{colaMinPrior($\alpha$)}}{$\alpha$}
 	[$\neg$vacía?($c$)]
 	{alias($res$ $\igobs$ próximo($c$))}
 	[O(1)]
 	[Devuelve el próximo elemento a desencolar]
 	[$res$ es modificable si y sólo si $c$ es modificable]
 
-	\InterfazFuncion{Desencolar}{\Inout{c}{colaMin($\alpha$)}}{}
+	\InterfazFuncion{Desencolar}{\Inout{c}{colaMinPrior($\alpha$)}}{}
 	[$\neg$vacía?($c$) $\land$ $c$ $\igobs$ $c_0$]
 	{$c$ $\igobs$ desencolar($c_0$)}
 	[O(log(tamaño(c)))]
@@ -102,7 +102,7 @@
 
 \subsubsection{Operaciones del Iterador}
 
-	\InterfazFuncion{CrearIt}{\In{c}{ColaMinPrior($\alpha$)}}{itColaMin($alpha$)}
+	\InterfazFuncion{CrearIt}{\In{c}{colaMinPrior($\alpha$)}}{itColaMin($alpha$)}
 	[$true$]
 	{Alias(EsPermutacion(SecuSuby($res$),c))}
 	[$\Theta(1)$]
@@ -115,18 +115,6 @@
 	[$\Theta(1)$]
 	[Devuelve true si y solo si en el iterador todavía quedan elementos para avanzar]
 
-	\InterfazFuncion{HaySiguienteIzq?}{\In{it}{itColaMin($\alpha$)}}{bool}
-	[haySiguiente?($it$)]
-	{$res$ $\igobs$ haySiguienteIzq?($it$))}
-	[$\Theta(1)$]
-	[Devuelve true si y solo si en el iterador todavía quedan elementos para avanzar a la izquierda]
-
-	\InterfazFuncion{HaySiguienteDer?}{\In{it}{itColaMin($\alpha$)}}{bool}
-	[haySiguiente?($it$)]
-	{$res$ $\igobs$ haySiguienteDer?($it$))}
-	[$\Theta(1)$]
-	[Devuelve true si y solo si en el iterador todavía quedan elementos para avanzar a la derecha]	
-
 	\InterfazFuncion{Siguiente}{\In{it}{itColaMin($\alpha$)}}{$\alpha$}
 	[haySiguiente?($it$)]
 	{Alias($res$ $\igobs$ Siguiente($it$))}
@@ -134,44 +122,18 @@
 	[Devuelve el elemento de la siguiente posición del iterador]
 	[res es modificable si y solo si it es modificable]
 
-	\InterfazFuncion{AvanzarIzq}{\Inout{it}{itColaMin($\alpha$)}}{}
-	[$it$ $\igobs$ $it_0$ $\wedge$ haySiguienteIzq?($c$)]
-	{$it$ $\igobs$ avanzarIzq($it_0$))}
-	[$\Theta(1)$]
-	[Avanza el iterador a la posición izquierda siguiente]
-
-	\InterfazFuncion{AvanzarDer}{\Inout{it}{itColaMin($\alpha$)}}{}
-	[$it$ $\igobs$ $it_0$ $\wedge$ haySiguienteDer?($it$)]
-	{$it$ $\igobs$ avanzarDer($it_0$))}
-	[$\Theta(1)$]
-	[Avanza el iterador a la posición derecha siguiente]
-
 	\InterfazFuncion{EliminarSiguiente}{\Inout{it}{itColaMin($\alpha$)}}{}
-	[$it$ $\igobs$ $it_0$ $\wedge$ haySiguiente?($it$) $\yluego$ $\neg$haySiguienteDer?($it$) $\wedge$ $\neg$haySiguienteIzq?($it$)]
+	[$it$ $\igobs$ $it_0$ $\wedge$ haySiguiente?($it$)]
 	{$it$ $\igobs$ EliminarSiguiente($it_0$))}
 	[$\Theta(1)$]
-	[Elimina de la cola el valor que se encuentra en la posición siguiente del iterador. Tiene que ser hoja]
+	[Elimina de la cola el valor que se encuentra en la posición siguiente del iterador.]
 	
-	\InterfazFuncion{AgregarComoSiguienteIzq}{\Inout{it}{itColaMin($\alpha$)}, \In{a}{$\alpha$}}{}
-	[$it$ $\igobs$ $it_0$ $\wedge$ $\neg$haySiguienteDer?($it$) $\wedge$ $\neg$haySiguienteIzq?($it$)]
-	{$it$ $\igobs$ AgregarComoSiguienteIzq($it_0$))}
-	[O($copy(a)$)]
-	[agrega el elemento a a la cola de prioridad, a la izquierda siguiente del iterador, dejando
-al iterador posicionado de forma tal que al llamar a Siguiente se obtenga a.]
-
-	\InterfazFuncion{AgregarComoSiguienteDer}{\Inout{it}{itColaMin($\alpha$)}, \In{a}{$\alpha$}}{}
-	[$it$ $\igobs$ $it_0$ $\wedge$ $\neg$haySiguienteDer?($it$)]
-	{$it$ $\igobs$ AgregarComoSiguienteDer($it_0$))}
-	[O($copy(a)$)]
-	[agrega el elemento a a la cola de prioridad, a la derecha siguiente del iterador, dejando
-al iterador posicionado de forma tal que al llamar a Siguiente se obtenga a.]
-
 \subsection{Representación}
 
 	\subsubsection{Representación de ColaMinPrior($\alpha$)}
 
-		\begin{Estructura}{ColaMinPrior($\alpha$)}[colaMin]
-			\- \- \- \- donde \TipoVariable{colaMin} es \TipoVariable{tupla}($proximo$: \TipoVariable{puntero(nodo)},
+		\begin{Estructura}{ColaMinPrior($\alpha$)}[estr]
+			\- \- \- \- donde \TipoVariable{estr} es \TipoVariable{tupla}($proximo$: \TipoVariable{puntero(nodo)},
 			\TipoVariable{$tamano$: nat})
 			
 			\- \- \- \- donde \TipoVariable{nodo} es \TipoVariable{tupla}($prior$: \TipoVariable{Nat}, $elem$: \TipoVariable{$\alpha$}, $padre$: \TipoVariable{puntero(nodo)}, $izq$: \TipoVariable{puntero(nodo)}, $der$: \TipoVariable{puntero(nodo)})
@@ -273,116 +235,138 @@ al iterador posicionado de forma tal que al llamar a Siguiente se obtenga a.]
     	\end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iDesencolar}(\Inout {c}{colaMinPrior($\alpha$)})}
+\begin{algorithm}[H]{\textbf{iUltimoNodo}(\Inout {c}{estr}) $\to$ $res$ : $puntero(Nodo)$}
     	\begin{algorithmic}[1]
-			\State $it \leftarrow CrearIt(c) $ \Comment {$\Theta(1)$}
-			\State $A \leftarrow DecimalABinario(c.tamaño) $ \Comment {Convertir un decimal a binario tiene complejidad logaritmica del largo de número $\Theta(log(|c|))$}
-			\For{i $\leftarrow$ 1 to $tam(A)$ - 1} \Comment {Se empieza desde el segundo elemento porque el iterador ya está parado en el primero que por precondición no está invalidado $\Theta(|A|) = \Theta(log(|c|))$}
+	    	\State $A: arreglo_dimensionable de nat$ \Comment{$\Theta(1)$}
+			\State $A \leftarrow iDecimalABinario(c.tamaño) $ \Comment {Convertir un decimal a binario tiene complejidad logaritmica del largo de número $\Theta(log(|c|))$}
+			\State $puntero(Nodo) n \gets c.proximo$ \Comment{$\Theta(1)$}
+			\For{i $\leftarrow$ 1 to $tam(A)$ - 1} \Comment {Se empieza desde el segundo elemento porque ya está posicionado en el primer elemento que por precondición no es nulo $\Theta(|A|) = \Theta(log(|c|))$}
 				\If{$A[i] = 0$}
-					\State $AvanzarIzq(it) $ \Comment {$\Theta(1)$}
+					\State $n \gets (n \rightarrow izq)$ \Comment {$\Theta(1)$}
 				\Else
-					\State $AvanzarDer(it) $ \Comment {$\Theta(1)$}
+					\State $n \gets (n \rightarrow der)$ \Comment {$\Theta(1)$}
 				\EndIf
 			\EndFor
-			\State $swapCola(c.proximo, it.siguiente) $ \Comment {$\Theta(1)$}
-			\State $EliminarSiguiente(it) $ \Comment {$\Theta(1)$}
+			\State $res \gets n $\Comment {$\Theta(1)$}
+    	\medskip
+		\Statex \underline{Complejidad:} $\Theta(log(|c|))$
+    	\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{iDesencolar}(\Inout {c}{estr})}
+    	\begin{algorithmic}[1]
+			\State $puntero(Nodo) n \gets iUltimoNodo(c)$ \Comment{$\Theta(log(|c|))$}
+			\State $iSwapCola(c.proximo, n) $ \Comment {$\Theta(1)$}
 			\If{$c.tamano > 1$}
-				\State $siftDown(c) $ \Comment {$\Theta(log(|c|))$}
+				\If{$c.tamano mod 2 = 0$}
+					\State $n \leftarrow padre \leftarrow izq \gets NULL $\Comment {$\Theta(1)$}
+				\Else
+					\State $n \leftarrow padre \leftarrow der \gets NULL $\Comment {$\Theta(1)$}
+				\EndIf	
+				\State $c.tamaño \gets c.tamaño - 1$ \Comment {$\Theta(1)$}						
+				\State $iBajar(c,n) $ \Comment {$\Theta(log(|c|))$}
+			\Else
+				\State $c.proximo \gets NULL $\Comment{$\Theta(1)$}
+				\State $c.tamaño \gets 0$ \Comment {$\Theta(1)$}						
 			\EndIf
 			\medskip
 			\Statex \underline{Complejidad:} $\Theta(log(|c|))$
+    	\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{iPadreNuevoNodo}(\Inout {c}{estr}) $\to$ $res$ : $puntero(Nodo)$}
+    	\begin{algorithmic}[1]
+			\State $A: arreglo_dimensionable de nat$ \Comment{$\Theta(1)$}
+			\State $A \gets iDecimalABinario(c.tamaño + 1) $ \Comment {Convertir un decimal a binario tiene complejidad logaritmica del largo de número $\Theta(log(|c|))$}
+			\State $puntero(Nodo) n \gets c.proximo$ \Comment{$\Theta(1)$}
+			\For{i $\gets$ 1 to $tam(A)$ - 2} \Comment {Se empieza desde el segundo elemento porque ya está posicionado en el primer elemento que por precondición no es nulo $\Theta(|A|) = \Theta(log(|c|))$}
+				\If{$A[i] = 0$}
+					\State $n \gets (n \rightarrow izq)$ \Comment {$\Theta(1)$}
+				\Else
+					\State $n \gets (n \rightarrow der)$ \Comment {$\Theta(1)$}
+				\EndIf
+			\EndFor
+			\State $res \gets n$ \Comment {$\Theta(1)$}
+    	\medskip
+		\Statex \underline{Complejidad:} $\Theta(log(|c|))$
     	\end{algorithmic}
 \end{algorithm}
 
 \begin{algorithm}[H]{\textbf{iEncolar}(\Inout {c}{colaMinPrior($\alpha$), \In {prioridad}{nat}, \In {a}{$\alpha$}})  $\to$ $res$ : $iter$ }
     	\begin{algorithmic}[1]
-			\State $Nodo: nuevo \leftarrow <prioridad, a, NULL, NULL, NULL> $ \Comment {$\Theta(1)$}				
-			\State $it \leftarrow CrearIt(c)$ \Comment {$\Theta(1)$}
-			\State $A \leftarrow DecimalABinario(c.tamaño + 1) $ \Comment {Convertir un decimal a binario tiene complejidad logaritmica del largo de número, buscamos la posición donde vamos a agregar el nuevo elemento $\Theta(log(|c|))$}			
-			\State $i \leftarrow 0$ \Comment {$\Theta(1)$}
-									
-			\While {i < $tam(A)$ - 1} \Comment {$\Theta(|A|) = \Theta(log(|c|))$}			
-				\If{$A[i] = 0$} \Comment {$\Theta(1)$}
-					\State $AvanzarIzq(it) $ \Comment {$\Theta(1)$}
-				\Else
-					\State $AvanzarDer(it) $ \Comment {$\Theta(1)$}
-				\EndIf			
-				\State $i \leftarrow i + 1$ \Comment {$\Theta(1)$}
-			\EndWhile
-			\If{$A[i] = 0$} \Comment {$\Theta(1)$}
-				\State $AgregarSiguienteIzq(it, nuevo)$ \Comment {$\Theta(1)$}
+			\State $puntero(Nodo): padre \gets iPadreNuevoNodo(c)$ \Comment {$\Theta(log(|c|))$}
+			\State $Nodo: nuevo \gets <prioridad, a, padre, NULL, NULL> $ \Comment {$\Theta(1)$}						
+			\If{$padre \rightarrow izq = NULL$} \Comment {$\Theta(1)$}
+				\State $padre \rightarrow izq = \& nuevo$ \Comment {$\Theta(1)$}
 			\Else
-				\State $AgregarSiguienteDer(it, nuevo)$ \Comment {$\Theta(1)$}
+				\State $padre \rightarrow der = \& nuevo$ \Comment {$\Theta(1)$}
 			\EndIf			
-
-			\State $siftUp(c) $ \Comment {$\Theta(log(|c|))$}
-
+			\State $c.tamaño \gets c.tamaño + 1$ \Comment {$\Theta(1)$}						
+			\State $iSubir(c, nuevo) $ \Comment {$\Theta(log(|c|))$}
+			\State $res \gets CrearItEncolado(nuevo, c) $ \Comment {$\Theta(1)$}
 			\medskip
 			\Statex \underline{Complejidad:} $\Theta(log(|c|)) + copy(\alpha))$
     	\end{algorithmic}
 \end{algorithm}
     	
-\begin{algorithm}[H]{\textbf{siftDown}(\Inout {c}{colaMin($\alpha$)})}
+\begin{algorithm}[H]{\textbf{iBajar}(\Inout {c}{estr},\In {n}{puntero(Nodo)})}
     	\begin{algorithmic}[1]
-			\State $it \leftarrow CrearIt(c)$ \Comment {$\Theta(1)$}
-			\State $swap \leftarrow true$
-			\While{$\neg esHoja(it) \wedge swap$} \Comment {Lo máximo que se puede llegar a avanzar es la altura del árbol $\Theta(log(|c|))$}
-				\State $swap \leftarrow false$ \Comment {$\Theta(1)$}
-				\If{$haySiguienteIzq(it) \wedge haySiguienteDer(it)$} \Comment {$\Theta(1)$}
-					\If{$it.siguiente \rightarrow izq \rightarrow prior < it.siguiente \rightarrow der \rightarrow prior$} \Comment {$\Theta(1)$}					
-						\If{$it.siguiente \rightarrow izq \rightarrow prior < it.siguiente \rightarrow prior$} \Comment {$\Theta(1)$}
-							\State $swapCola(it.siguiente \rightarrow izq, it.siguiente) $ \Comment {$\Theta(1)$}
-							\State $swap \leftarrow true$ \Comment {$\Theta(1)$}							
-							\State $AvanzarIzq(it) $ \Comment {$\Theta(1)$}							
-						\EndIf
-					\Else
-						\If{$it.siguiente \rightarrow der \rightarrow prior < it.siguiente \rightarrow prior$} \Comment {$\Theta(1)$}
-							\State $swapCola(it.siguiente \rightarrow der, it.siguiente) $ \Comment {$\Theta(1)$}
-							\State $swap \leftarrow true$ \Comment {$\Theta(1)$}							
-							\State $AvanzarDer(it) $ \Comment {$\Theta(1)$}							
-						\EndIf
-					\EndIf
+			\State $bool: swap \gets true$\Comment {$\Theta(1)$}
+			\State $bool: esHoja \gets (n \rightarrow izq = NULL \wedge n \rightarrow der = NULL)$\Comment {$\Theta(1)$}
+			\While{$\neg esHoja \wedge swap$} \Comment {Lo máximo que se puede llegar a avanzar es la altura del árbol $\Theta(log(|c|))$}
+				\State $swap \gets false$ \Comment {$\Theta(1)$}
+				\If{$n \rightarrow der = NULL)$} \Comment {$\Theta(1)$}
+					\If{$n \rightarrow izq \rightarrow prior < n \rightarrow prior)$} \Comment {$\Theta(1)$}				
+						\State $iSwapCola(n \rightarrow izq, n) $ \Comment {$\Theta(1)$}
+						\State $swap \gets true$ \Comment {$\Theta(1)$}
+					\EndIf					
 				\Else
-					\If{$haySiguienteIzq(it)$} \Comment {$\Theta(1)$}
-						\If{$it.siguiente \rightarrow izq \rightarrow prior < it.siguiente \rightarrow prior$} \Comment {$\Theta(1)$}
-							\State $swapCola(it.siguiente \rightarrow izq, it.siguiente) $ \Comment {$\Theta(1)$}
-							\State $swap \leftarrow true$ \Comment {$\Theta(1)$}							
-							\State $AvanzarIzq(it) $ \Comment {$\Theta(1)$}							
-						\EndIf
+					\If{$n \rightarrow izq = NULL)$} \Comment {$\Theta(1)$}
+						\If{$n \rightarrow der \rightarrow prior < n \rightarrow prior)$} \Comment {$\Theta(1)$}				
+							\State $iSwapCola(n \rightarrow izq, n) $ \Comment {$\Theta(1)$}
+							\State $swap \gets true$ \Comment {$\Theta(1)$}
+						\EndIf					
 					\Else
-						\If{$it.siguiente \rightarrow der \rightarrow prior < it.siguiente \rightarrow prior$} \Comment {$\Theta(1)$}
-							\State $swapCola(it.siguiente \rightarrow der, it.siguiente) $ \Comment {$\Theta(1)$}
-							\State $swap \leftarrow true$ \Comment {$\Theta(1)$}							
-							\State $AvanzarDer(it) $ \Comment {$\Theta(1)$}							
+						\If{$n \rightarrow der \rightarrow prior < n \rightarrow izq \rightarrow prior)$} \Comment {$\Theta(1)$}	 
+							\If{$n \rightarrow der \rightarrow prior < n \rightarrow prior)$} \Comment {$\Theta(1)$}	
+								\State $iSwapCola(n \rightarrow izq, n) $ \Comment {$\Theta(1)$}
+								\State $swap \gets true$ \Comment {$\Theta(1)$}											
+							\Else
+								\If{$n \rightarrow izq \rightarrow prior < n \rightarrow prior)$} \Comment {$\Theta(1)$}				
+									\State $iSwapCola(n \rightarrow izq, n) $ \Comment {$\Theta(1)$}
+									\State $swap \gets true$ \Comment {$\Theta(1)$}
+								\EndIf										
+							\EndIf
+						\Else
+							\If{$n \rightarrow izq \rightarrow prior < n \rightarrow prior)$} \Comment {$\Theta(1)$}		
+								\State $iSwapCola(n \rightarrow izq, n) $ \Comment {$\Theta(1)$}
+								\State $swap \gets true$ \Comment {$\Theta(1)$}
+							\Else
+								\If{$n \rightarrow der \rightarrow prior < n \rightarrow prior)$} \Comment {$\Theta(1)$}	
+									\State $iSwapCola(n \rightarrow izq, n) $ \Comment {$\Theta(1)$}
+									\State $swap \gets true$ \Comment {$\Theta(1)$}																		\EndIf							
+							\EndIf										
 						\EndIf
 					\EndIf
 				\EndIf
+				\State $esHoja \gets (n \rightarrow izq = NULL \wedge n \rightarrow der = NULL)$ \Comment {$\Theta(1)$}
 			\EndWhile
 			\medskip
 			\Statex \underline{Complejidad:} $\Theta(log(|c|))$
     	\end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{siftUp}(\Inout {c}{colaMin($\alpha$)})}
+\begin{algorithm}[H]{\textbf{iSubir}(\Inout {c}{estr}, \In{n}{puntero(Nodo)})}
     	\begin{algorithmic}[1]
-		\State $it \leftarrow CrearIt(c)$ \Comment {$\Theta(1)$}
-		\State $swap \leftarrow true$
-		\State $A \leftarrow DecimalABinario(c.tamaño) $ \Comment {Convertir un decimal a binario tiene complejidad logaritmica del largo de número $\Theta(log(|c|))$}
-		\For{i $\gets$ 1 to $tam(A)$ - 1} \Comment {Se empieza desde el segundo elemento porque el iterador ya está parado en el primero que por precondición no está invalidado, se avanza hasta el último elemento que es el que hay que reacomodar  $\Theta(|A|) = \Theta(log(|c|))$}
-			\If{$A[i] = 0$}
-				\State $AvanzarIzq(it) $ \Comment {$\Theta(1)$}
-			\Else
-				\State $AvanzarDer(it) $ \Comment {$\Theta(1)$}
-			\EndIf
-		\EndFor
-		
-		\While{$tienePadre(it) \wedge swap$}\Comment {Lo máximo que se puede llegar a avanzar es la altura del árbol $\Theta(log(|c|))$}
+		\State $bool: swap \gets true$ \Comment {$\Theta(1)$}		
+		\State $bool: esRaiz \gets (n \rightarrow padre = NULL)  $ \Comment {$\Theta(1)$}		
+		\While{$\neq esRaiz \wedge swap$}\Comment {Lo máximo que se puede llegar a avanzar es la altura del árbol $\Theta(log(|c|))$}
 			\State $swap \rightarrow false$ \Comment {$\Theta(1)$}			
-			\If{$it.siguiente \rightarrow prior < it.siguiente \rightarrow padre \rightarrow prior $} \Comment {$\Theta(1)$}
-				\State $swapCola(it.siguiente \rightarrow padre, it.siguiente) $ \Comment {$\Theta(1)$}
+			\If{$n \rightarrow prior < n \rightarrow padre \rightarrow prior $} \Comment {$\Theta(1)$}
+				\State $swapCola(n \rightarrow padre, n) $ \Comment {$\Theta(1)$}
 				\State $swap \rightarrow true$ \Comment {$\Theta(1)$}
-				\State $Retroceder(it) $ \Comment {$\Theta(1)$}
 			\EndIf			
+			\State $esRaiz \gets (n \rightarrow padre = NULL)  $ \Comment {$\Theta(1)$}		
 		\EndWhile
 		\medskip
 		\Statex \underline{Complejidad:} $\Theta(log(|c|))$
@@ -403,7 +387,7 @@ al iterador posicionado de forma tal que al llamar a Siguiente se obtenga a.]
    	\end{algorithmic}
 \end{algorithm}    	
     	
-\begin{algorithm}[H]{\textbf{DecimalABinario}{(\In {d}{nat}}) $\to$ $res$ : arreglo(nat)}
+\begin{algorithm}[H]{\textbf{iDecimalABinario}{(\In {d}{nat}}) $\to$ $res$ : arreglo(nat)}
    	\begin{algorithmic}[1]
 		\State $lista(\alpha): temp \gets Vacia() $ \Comment {$\Theta(1)$}
 		\While{$d > 1$}\Comment {Lo máximo que se puede llegar a iterar es log(d) $\Theta(log(d))$}
@@ -430,12 +414,22 @@ al iterador posicionado de forma tal que al llamar a Siguiente se obtenga a.]
 
 \subsubsection{Algoritmos del Iterador}
 
-\begin{algorithm}[H]{\textbf{CrearIt}(\In{c}{ColaMinPrior($\alpha$)}) $\to$ $res$ : itColaMin($\alpha$)}
+\begin{algorithm}[H]{\textbf{iCrearIt}(\In{c}{estr}) $\to$ $res$ : iter}
    	\begin{algorithmic}[1]
-			\State $res \gets <NULL, c>$ \Comment {$\Theta(1)$}
+			\State $res \gets <c.proximo, c>$ \Comment {$\Theta(1)$}
 			\Statex \underline{Complejidad:} $\Theta(1)$
    	\end{algorithmic}
 \end{algorithm}    	
+
+\begin{algorithm}[H]{\textbf{iCrearItEncolado}(\In{c}{estr}, \In{nodo}{puntero(Nodo)}) $\to$ $res$ : iter} \Comment{Esta es una operación privada, dado a que no hay un avanzar se crea un iterador con un elemento que pertenezca a la cola}
+	{\\ $\textbf{Pre}$ $\equiv$ nodo $\neq$ NULL $\yluego$ nodo $=_{obs}$ ($\exists n$ $\in$ [0..c.tamaño-1] }
+   	\begin{algorithmic}[1]
+			\State $res \gets <n, c>$ \Comment {$\Theta(1)$}
+			\Statex \underline{Complejidad:} $\Theta(1)$
+   	\end{algorithmic}
+   	{\\ $\textbf{Post}$ $\equiv$ res $=_{obs}$ ($\exists i$ $\in$ [0..c.tamaño-1] }
+\end{algorithm}    	
+
 
 \begin{algorithm}[H]{\textbf{HaySiguiente?}(\In{it}{itColaMin($\alpha$)}) $\to$ $res$ : bool}
    	\begin{algorithmic}[1]
@@ -444,60 +438,31 @@ al iterador posicionado de forma tal que al llamar a Siguiente se obtenga a.]
    	\end{algorithmic}
 \end{algorithm}  
 
-\begin{algorithm}[H]{\textbf{HaySiguienteIzq?}(\In{it}{itColaMin($\alpha$)}) $\to$ $res$ : bool}
-   	\begin{algorithmic}[1]
-			\State $res \gets it.siguiente \rightarrow izq \neq NULL $ \Comment {$\Theta(1)$}
-			\Statex \underline{Complejidad:} $\Theta(1)$
-   	\end{algorithmic}
-\end{algorithm}  
-
-\begin{algorithm}[H]{\textbf{HaySiguienteDer?}(\In{it}{itColaMin($\alpha$)}) $\to$ $res$ : bool}
-   	\begin{algorithmic}[1]
-			\State $res \gets it.siguiente \rightarrow der \neq NULL $ \Comment {$\Theta(1)$}
-			\Statex \underline{Complejidad:} $\Theta(1)$
-   	\end{algorithmic}
-\end{algorithm}
-
-\begin{algorithm}[H]{\textbf{Siguiente?}(\In{it}{itColaMin($\alpha$)}) $\to$ $res$ : $\alpha$}
+\begin{algorithm}[H]{\textbf{Siguiente}(\In{it}{itColaMin($\alpha$)}) $\to$ $res$ : $\alpha$}
    	\begin{algorithmic}[1]
 			\State $res \gets (it.siguiente \rightarrow elem) $ \Comment {$\Theta(1)$}
 			\Statex \underline{Complejidad:} $\Theta(1)$
    	\end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{AvanzarIzq}(\Inout{it}{itColaMin($\alpha$)})}
-   	\begin{algorithmic}[1]
-			\State $it.siguiente \gets (it.siguiente \rightarrow izq) $ \Comment {$\Theta(1)$}
-			\Statex \underline{Complejidad:} $\Theta(1)$
-   	\end{algorithmic}
-\end{algorithm}
-
-\begin{algorithm}[H]{\textbf{AvanzarDer}(\Inout{it}{itColaMin($\alpha$)})}
-   	\begin{algorithmic}[1]
-			\State $it.siguiente \gets (it.siguiente \rightarrow der) $ \Comment {$\Theta(1)$}
-			\Statex \underline{Complejidad:} $\Theta(1)$
-   	\end{algorithmic}
-\end{algorithm}
-
 \begin{algorithm}[H]{\textbf{EliminarSiguiente}(\Inout{it}{itColaMin($\alpha$)})}
    	\begin{algorithmic}[1]
-			\State $it.siguiente \gets NULL $ \Comment {$\Theta(1)$}
-			\Statex \underline{Complejidad:} $\Theta(1)$
-   	\end{algorithmic}
-\end{algorithm}
-
-\begin{algorithm}[H]{\textbf{AgregarComoSiguienteIzq}(\Inout{it}{itColaMin($\alpha$)}, \In{a}{$\alpha$})}
-   	\begin{algorithmic}[1]
-			\State $(it.siguiente \rightarrow izq) \gets a$ \Comment {$\Theta(1)$}
-			\State $AvanzarIzq(it)$ \Comment {$\Theta(1)$}
-			\Statex \underline{Complejidad:} $\Theta(1)$
-   	\end{algorithmic}
-\end{algorithm}
-
-\begin{algorithm}[H]{\textbf{AgregarComoSiguienteDer}(\Inout{it}{itColaMin($\alpha$)}, \In{a}{$\alpha$})}
-   	\begin{algorithmic}[1]
-			\State $(it.siguiente \rightarrow der) \gets a$ \Comment {$\Theta(1)$}
-			\State $AvanzarDer(it)$ \Comment {$\Theta(1)$}
+			\If{$arbol.tamaño > 1$}
+	   			\State $puntero(Nodo) ult \gets iUltimoNodo(arbol)$ \Comment {$\Theta(log(|arbol|))$}
+   				\State $iSwapCola(ult, it.siguiente)$ \Comment {$\Theta(1)$}
+   				
+				\If{$arbol.tamaño mod 2 = 0$}
+					\State $it.siguiente \rightarrow padre \rightarrow izq \gets NULL $\Comment {$\Theta(1)$}
+				\Else
+					\State $it.siguiente \rightarrow padre \rightarrow der \gets NULL $\Comment {$\Theta(1)$}
+				\EndIf	
+				\State $arbol.tamaño \gets arbol.tamaño - 1 $\Comment {$\Theta(1)$}			
+				\State $iBajar(arbol, ult)$ \Comment {$\Theta(log(|arbol|))$}
+			\Else
+				\State $it.siguiente \gets NULL $\Comment {$\Theta(1)$}							
+				\State $arbol.tamaño \gets 0 $\Comment {$\Theta(1)$}			
+			\EndIf 		
+				\State $it.siguiente \rightarrow padre \rightarrow  \gets NULL $ \Comment {$\Theta(1)$}
 			\Statex \underline{Complejidad:} $\Theta(1)$
    	\end{algorithmic}
 \end{algorithm}
