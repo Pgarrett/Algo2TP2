@@ -161,7 +161,7 @@
 			\tupItem{pokedex}{diccString(Pokemon, Nat)}
 			\tupItem{idsJugadores}{conjLineal(Jugador)}
 			\tupItem{jugadores}{conjLineal(infoJugador)}
-			\tupItem{expulsados}{conjLineal(Nat)}
+			\tupItem{expulsados}{conjLineal(Jugador)}
 			\tupItem{jugadoresPorID}{Vector($<$info: itConj(infoJugador), encolado: itColaPrior(Jugador)$>$)} %% itConj es un iterador a jugadores, itColaPrior es un iterador al heap en el que esta el jugador
 			\tupItem{posicionesPokemons}{DiccMat(coor, $<$Pokemon, itConj(infoPokemon)$>$)} %% itConj es un iterador al conjunto de todosLosPokemones
 			\tupItem{posicionesJugadores}{DiccMat(coor, puntero(conjLineal(Jugador)))} %% cada coordenada tiene un conjunto de jugadores. con el jugador se lo puede busacr en jugadoresPorID, donde la primer coordenada se agrega al heap del pokemon, lo que devuelve el agregar al heap es el segundo valor en la tupla
@@ -259,9 +259,9 @@
 		\State desdeLong $\gets$ iDamePos(iLongitud(c), 2) \Comment O(1)
 		\While {desdeLat $\leq$ iLatitud(c) + 2}	\Comment O(1) {Recorro un conjunto acotado de coordenadas}
 			\While {desdeLong $\leq$ iLongitud(c) + 2}	\Comment O(1) {Recorro un conjunto acotado de coordenadas}
-				\If {iDistEuclidea(<desdeLat, desdeLong>, c) $\leq$ 4} \Comment O(1)
-					\If {Definido?(j.posicionesJugadores, <desdeLat, desdeLong>)}	\Comment O(1)
-						\State itJugadores $\gets$ iCrearIt(*(Significado(j.posicionesJugadores, <desdeLat, desdeLong>)))	\Comment O(1)
+				\If {iDistEuclidea(CrearCoor(desdeLat, desdeLong), c) $\leq$ 4} \Comment O(1)
+					\If {Definido?(j.posicionesJugadores, CrearCoor(desdeLat, desdeLong))}	\Comment O(1)
+						\State itJugadores $\gets$ iCrearIt(*(Significado(j.posicionesJugadores, CrearCoor(desdeLat, desdeLong))))	\Comment O(1)
 						\While {HaySiguiente(itJugadores)}	\Comment O(EC)
 							\State e $\gets$ Siguiente(itJugadores)	\Comment O(1)
 							\State tupJugId $\gets$ j.jugadoresPorID[e]	\Comment O(1)
@@ -290,7 +290,7 @@
 	\begin{algorithmic}
 		\State id $\gets$ Cardinal(j.jugadores) + Cardinal(j.expulsados) \Comment O(1)
 		\State itConjIds $\gets$ AgregarRapido(j.idsJugadores, id)	\Comment O(1)
-		\State infoJ $\gets$ $<$itConjIds, false, 0, Vacio(), CrearIt(Vacio())$>$ \Comment O(1) {El jugador es creado vacio, sin sanciones y sin pokemones atrapados}
+		\State infoJ $\gets$ $<$itConjIds, false, 0, Vacio(), CrearCoor(0, 0), CrearIt(Vacio())$>$ \Comment O(1) {El jugador es creado vacio, sin sanciones y sin pokemones atrapados. La coordenada es una cualquiera, ya que solo se va a acceder a ella cuando el jugador este conectado, y al conectarse, se le asigna una valida}
 		\State itJ $\gets$ AgregarRapido(j.jugadores, infoJ) \Comment O(copy(infoJ)) {Se puede utilizar AgregarRapido porque infoJ contiene un iterador al id del jugador, que es univoco}
 		\State AgregarAtras(j.jugadoresPorID, <itJ, NULL>) \Comment O(J) {Donde J es la cantidad total de jugadores que fueron agregados al juego} %% O(J)??? revisar!
 		\State res $\gets$ id \Comment O(1)
@@ -367,8 +367,8 @@
 		\State iActualizarTodos(j)	\Comment O(PS)
 	\EndIf
 	\If {debeSancionarse?(id, c, j)}
-		\If {infoJ.sanciones $<$ 4}	\Comment O(1)
-			\State infoJ.sanciones $\gets$ infoJ.sanciones + 1	\Comment O(1)
+  \State infoJ.sanciones $\gets$ infoJ.sanciones + 1	\Comment O(1)
+		\If {infoJ.sanciones $<$ 5}	\Comment O(1)
 			\State EliminarSiguiente(infoJ.itPosicion) \Comment O(1)
 			\State AgregarJugadorEnPos(j.posicionesJugadores, infoJ, c) \Comment O(1)
 		\Else
@@ -428,9 +428,8 @@
 \begin{algorithm}[H]{\textbf{iActualizarPokemon}(\Inout{itPokemones}{itConj(infoPokemon)}, \Inout{j}{estr})} 
 	\begin{algorithmic}
 		\State infoP $\gets$ Siguiente(itPokemones)	\Comment O(1)
-		\If {infoP.contador < 9}	\Comment O(1)
-			\State infoP.contador $\gets$ infoP.contador + 1	\Comment O(1)
-		\Else
+		\State infoP.contador $\gets$ infoP.contador + 1	\Comment O(1)
+    \If {infoP.contador = 10}	\Comment O(1)
 			\State e $\gets$ Proximo(infoP.jugadoresEnRango)	\Comment O(1)
 			\State infoP.esSalvaje $\gets$ false	\Comment O(1)
 			\State infoJ $\gets$ Siguiente(j.jugadoresPorID[e]$_{1}$)	\Comment O(1)
@@ -706,19 +705,13 @@
 \begin{algorithm}[H]{\textbf{DamePos}(\In{p}{Nat}, \In{step}{Nat}) $\to$ res : Nat} 
 	{}
 	\begin{algorithmic}
-		\State i $\gets$ p	\Comment O(1)
-		\State fin $\gets$ false	\Comment O(1)
-		\State res $\gets$ p	\Comment O(1)
-		\While {i $\neq$ 1 $\land \neg$ fin}	\Comment O(1)
-			\State i $\gets$ i - 1	\Comment O(1)
-			\If {i == p - step}	\Comment O(1)
-				\State res $\gets$ i \Comment O(1)
-				\State fin $\gets$ true	\Comment O(1)
-			\EndIf
-		\EndWhile
-	
+    \If {p $\geq$ step} \Comment O(1)
+      \State res $\gets$ p - step \Comment O(1)
+    \Else
+      \State res $\gets$ 0 \Comment O(1)
+    \EndIf
 		\medskip
 		\Statex \underline{Complejidad:} O(1)
-		\Statex \underline{Justificación:} Recorre un rango acotado.
+		\Statex \underline{Justificación:} Aritmetica de naturales.
     \end{algorithmic}
 \end{algorithm}

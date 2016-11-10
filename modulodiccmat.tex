@@ -40,7 +40,7 @@ El principal costo se paga al crear la estructura o borrar un dato, dado que cue
   \InterfazFuncion{Borrar}{\Inout{d}{diccMat($coor,\sigma$)}, \In{c}{$coor$}}{}
   [$d = d_0$ $\land$ enRango($c_1$, $c_2$, $d$) $\land_L$ def?($c_1$, $c_2$, $d$)]
   {$d$ $\igobs$ borrar($c_1$, $c_2$, $d_0$)}
-  [$\Theta\left(\displaystyle\sum_{c' \in d.claves}equal(c,c')\right)$]
+  [$\Theta(1)$]
   [Elimina el valor en la posicion $c$ en $d$.]
 
   \InterfazFuncion{Coordenadas}{\In{d}{diccMat($coor,\sigma$)}}{itConj($coor$)}
@@ -120,7 +120,7 @@ El principal costo se paga al crear la estructura o borrar un dato, dado que cue
 \begin{Representacion}
 	\begin{Estructura}{Diccionario Matriz}[dicc]
 		\begin{Tupla}[dicc]
-			\tupItem{posiciones}{arregloDimensionable de $<bool, \sigma>$}
+			\tupItem{posiciones}{arregloDimensionable de $<bool, itConj(\sigma), \sigma>$}
             \tupItem{claves}{conjLineal(coor)}
 			\tupItem{ancho}{Nat}
 			\tupItem{largo}{Nat}
@@ -130,7 +130,7 @@ El principal costo se paga al crear la estructura o borrar un dato, dado que cue
 	\tadAlinearFunciones{Rep}{estr}
 	\tadAlinearAxiomas{Rep(d)}
 
-	\Rep[dicc][d]{(tam(d.posiciones) $\igobs$ (d.ancho x d.largo)) $\yluego$(($\forall c:$ coor) (c $\in$ d.claves) $\Leftrightarrow$ definido?(d.posiciones, n) $\yluego$ d.posiciones[n]$_{1}$ $\igobs$ true)}%\mbox{}
+	\Rep[dicc][d]{(tam(d.posiciones) $\igobs$ (d.ancho x d.largo)) $\yluego$(($\forall c:$ coor) (c $\in$ d.claves) $\Leftrightarrow$ definido?(d.posiciones, n) $\yluego$ (d.posiciones[n]$_{1}$ $\igobs$ true)) $\yluego$ (($\forall c:$ coor) (c $\in$ d.claves $\Leftarrow$ (Siguiente(d.posiciones[n]$_{2}$) $\igobs$ c)))}%\mbox{}
 	
 	\tadAlinearFunciones{Abs}{dicc/d}	
 	
@@ -161,10 +161,15 @@ El principal costo se paga al crear la estructura o borrar un dato, dado que cue
 
 \begin{algorithm}[H]{\textbf{iDefinir}(\Inout {d}{dicc}, \In {c}{coor}, \In {s}{$\sigma$})}
     	\begin{algorithmic}[1]
+            \Comment sig : tupla \Comment O(1)
+            \Comment sig$_{1}$ $\gets$ true \Comment O(1) 
+            \Comment sig$_{3}$ $\gets$ s \Comment $\Theta(copy(s))$
             \If{$\lnot(Definido?(d, Aplanar(d,c)))$}
-                \State $AgregarRapido(d.claves, c)$ \Comment $\Theta(copy(s))$
+                \State sig$_{2}$ $\gets$ $AgregarRapido(d.claves, c)$ \Comment $\Theta(copy(s))$
+            \Else
+                \State sig$_{2}$ $\gets$ d.posiciones[Aplanar(d, c)]$_{2}$ \Comment O(1) 
             \EndIf
-            \State $d.posiciones[Aplanar(d, c)] \gets s$ \Comment $\Theta(copy(s))$
+            \State $d.posiciones[Aplanar(d, c)] \gets sig$ \Comment $\Theta(copy(s))$
 			
 			\medskip
 			\Statex \underline{Complejidad:} $\Theta(copy(s))$
@@ -192,10 +197,10 @@ El principal costo se paga al crear la estructura o borrar un dato, dado que cue
 
 \begin{algorithm}[H]{\textbf{iBorrar}(\Inout {d}{dicc}, \In {c}{coor})}
     	\begin{algorithmic}[1]
-            \State $Eliminar(d.claves, c)$ \Comment $\Theta\left(\displaystyle\sum_{c' \in d.claves}equal(c,c')\right)$
-            \State $d.posiciones[Aplanar(d, c)] \gets <false, d.posiciones[Aplanar(d, c)]$ \Comment $\Theta(1)$
-			\medskip
-			\Statex \underline{Complejidad:} $\Theta\left(\displaystyle\sum_{c' \in d.claves}equal(c,c')\right)$
+            \State EliminarSiguiente(d.posiciones[Aplanar(d, c)]_${2}$) \Comment $\Theta(1)$
+            \State $d.posiciones[Aplanar(d, c)] \gets <false, CrearIt(Vacio()), d.posiciones[Aplanar(d, c)]>$ \Comment $\Theta(1)$ 
+      \medskip
+			\Statex \underline{Complejidad:} $\Theta(1)$
         \end{algorithmic}
 \end{algorithm}
 
