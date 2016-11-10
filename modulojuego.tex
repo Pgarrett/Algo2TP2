@@ -156,8 +156,9 @@
 	
 	\begin{Estructura}{Juego}[estr]
 		\begin{Tupla}[estr]
-			\tupItem{pokemones}{diccString(Pokemon, ListaPorTipo(itConj(infoPokemon)))}%
+			\tupItem{pokemones}{diccString(Pokemon, ListaPorTipo: ListaEnlazada(itConj(infoPokemon)))}%
 			\tupItem{todosLosPokemones}{conjLineal(infoPokemon)}
+			\tupItem{pokedex}{diccString(Pokemon, Nat)}
 			\tupItem{idsJugadores}{conjLineal(Jugador)}
 			\tupItem{jugadores}{conjLineal(infoJugador)}
 			\tupItem{expulsados}{conjLineal(Nat)}
@@ -232,6 +233,7 @@
 		\State estr : j	\Comment O(1)
 		\State j.pokemones $\gets$ CrearDiccionario()	\Comment O(1)
 		\State j.todosLosPokemones $\gets$ Vacio()	\Comment O(1)
+		\State j.pokedex $\gets$ CrearDiccionario()	\Comment O(1)		
 		\State j.idsJugadores $\gets$ Vacio()	\Comment O(1)		
 		\State j.jugadores $\gets$ Vacio()	\Comment O(1)
 		\State j.expulsados $\gets$ Vacio()	\Comment O(1)
@@ -251,7 +253,7 @@
 \begin{algorithm}[H]{\textbf{iAgregarPokemon}(\Inout{j}{estr}, \In{c}{coor}, \In{p}{Pokemon}) $\to$ res : itConj(Pokemon)}
 	\begin{algorithmic}
 		\State infoP $\gets$ $<$c, 0, Vacio(), True$>$	\Comment O(1)
-		\State itPokemon $\gets$ AgregarAtras(j.todosLosPokemones, infoP)	\Comment O(copy(infoP)) {Copiar los elementos de la tupla es O(1)}
+		\State itPokemon $\gets$ AgregarRapido(j.todosLosPokemones, infoP)	\Comment O(copy(infoP)) {Copiar los elementos de la tupla es O(1)}
 		\State desdeLat $\gets$ iDamePos(iLatitud(c), 2) \Comment O(1)
 		\State desdeLong $\gets$ iDamePos(iLongitud(c), 2) \Comment O(1)
 		\While {desdeLat $\leq$ iLatitud(c) + 2}	\Comment O(1) {Recorro un conjunto acotado de coordenadas}
@@ -578,7 +580,7 @@
 		\State $res \gets ePosibles$ \Comment O(1)
 	
 		\medskip
-		\Statex \underline{Complejidad:} $O(Cardinal(es))$
+		\Statex \underline{Complejidad:} $O(\#(es))$
 		\Statex \underline{Justificación:} Se itera por completo el conjunto de jugadores 'es'. En peor caso, todos los elementos de 'es' deben ser agregados al resultado.
     \end{algorithmic}
 \end{algorithm}
@@ -598,7 +600,7 @@
 \begin{algorithm}[H]{\textbf{iCantPokemonesTotales}(\In{j}{estr}) $\to$ res : Nat} 
 	{}
 	\begin{algorithmic}
-		\State $res \gets cardinal(j.todosLosPokemones) $ \Comment O(1)
+		\State res $\gets$ Cardinal(j.todosLosPokemones)	\Comment O(1)
 	
 		\medskip
 		\Statex \underline{Complejidad:} O(1)
@@ -610,9 +612,9 @@
 	{}
 	\begin{algorithmic}
 		\If {Definido?(j.pokemones, p.tipo)} \Comment $O(|P|)$
-		\State $res \gets Obtener(j.pokemones, p.tipo)$ \Comment $O(|P|)$
+			\State res $\gets$ Longitud(Obtener(j.pokemones, p.tipo)) \Comment $O(|P|)$
 		\Else
-		\State $res \gets 0 $ \Comment O(1)
+			\State res $\gets$ 0  \Comment O(1)
 		\EndIf
 	
 		\medskip
