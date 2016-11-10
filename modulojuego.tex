@@ -322,15 +322,19 @@
 
 
 \begin{algorithm}[H]{\textbf{iAgregarJugadorEnPos}(\Inout{d}{DiccMat(coor, puntero(conjLineal(Jugador)))}, \Inout{j}{infoJugador}, \In{c}{coor})} 
-	\begin{algorithmic}
+
+$\textbf{Pre}$ $\equiv$ $\{$ d $=$ d_0 $\land$ longitud(c) $<$ ancho(d) $\land$ latitud(c) $<$ largo(d) $\}$
+  \begin{algorithmic}
       \State conLineal(Jugador) : jugsEnPos \Comment O(1)
       \If {$\lnot$ Definido?(d, c)}	\Comment O(1)
           \State Definir(d, c, $\&Vacio()$) \Comment O(1)
       \EndIf
       \State jugsEnPos $\gets$ *(Significado(d, c)) \Comment O(1)
       \State j.itPosicion $\gets$ AgregarRapido(jugsEnPos, j.id) \Comment O(1)
+      \State j.posicion $\gets$ c \Comment O(1)
 		\Statex \underline{Complejidad:} O(1) 
     \end{algorithmic}
+$\textbf{Post}$ $\equiv$ $\{$d = definir(logitud(c), latitud(c), Ag(j, significado(longitud(c), latitud(c))))$\}$
 \end{algorithm}
 
 \begin{algorithm}[H]{\textbf{iDesconectarse}(\Inout{j}{estr}, \In{id}{Jugador})} 
