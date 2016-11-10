@@ -209,15 +209,15 @@
 	\end{enumerate}
 	
 \subsubsection{Funci\'on de Abstracci\'on}	
-	Abs(e): estre - $>$ Juego {Rep(e)} 
- pGo: Juego tq e.mapa = mapa(pGo) $\land$ e.jugadores = jugadores(pGo) $\yluego$ \\
- ($\forall j : jugador$) j $\in$ e.jugadores $\impluego$ 
- \\ j.sanciones = sanciones(j, pGo) ((j $\in$ expulsados(pGo) $\land$ j.sanciones >= 10)\\
- $\oluego$ (j.pokesCapturados = pokemones(j,pGo) $\land$ j.estaConectado = estaConectad(j,pGo) \\
- $\land$ j.estaConectado $\impluego$  j.pos = posicion(j,pGo))) $\land$ \\
- ($\forall p : pokemon$) p $\in$ c.pokemones $\impluego$ ($\forall j : Jugador$) \\
- j $\in$ e.jugadores $\yluego$ p $\in$ pokemones(j,pGo) o [($\forall c : coord$)\\
- c $\in$ e.mapa.coordenadas $\yluego$ p = pokemonEnPos(c,pGo) $\land$ cantMovParaCap(c,pGo)\\
+	Abs(e): estre - $>$ Jugo {Rep(e)} 
+ pGo: Juego tq e.mapa = mapa(pGo) y e.jugadores = jugadores(pGo) yluego \\
+ (Para todo j : jugador) j pertenece e.jugadores impluego 
+ \\ j.sanciones = sanciones(j, pGo) ((j pertenece expulsados(pGo) y j.sanciones >= 10)\\
+ oluego (j.pokesCapturados = pokemones(j,pGo) y j.estaConectado = estaConectad(j,pGo) \\
+ y j.estaConectado impluego j.pos = posicion(j,pGo))) y \\
+ (Para todo p : pokemon) p pertenece c.pokemones impluego (Para todo j : Jugador) \\
+ j pertenece e.jugadores yluego p pertenece pokemones(j,pGo) o [(Para todo c : coord)\\
+ c pertenece e.mapa.coordenadas yluego p = pokemonEnPos(c,pGo) y cantMovParaCap(c,pGo)\\
  p.contador]
 \end{Representacion}
 
@@ -353,9 +353,9 @@
 	\begin{algorithmic}
 	\State tupJug $\gets$ j.jugadoresPorID[id]	\Comment O(1)
 	\State infoJ $\gets$ Siguiente(tupJug$_{1}$)	\Comment O(1)
-	\If {iEntroAUnRango(j, id, c)}
+	\If {iHayPokemonCercano(infoJ.posicion, j)}	\Comment O(1)
 		\State p $\gets$ iPosPokemonCercano(j, c)	\Comment O(1)
-		\State iActualizarMenos(p, j)
+		\State iActualizarMenos(p, j)	\Comment O(PS)
 		\State infoP $\gets$ Siguiente(Significado(j.posicionesPokemons, p)$_{2}$)	\Comment O(1)
 		\State infoP.contador $\gets$ 0 \Comment O(1)
 		\State cantPokemonesJug $\gets$ Cardinal(infoJ.pokemonesCapturados)	\Comment O(1)
@@ -364,7 +364,7 @@
 		\If {iSaleDelRango(j, c, id)}
 			\State EliminarSiguiente(tupJugId$_{2}$)	\Comment O(log(EC)) {Elimina al jugador del heap donde estaba esperando}
 		\EndIf
-		\State iActualizarTodos(j)
+		\State iActualizarTodos(j)	\Comment O(PS)
 	\EndIf
 	\If {debeSancionarse?(id, c, j)}
 		\If {infoJ.sanciones $<$ 4}	\Comment O(1)
@@ -387,6 +387,62 @@
 \Statex \underline{Complejidad:} O((PS + PC) * |P| + log(EC))
 \Statex \underline{Justificación:}
 \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{iActualizarMenos}(\Inout{j}{estr}, \In{c}{coor})} 
+	\begin{algorithmic}
+		\State itCoor $\gets$ Coordenadas(j.posicionesPokemons)	\Comment O(1)
+		\While {HaySiguiente(itCoor)}	\Comment O(PS)
+			\If{Siguiente(itCoor) $\neq$ c}	\Comment O(1)
+				\State itPokemon $\gets$ Significado(j.posicionesPokemons, Siguiente(itCoor))$_{2}$	\Comment O(1)
+				\If {Siguiente(itPokemon).esSalvaje}	\Comment O(1)
+					\State ActualizarPokemon(itPokemon)	\Comment O(1)
+				\EndIf
+			\EndIf
+		\EndWhile
+
+	
+		\medskip
+		\Statex \underline{Complejidad:} O(PS)
+		\Statex \underline{Justificación:} Actualiza todos las colas de prioridad excepto por la que este en la posicion que paso por parametro.
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{iActualizarTodos}(\Inout{j}{estr})} 
+	\begin{algorithmic}
+		\State itCoor $\gets$ Coordenadas(j.posicionesPokemons)	\Comment O(1)
+		\While {HaySiguiente(itCoor)}	\Comment O(PS)
+			\State itPokemon $\gets$ Significado(j.posicionesPokemons, Siguiente(itCoor))$_{2}$	\Comment O(1)
+			\If {Siguiente(itPokemon).esSalvaje}	\Comment O(1)
+				\State ActualizarPokemon(itPokemon)	\Comment O(1)
+			\EndIf
+		\EndWhile
+
+	
+		\medskip
+		\Statex \underline{Complejidad:} O(PS)
+		\Statex \underline{Justificación:} Actualiza todos las colas de prioridad. invalido.
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]{\textbf{iActualizarPokemon}(\Inout{itPokemones}{itConj(infoPokemon)}, \Inout{j}{estr})} 
+	\begin{algorithmic}
+		\State infoP $\gets$ Siguiente(itPokemones)	\Comment O(1)
+		\If {infoP.contador < 9}	\Comment O(1)
+			\State infoP.contador $\gets$ infoP.contador + 1	\Comment O(1)
+		\Else
+			\State e $\gets$ Proximo(infoP.jugadoresEnRango)	\Comment O(1)
+			\State infoP.esSalvaje $\gets$ false	\Comment O(1)
+			\State infoJ $\gets$ Siguiente(j.jugadoresPorID[e]$_{1}$)	\Comment O(1)
+			\State AgregarRapido(infoJ.pokemonesCapturados, itPokemones)	\Comment O(copy(itPokemones)) {Copiar el iterador es O(1)}
+			\State Borrar(j.posicionesPokemons, infoP.posicion) \Comment O(1)
+		\EndIf
+
+	
+		\medskip
+		\Statex \underline{Complejidad:} O(1)
+		\Statex \underline{Justificación:} Actualiza la cola de prioridad del pokemon que paso por parametro. Suma uno al contador en caso de que no tenga que atraparse, si tiene que ser atrapado, lo agrega al conjunto de pokemones atrapados del jugador y lo elimina del diccionario de pokemones por posicion.
+    \end{algorithmic}
 \end{algorithm}
 
 \begin{algorithm}[H]{\textbf{iDebeSancionarse}(\In{e}{Jugador}, \In{c}{coor}, \In{j}{estr}) $\to$ res : Bool} 
