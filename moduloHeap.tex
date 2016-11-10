@@ -80,25 +80,13 @@
 	[O(log(tamaño(c)))]
 	[Quita el elemento más prioritario]
 
-	\InterfazFuncion{Encolar}{\Inout{c}{colaMinPrior($\alpha$)}, \In{p}{nat}, \In{a}{$\alpha$}}{itColaMin($alpha$)}
+	\InterfazFuncion{Encolar}{\Inout{c}{colaMinPrior($\alpha$)}, \In{p}{nat}, \In{a}{$\alpha$}}{itColaMin($\alpha$)}
 	[$c$ $\igobs$ $c_0$]
 	{$c$ $\igobs$ encolar($p$,$c_0$) $\wedge$ $res$ $\igobs$ CrearIt(ColaASecu($c_0$), $a$) $\wedge$ alias(SecuSuby(res) = ColaASecu(c))}
 	[O(log($\vert$c$\vert$)) + $copy$($a$)]
 	[Agrega el elemento $a$ de tipo $\alpha$ con prioridad $p$ a la cola]
 	[Se agrega el elemento por copia]
 
-%	\InterfazFuncion{Eliminar}{\Inout{c}{colaMinPrior($\alpha$), \In{i}{nat}}}{}
-%	[$\neg$vacía?($c$) $\land$ $c$ $\igobs$ $c_0$]
-%	{$c$ $\igobs$ Alias(EsPermutacion(deColaASecu($c$)}
-%	[O(log(tamaño(c)))]
-%	[Quita el elemento más prioritario]
-
-
-%	\InterfazFuncion{• = •}{\In{c}{colaMinPrior($\alpha$)}, \In{c'}{colaMinPrior($\alpha$)}}{bool}
-%	[true]
-%	{$res$ $\igobs$ ($c$ $\igobs$ $c'$)}
-%	[O(min(tamaño($c$), tamaño($c'$)))]
-%	[Indica si $c$ es igual $c'$]
 
 \subsubsection{Operaciones del Iterador}
 
@@ -146,28 +134,41 @@
 		\renewcommand{\labelenumi}{(\Roman{enumi})}
 
 		\begin{enumerate}
-			\item Todos ids de cada nodo en elementos son menos que el largo del vector proximos 
-			\item Si ids de nodos en elementos son diferentes, evaluados en la posicion correspondiente de proximos, sus prioridades mantienen la diferencia.  
+			\item Si la cola esta vacía el primer elemento es nulo.
+			\item Si no esta vacía, si su elemento izquierdo esta definido la prioridad de la raíz es mayor y la raiz es el padre del elemento.
+			\item Si no esta vacía, si su elemento derecho esta definido la prioridad de la raíz es mayor y la raiz es el padre del elemento.
+			\item El subarbol derecho e izquierdo cumplen con el invariante.
 		\end{enumerate}
 
 	\tadAlinearFunciones{Rep}{estr}
 	\tadAlinearAxiomas{Rep(e)}
 
 	\Rep[estr][e]{
-		\\($\forall i:$ nat) ($i$ < $longitud(e.proximos)$) $\impluego$
-	\\	(($\forall j:$ nat) $j \leqslant i$ $\impluego$ (e.proximos[$j$].prioridad $\leqslant$ e.proximos[$i$].prioridad) $\land$
-	\\	(($\forall n:$ nat) $n$ < $longitud(e.proximos)$ $\impluego$ e.proximos[$e.elementos$[$n$]$.id$].$elemCola \rightarrow siguiente.elem$ $\igobs$ $e.elementos$[$n$]$.elem$)
+		\\(e.proximo = NULL) = (e.tamaño = 0) $\yluego$ 
+		\\(e.proximo $\neq$ NULL) $\impluego$ (
+		\\(e.proximo $\rightarrow$ izq $\neq$ NULL $\yluego$ ((e.proximo $\rightarrow$ prior $>$ (e.proximo $\rightarrow$ izq) $\rightarrow$ prior) $\wedge$ (e.proximo = (e.proximo $\rightarrow$ izq) $\rightarrow$ padre))) 
+		\\(e.proximo $\rightarrow$ der $\neq$ NULL $\yluego$ ((e.proximo $\rightarrow$ prior $>$ (e.proximo $\rightarrow$ der) $\rightarrow$ prior) $\wedge$ (e.proximo = (e.proximo $\rightarrow$ der) $\rightarrow$ padre))) $\wedge$
+		\\ Rep(SubArbolIzq(e)) $\wedge$ Rep(SubArbolDer(e)))
 	}\mbox{}
+
+\tadAlinearFunciones{SubArbolIzq}{c/estr}
+\tadOperacion{SubArbolIzq}{c/est}{estr}{}
+\tadOperacion{SubArbolDer}{c/est}{estr}{}
+
+	\tadAxioma{SubArbolIzq($c$)}{
+		estr(c.proximo $\rightarrow$ izq, c.tamaño$-$1)
+	}
+
+	\tadAxioma{SubArbolDer($c$)}{
+		estr(c.proximo $\rightarrow$ der, c.tamaño$-$1)
+	}
 
 	\subsubsection{Función de Abstracción}
 
 	\tadAlinearFunciones{Abs}{Estr/e}
 
 		\Abs[estr]{colaMinPrior}[e]{cmp}{
-			(vacía?($cmp$) $\Leftrightarrow$ $tamano$($e$) $\igobs$ 0) $\land$ \\
-			 $\neg$ $vacia?$($cmp$) $\impluego$ \\
-		  	 (próximo($cmp$) $\igobs$ próximo($e$) $\land$ \\
-			 desencolar($cmp$) $\igobs$ desencolar($e$))}
+			({\IF vacía?($e$) THEN vacia ELSE encolar(proximo(c), Abs(desencolar(c))) FI}}
 
 \subsubsection{Representación del Iterador Cola de Prioridad}
 
@@ -208,7 +209,7 @@
 
 \subsubsection{Algoritmos del Modulo}
 
-\begin{algorithm}[H]{\textbf{iVacía}() $\to$ $res$ : colaMin($\alpha$)}
+\begin{algorithm}[H]{\textbf{iVacía}() $\to$ $res$ : estr}
     	\begin{algorithmic}[1]
 			\State $res \gets <NULL, 0>$ \Comment {$\Theta(1)$}
 			
@@ -217,7 +218,7 @@
     	\end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iVacía?}(\In {c}{colaMin($\alpha$)}) $\to$ $res$ : Bool}
+\begin{algorithm}[H]{\textbf{iVacía?}(\In {c}{estr}) $\to$ $res$ : Bool}
     	\begin{algorithmic}[1]
 			\State $res \gets (c.proximo = NULL)$ \Comment {$\Theta(1)$}
 			
@@ -226,7 +227,7 @@
     	\end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iPróximo}(\In {c}{colaMinPrior($\alpha$)}) $\to$ $res$ : $\alpha$}
+\begin{algorithm}[H]{\textbf{iPróximo}(\In {c}{estr}) $\to$ $res$ : $\alpha$}
     	\begin{algorithmic}[1]
 			\State $res \gets CrearIt(c).Siguiente \rightarrow elem$ \Comment {$\Theta(1)$}
 			
@@ -292,7 +293,7 @@
     	\end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{iEncolar}(\Inout {c}{colaMinPrior($\alpha$), \In {prioridad}{nat}, \In {a}{$\alpha$}})  $\to$ $res$ : $iter$ }
+\begin{algorithm}[H]{\textbf{iEncolar}(\Inout {c}{estr}, \In {prioridad}{nat}, \In {a}{$\alpha$})  $\to$ $res$ : $iter$ }
     	\begin{algorithmic}[1]
 			\State $puntero(Nodo): padre \gets iPadreNuevoNodo(c)$ \Comment {$\Theta(log(|c|))$}
 			\State $Nodo: nuevo \gets <prioridad, a, padre, NULL, NULL> $ \Comment {$\Theta(1)$}						
@@ -373,7 +374,7 @@
     	\end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{swapCola}{(\Inout {p}{puntero(Nodo)}, \Inout {q}{puntero(Nodo)}})}
+\begin{algorithm}[H]{\textbf{iSwapCola}{(\Inout {p}{puntero(Nodo)}, \Inout {q}{puntero(Nodo)}})}
    	\begin{algorithmic}[1]
 			\State $Nodo: aux \gets (*p) $ \Comment {$\Theta(Copy(\alpha))$}
 			\State $p \rightarrow padre \gets q \rightarrow padre $ \Comment {$\Theta(1)$}
@@ -431,21 +432,21 @@
 \end{algorithm}    	
 
 
-\begin{algorithm}[H]{\textbf{HaySiguiente?}(\In{it}{itColaMin($\alpha$)}) $\to$ $res$ : bool}
+\begin{algorithm}[H]{\textbf{iHaySiguiente?}(\In{it}{iter}) $\to$ $res$ : bool}
    	\begin{algorithmic}[1]
 			\State $res \gets it.siguiente \neq NULL $ \Comment {$\Theta(1)$}
 			\Statex \underline{Complejidad:} $\Theta(1)$
    	\end{algorithmic}
 \end{algorithm}  
 
-\begin{algorithm}[H]{\textbf{Siguiente}(\In{it}{itColaMin($\alpha$)}) $\to$ $res$ : $\alpha$}
+\begin{algorithm}[H]{\textbf{iSiguiente}(\In{it}{iter}) $\to$ $res$ : $\alpha$}
    	\begin{algorithmic}[1]
 			\State $res \gets (it.siguiente \rightarrow elem) $ \Comment {$\Theta(1)$}
 			\Statex \underline{Complejidad:} $\Theta(1)$
    	\end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{EliminarSiguiente}(\Inout{it}{itColaMin($\alpha$)})}
+\begin{algorithm}[H]{\textbf{iEliminarSiguiente}(\Inout{it}{iter})}
    	\begin{algorithmic}[1]
 			\If{arbol.tamaño $>$ 1}
 	   			\State $puntero(Nodo) ult \gets iUltimoNodo(arbol)$ \Comment {$\Theta(log(|arbol|))$}
