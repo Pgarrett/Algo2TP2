@@ -1,0 +1,68 @@
+tupla(
+  pokemones: diccString(Pokemon, ListaPorTipo: ListaEnlazada(itConj(infoPokemon))),
+  todosLosPokemones: conjLineal(infoPokemon) , 
+  pokedex : diccString(Pokemon, Nat)
+, idsJugadores: conjLineal(Jugador) , 
+  jugadores: conjLineal(infoJugador) , 
+  expulsados: conjLineal(Jugador) , 
+  jugadoresPorID: Vector(<info: itConj(infoJugador), encolado: itColaPrior(Jugador)>) , 
+  posicionesPokemons: DiccMat(coor, <Pokemon, itConj(infoPokemon)>) , 
+  posicionesJugadores: DiccMat(coor, puntero(conjLineal(Jugador))) , 
+  mapa: map )
+  
+jugador(
+  id: itConj(Jugador) , 
+  estaConectado: Bool , 
+  sanciones: Nat , 
+  pokemonesCapturados: conjLineal(itConj(infoPokemon)) , 
+  posicion: coor , 
+  itPosicion: itConj(Jugador) )
+
+pokemon(
+  posicion: coor , 
+  contador : Nat , 
+  jugadoresEnRango: colaPrior<Nat, itConj(Jugador)> , 
+  salvaje: Bool )
+  
+
+
+  idsJugadores:
+    el tamaño de idJugadores debe ser igual a la suma de la cantidad de jugadores y de expulsados
+    no debe haber repetidos en idsJugadores
+    todos los ids dentro de idsJugadores deben ser menores que su cardinal
+    
+
+  pokemones
+
+  posicionesPokemon:
+    todas las coordenadas estan en el mapa
+  
+    
+  jugadoresPorId:
+    para toda posicion 'i', el jugador en la posicion i y solo si su id es 'i' 
+    un jugador en una posicion 'i' tiene 5 sanciones si y solo si 'i' pertenece a expulsados
+    si hay pokemon en rango,(=>) el iterador(en la segunda posicion) apunta a la posicion del jugador entre los que esperan para atraparlo
+      
+  jugadores:
+    el id de un jugador(en jugadores) debe estar en idsJugadores
+    un jugador esta en jugadores si y solo si no esta expulsado (su id no pertenece a expulsados)
+    las sanciones de un jugador(en jugadores), estan entre 0 y 4
+    
+  posicionesJugadores:
+    si un jugador esta conectado, tiene una posicion
+    todas las coordenadas(claves) estan en el mapa
+      
+  posicionesPokemones:
+    todas las coordenadas(claves) estan en el mapa
+    no puede haber 2 claves con distancia euclidea menor a 5
+  
+  todosLosPokemones:
+    son salvajes si y solo si tienen posicion
+    un pokemon salvaje, todos los entrenadores que estan para atraparlo, estan en jugadores, estan conectados y estan en el rango (distancia euclidea)
+    un pokemon salvaje, tiene al jugador con menos pokemones como proximo a atraparlo
+    la longitud de la lista de pokemones de un tipo, es igual a la cantidad de ese tipo en la pokedex
+    un pokemon esta atrapado si y solo si su contador esta en 10
+  pokedex:
+    pokedex tiene todos los tipos de pokemon 
+    la suma de todas las cantidades, es igual al tamaño de todosLosPokemones
+    
