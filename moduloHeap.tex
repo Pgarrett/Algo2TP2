@@ -447,11 +447,11 @@
 
 \begin{algorithm}[H]{\textbf{EliminarSiguiente}(\Inout{it}{itColaMin($\alpha$)})}
    	\begin{algorithmic}[1]
-			\If{$arbol.tamaño > 1$}
+			\If{arbol.tamaño $>$ 1}
 	   			\State $puntero(Nodo) ult \gets iUltimoNodo(arbol)$ \Comment {$\Theta(log(|arbol|))$}
    				\State $iSwapCola(ult, it.siguiente)$ \Comment {$\Theta(1)$}
    				
-				\If{$arbol.tamaño mod 2 = 0$}
+				\If{arbol.tamaño mod 2 = 0}
 					\State $it.siguiente \rightarrow padre \rightarrow izq \gets NULL $\Comment {$\Theta(1)$}
 				\Else
 					\State $it.siguiente \rightarrow padre \rightarrow der \gets NULL $\Comment {$\Theta(1)$}
@@ -462,7 +462,7 @@
 				\State $it.siguiente \gets NULL $\Comment {$\Theta(1)$}							
 				\State $arbol.tamaño \gets 0 $\Comment {$\Theta(1)$}			
 			\EndIf 		
-				\State $it.siguiente \rightarrow padre \rightarrow  \gets NULL $ \Comment {$\Theta(1)$}
+				\State (it.siguiente $\rightarrow$ padre)  $\gets$ NULL  \Comment {$\Theta(1)$}
 			\Statex \underline{Complejidad:} $\Theta(1)$
    	\end{algorithmic}
 \end{algorithm}

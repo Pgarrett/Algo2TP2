@@ -175,6 +175,7 @@
 			\tupItem{sanciones}{Nat}
 			\tupItem{pokemonesCapturados}{conjLineal(itConj(infoPokemon))} %% Revisar si es infoPokemon o pokemones. tiene que apuntar al conjunto de todos los pokemones
       		\tupItem{posicion}{coor}
+      		\tupItem{itPosicion}{itConj(Jugador)}
 		\end{Tupla}
 	
 		\begin{Tupla}[infoPokemon]
@@ -320,14 +321,14 @@
 \end{algorithm}
 
 
-\begin{algorithm}[H]{\textbf{iAgregarJugadorAPos}(\Inout{d}{DiccMat(coor, puntero(conjLineal(Jugador)))}, \Inout{j}{infoJugador}, \In{c}{coor})} 
+\begin{algorithm}[H]{\textbf{iAgregarJugadorEnPos}(\Inout{d}{DiccMat(coor, puntero(conjLineal(Jugador)))}, \Inout{j}{infoJugador}, \In{c}{coor})} 
 	\begin{algorithmic}
       \State conLineal(Jugador) : jugsEnPos \Comment O(1)
       \If {$\lnot$ Definido?(d, c)}	\Comment O(1)
           \State Definir(d, c, $\&Vacio()$) \Comment O(1)
       \EndIf
       \State jugsEnPos $\gets$ *(Significado(d, c)) \Comment O(1)
-      \State j.posicion $\gets$ AgregarRapido(jugsEnPos, j.id) \Comment O(1)
+      \State j.itPosicion $\gets$ AgregarRapido(jugsEnPos, j.id) \Comment O(1)
 		\Statex \underline{Complejidad:} O(1) 
     \end{algorithmic}
 \end{algorithm}
@@ -340,50 +341,50 @@
 		\EndIf
     \State infoJ $\gets$ Siguiente($tupJug_{1}$) \Comment O(1) 
 		\State infoJ.estaConectado $\gets$ false	\Comment O(1)
-    \State EliminarSiguiente(infoJ.posicion) \Comment O(1)
-    \State infoJ.posicion $\gets$ CrearIt(Vacio())	\Comment O(1)
+    \State EliminarSiguiente(infoJ.itPosicion) \Comment O(1)
+    \State infoJ.itPosicion $\gets$ CrearIt(Vacio())	\Comment O(1)
 		\medskip
 		\Statex \underline{Complejidad:} $O(log(EC))$
 		\Statex \underline{Justificación:} EC es la maxima cantidad de jugadores esperando para atrapar un pokemon. En el peor caso, el heap del que sale el jugador es el que mas jugadores esperando tiene.
     \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]{\textbf{Moverse}(\Inout{j}{estr}, \In{id}{Jugador}, \In{c}{coor})}{}
+\begin{algorithm}[H]{\textbf{iMoverse}(\Inout{j}{estr}, \In{id}{Jugador}, \In{c}{coor})}{}
 	\begin{algorithmic}
-  \State 
-  \State tupJug $\gets$ j.jugadoresPorID[id]	\Comment O(1)
+	\State tupJug $\gets$ j.jugadoresPorID[id]	\Comment O(1)
 	\State infoJ $\gets$ Siguiente(tupJug$_{1}$)	\Comment O(1)
-	\State EliminarSiguiente(infoJ.posicion) \Comment O(1)
-  \State AgregarJugadorEnPos(j.posicionesJugadores, infoJ, c) \Comment O(1)
 	\If {iEntroAUnRango(j, id, c)}
 		\State p $\gets$ iPosPokemonCercano(j, c)	\Comment O(1)
 		\State iActualizarMenos(p, j)
 		\State infoP $\gets$ Siguiente(Significado(j.posicionesPokemons, p)$_{2}$)	\Comment O(1)
 		\State infoP.contador $\gets$ 0 \Comment O(1)
 		\State cantPokemonesJug $\gets$ Cardinal(infoJ.pokemonesCapturados)	\Comment O(1)
-		\State itCola $\gets$ iEncolar(Siguiente(itPokemon).jugadoresEnRango, cantPokemonesJug, e)	\Comment O(log(EC) + copy(e))
-		\State tupJugId$_{2}$ $\gets$ itCola	\Comment O(1)
+		\State tupJugId$_{2}$ $\gets$ iEncolar(infoP.jugadoresEnRango, cantPokemonesJug, id)	\Comment O(log(EC))
 	\Else
 		\If {iSaleDelRango(j, c, id)}
-			\State borrarlo del heap
+			\State EliminarSiguiente(tupJugId$_{2}$)	\Comment O(log(EC)) {Elimina al jugador del heap donde estaba esperando}
 		\EndIf
 		\State iActualizarTodos(j)
 	\EndIf
 	\If {debeSancionarse?(id, c, j)}
 		\If {infoJ.sanciones $<$ 4}	\Comment O(1)
 			\State infoJ.sanciones $\gets$ infoJ.sanciones + 1	\Comment O(1)
+			\State EliminarSiguiente(infoJ.itPosicion) \Comment O(1)
+			\State AgregarJugadorEnPos(j.posicionesJugadores, infoJ, c) \Comment O(1)
 		\Else
 			\State iEliminarSiguiente(tupJug$_{1}$)	\Comment O(1) {Saca al jugador del conjunto de jugadores}
 			\State AgregarRapido(j.expulsados, id)	\Comment O(copy(id)) {Copiar un nat es O(1)}
 			\If {iHayPokemonCercano(j, c)}	\Comment O(1)
 				\State iEliminarSiguiente(tupJug$_{2}$)	\Comment O(log(EC)) {Elimina al jugador del heap donde estaba esperando}
 			\EndIf
-			
 		\EndIf
+	\Else
+		\State EliminarSiguiente(infoJ.itPosicion) \Comment O(1)
+		\State AgregarJugadorEnPos(j.posicionesJugadores, infoJ, c) \Comment O(1)
 	\EndIf
 
 \medskip
-\Statex \underline{Complejidad:} $O()$
+\Statex \underline{Complejidad:} O((PS + PC) * |P| + log(EC))
 \Statex \underline{Justificación:}
 \end{algorithmic}
 \end{algorithm}
@@ -524,7 +525,7 @@
 
 \begin{algorithm}[H]{\textbf{iPuedoAgregarPokemon}(\In{j}{estr}, \In{c}{coor}) $\to$ res : Bool} 
 	\begin{algorithmic}
-		\State res $\gets$ PosExistente(c, j.mapa) $\land$ $\lnot$(Definido?(j.posicionesPokemons, c)) $\land$ $\lnot$(HayPokemonCercano(j, c))  \Comment $\Theta\left(\displaystyle\sum_{c' \in coordendas(mapa(j))}equal(c,c')\right)$
+		\State res $\gets$ PosExistente(c, j.mapa) $\land$ $\lnot$(Definido?(j.posicionesPokemons, c)) $\land$ $\lnot$(HayPokemonEnTerritorio(j, c))  \Comment $\Theta\left(\displaystyle\sum_{c' \in coordendas(mapa(j))}equal(c,c')\right)$
 	
 		\medskip
 		\Statex \underline{Complejidad:} [$\Theta\left(\displaystyle\sum_{c' \in coordendas(mapa(j))}equal(c,c')\right)$]
@@ -533,6 +534,29 @@
  \end{algorithm}
  
  \begin{algorithm}[H]{\textbf{iHayPokemonCercano}(\In{j}{estr}, \In{c}{coor}) $\to$ res : Bool} 
+	\begin{algorithmic}
+		\State res $\gets$ false	\Comment O(1) 
+		\State latC $\gets$ Latitud(c)	\Comment O(1)
+		\State i $\gets$ DamePos(latC, 2) \Comment O(1)		
+		\State longC $\gets$ Longitud(c)	\Comment O(1)
+		\State j $\gets$ DamePos(longC, 2) \Comment O(1)
+		\While {i $\leq$ latC + 2}	\Comment O(1) {Vale porque estoy recorriendo un conjunto acotado de coordenadas}
+			\While {j $\leq$ longC + 2 }	\Comment O(1) {Vale porque estoy recorriendo un conjunto acotado de coordenadas}
+				\If {Definido?(j.posicionesPokemons, $<$i, j$>$) $\land$ DistEuclidea(c, $<$i, j$>$) $\leq$ 4}	\Comment O(1)
+					\State res $\gets$ true	\Comment O(1) 
+				\EndIf
+				\State j $\gets$ j + 1	\Comment O(1)
+			\EndWhile
+			\State i $\gets$ i + 1	\Comment O(1)
+		\EndWhile
+	
+		\medskip
+		\Statex \underline{Complejidad:} $\Theta(1)$
+		\Statex \underline{Justificación:} Como el rango a recorrer es una constante, se puede decir que es de la clase $\Theta(1)$
+     \end{algorithmic}
+ \end{algorithm}
+ 
+ \begin{algorithm}[H]{\textbf{iHayPokemonEnTerritorio}(\In{j}{estr}, \In{c}{coor}) $\to$ res : Bool} 
 	\begin{algorithmic}
 		\State res $\gets$ false	\Comment O(1) 
 		\State latC $\gets$ Latitud(c)	\Comment O(1)
