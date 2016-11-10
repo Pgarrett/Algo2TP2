@@ -157,8 +157,8 @@
 			\State $it \gets CrearIt(m.coordenadas)$ \Comment $\Theta(1)$
 			\State $max \gets 0$ \Comment $\Theta(1)$
 			\While {HaySiguiente(it)} \Comment $\Theta(Cardinal(m.coordenadas))$
-				\If {$max < Siguiente(it)_{2}$} \Comment $\Theta(1)$
-					\State $max \gets Siguiente(it)_{2}$ \Comment $\Theta(1)$	
+				\If {max $<$ Longitud(Siguiente(it))} \Comment $\Theta(1)$
+					\State max $\gets$ Longitud(Siguiente(it)) \Comment $\Theta(1)$	
 				\EndIf
 				\State $Avanzar(it)$ \Comment $\Theta(1)$				
 			\EndWhile
@@ -172,8 +172,8 @@
 			\State $it \gets CrearIt(m.coordenadas)$ \Comment $\Theta(1)$
 			\State $max \gets 0$ \Comment $\Theta(1)$
 			\While {$HaySiguiente(it)$} \Comment $\Theta(Cardinal(m.coordenadas))$
-				\If {$max < Siguiente(it)_{1}$} \Comment $\Theta(1)$
-					\State $max \gets Siguiente(it)_{1}$ \Comment $\Theta(1)$					
+				\If {max $<$ Latitud(Siguiente(it))} \Comment $\Theta(1)$
+					\State max $\gets$ Latitud(Siguiente(it))$ \Comment $\Theta(1)$					
 				\EndIf
 				\State $Avanzar(it)$ \Comment $\Theta(1)$				
 			\EndWhile

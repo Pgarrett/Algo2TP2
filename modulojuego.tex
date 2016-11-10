@@ -257,9 +257,9 @@
 		\State itPokemon $\gets$ AgregarRapido(j.todosLosPokemones, infoP)	\Comment O(copy(infoP)) {Copiar los elementos de la tupla es O(1)}
 		\State desdeLat $\gets$ iDamePos(iLatitud(c), 2) \Comment O(1)
 		\State desdeLong $\gets$ iDamePos(iLongitud(c), 2) \Comment O(1)
-		\While {desdeLat $\leq$ iLatitud(c) + 2}	\Comment O(1) {Recorro un conjunto acotado de coordenadas}
-			\While {desdeLong $\leq$ iLongitud(c) + 2}	\Comment O(1) {Recorro un conjunto acotado de coordenadas}
-				\If {iDistEuclidea(CrearCoor(desdeLat, desdeLong), c) $\leq$ 4} \Comment O(1)
+		\While {desdeLat $\leq$ Latitud(c) + 2}	\Comment O(1) {Recorro un conjunto acotado de coordenadas}
+			\While {desdeLong $\leq$ Longitud(c) + 2}	\Comment O(1) {Recorro un conjunto acotado de coordenadas}
+				\If {DistEuclidea(CrearCoor(desdeLat, desdeLong), c) $\leq$ 4} \Comment O(1)
 					\If {Definido?(j.posicionesJugadores, CrearCoor(desdeLat, desdeLong))}	\Comment O(1)
 						\State itJugadores $\gets$ iCrearIt(*(Significado(j.posicionesJugadores, CrearCoor(desdeLat, desdeLong))))	\Comment O(1)
 						\While {HaySiguiente(itJugadores)}	\Comment O(EC)

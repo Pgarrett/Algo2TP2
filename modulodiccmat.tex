@@ -130,11 +130,11 @@ El principal costo se paga al crear la estructura o borrar un dato, dado que cue
 	\tadAlinearFunciones{Rep}{estr}
 	\tadAlinearAxiomas{Rep(d)}
 
-	\Rep[dicc][d]{(tam(d.posiciones) $\igobs$ (d.ancho x d.largo)) $\yluego$(($\forall c:$ coor) (c $\in$ d.claves) $\Leftrightarrow$ definido?(d.posiciones, n) $\yluego$ (d.posiciones[n]$_{1}$ $\igobs$ true)) $\yluego$ (($\forall c:$ coor) (c $\in$ d.claves $\Leftarrow$ (Siguiente(d.posiciones[n]$_{2}$) $\igobs$ c)))}%\mbox{}
+	\Rep[dicc][d]{(tam(d.posiciones) $\igobs$ (d.ancho x d.largo)) $\yluego$(($\forall c:$ coor) (c $\in$ d.claves) $\Leftrightarrow$ definido?(d.posiciones, latitud(c) x d.ancho + longitud(c)) $\yluego$ (d.posiciones[latitud(c) x d.ancho + longitud(c)]$_{1}$ $\igobs$ true)) $\yluego$ (($\forall c:$ coor) (c $\in$ d.claves $\Leftarrow$ (Siguiente(d.posiciones[latitud(c) x d.ancho + longitud(c)]$_{2}$) $\igobs$ c)))}%\mbox{}
 	
 	\tadAlinearFunciones{Abs}{dicc/d}	
 	
-	\Abs[dicc]{diccMat}[d]{d'}{$d$.claves = claves(d') $\land$ $d$.ancho = ancho(d') $\land$ $d$.largo = largo(d') $\land$ ($\forall c \gets d.claves$) d.posiciones[$c.campo_1 * d.ancho + c.campo_2 $] = siginificado($c_1$, $c_2$, d')}
+	\Abs[dicc]{diccMat}[d]{d'}{$d$.claves = claves(d') $\land$ $d$.ancho = ancho(d') $\land$ $d$.largo = largo(d') $\land$ ($\forall c \gets d.claves$) d.posiciones[longitud(c) $*$ d.ancho $+$ latitud(c)] = siginificado(longitud(c), latitud(c), d')}
 	
 
 \end{Representacion}
@@ -215,7 +215,7 @@ El principal costo se paga al crear la estructura o borrar un dato, dado que cue
 
 \begin{algorithm}[H]{\textbf{iAplanar}(\In {d}{dicc}, \In {c}{coor}) $\to$ $res$ : $nat$}
     	\begin{algorithmic}[1]
-			\State $res \gets c.campo_1 * d.ancho + c.campo_2 $ \Comment $\Theta(1)$
+			\State res $\gets$ Longitud(c) $*$ d.ancho $+$ Latitud(c)  \Comment $\Theta(1)$
 			
 			\medskip
 			\Statex \underline{Complejidad:} $\Theta(1)$
