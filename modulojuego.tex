@@ -379,10 +379,11 @@ $\textbf{Post}$ $\equiv$ $\{$d = definir(logitud(c), latitud(c), Ag(j, significa
 			\State EliminarSiguiente(tupJugId$_{2}$)	\Comment O(log(EC)) {Elimina al jugador del heap donde estaba esperando}
 		\EndIf
 		\State iActualizarTodos(j)	\Comment O(PS)
+
 	\EndIf
 	\If {debeSancionarse?(id, c, j)}
-  \State infoJ.sanciones $\gets$ infoJ.sanciones + 1	\Comment O(1)
-		\If {infoJ.sanciones $<$ 5}	\Comment O(1)
+		\If {infoJ.sanciones $<$ 4}	\Comment O(1)
+			\State infoJ.sanciones $\gets$ infoJ.sanciones + 1	\Comment O(1)
 			\State EliminarSiguiente(infoJ.itPosicion) \Comment O(1)
 			\State AgregarJugadorEnPos(j.posicionesJugadores, infoJ, c) \Comment O(1)
 		\Else
@@ -405,13 +406,12 @@ $\textbf{Post}$ $\equiv$ $\{$d = definir(logitud(c), latitud(c), Ag(j, significa
 
 \begin{algorithm}[H]{\textbf{iActualizarMenos}(\Inout{j}{estr}, \In{c}{coor})} 
 	\begin{algorithmic}
+    \State p $\gets$ iPosPokemonCercano(j, c)	\Comment O(1)
 		\State itCoor $\gets$ Coordenadas(j.posicionesPokemons)	\Comment O(1)
 		\While {HaySiguiente(itCoor)}	\Comment O(PS)
-			\If{Siguiente(itCoor) $\neq$ c}	\Comment O(1)
+			\If{Siguiente(itCoor) $\neq$ p}	\Comment O(1)
 				\State itPokemon $\gets$ Significado(j.posicionesPokemons, Siguiente(itCoor))$_{2}$	\Comment O(1)
-				\If {Siguiente(itPokemon).esSalvaje}	\Comment O(1)
 					\State ActualizarPokemon(itPokemon)	\Comment O(1)
-				\EndIf
 			\EndIf
 		\EndWhile
 
@@ -427,9 +427,7 @@ $\textbf{Post}$ $\equiv$ $\{$d = definir(logitud(c), latitud(c), Ag(j, significa
 		\State itCoor $\gets$ Coordenadas(j.posicionesPokemons)	\Comment O(1)
 		\While {HaySiguiente(itCoor)}	\Comment O(PS)
 			\State itPokemon $\gets$ Significado(j.posicionesPokemons, Siguiente(itCoor))$_{2}$	\Comment O(1)
-			\If {Siguiente(itPokemon).esSalvaje}	\Comment O(1)
 				\State ActualizarPokemon(itPokemon)	\Comment O(1)
-			\EndIf
 		\EndWhile
 
 	
