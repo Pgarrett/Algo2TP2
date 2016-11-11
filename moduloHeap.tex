@@ -146,28 +146,24 @@
 	\Rep[estr][e]{
 		\\(e.proximo = NULL) = (e.tamaño = 0) $\yluego$ 
 		\\(e.proximo $\neq$ NULL) $\impluego$ (
-		\\(e.proximo $\rightarrow$ izq $\neq$ NULL $\yluego$ ((e.proximo $\rightarrow$ prior $>$ (e.proximo $\rightarrow$ izq) $\rightarrow$ prior) $\wedge$ (e.proximo = (e.proximo $\rightarrow$ izq) $\rightarrow$ padre))) 
-		\\(e.proximo $\rightarrow$ der $\neq$ NULL $\yluego$ ((e.proximo $\rightarrow$ prior $>$ (e.proximo $\rightarrow$ der) $\rightarrow$ prior) $\wedge$ (e.proximo = (e.proximo $\rightarrow$ der) $\rightarrow$ padre))) $\wedge$
+		\\(e.proximo $\to$ izq $\neq$ NULL $\yluego$ ((e.proximo $\rightarrow$ prior $>$ (e.proximo $\rightarrow$ izq) $\rightarrow$ prior) $\wedge$ (e.proximo = (e.proximo $\to$ izq) $\rightarrow$ padre))) 
+		\\(e.proximo $\to$ der $\neq$ NULL $\yluego$ ((e.proximo $\rightarrow$ prior $>$ (e.proximo $\rightarrow$ der) $\rightarrow$ prior) $\wedge$ (e.proximo = (e.proximo $\to$ der) $\rightarrow$ padre))) $\wedge$
 		\\ Rep(SubArbolIzq(e)) $\wedge$ Rep(SubArbolDer(e)))
 	}\mbox{}
 
-\tadAlinearFunciones{SubArbolIzq}{c/estr}
-\tadOperacion{SubArbolIzq}{c/est}{estr}{}
-\tadOperacion{SubArbolDer}{c/est}{estr}{}
+\tadAlinearFunciones{SubArbolIzq}{c/estr}{}
 
-	\tadAxioma{SubArbolIzq($c$)}{
-		estr(c.proximo $\rightarrow$ izq, c.tamaño$-$1)
-	}
+\tadOperacion{SubArbolIzq}{estr}{estr}{}
+	\tadAxioma{SubArbolIzq($c$)}{estr(c.proximo $\to$ izq, c.tamaño$-$1)}
 
-	\tadAxioma{SubArbolDer($c$)}{
-		estr(c.proximo $\rightarrow$ der, c.tamaño$-$1)
-	}
+\tadOperacion{SubArbolDer}{estr}{estr}{}
+	\tadAxioma{SubArbolDer($c$)}{estr(c.proximo $\to$ der, c.tamaño$-$1)}
 
 	\subsubsection{Función de Abstracción}
 
 	\tadAlinearFunciones{Abs}{Estr/e}
 
-		\Abs[estr]{colaMinPrior}[e]{cmp}{
+		\Abs[estr]{colaMinPrior($\alpha$)}[e]{c}{
 			({\IF vacía?($e$) THEN vacia ELSE encolar(proximo(c), Abs(desencolar(c))) FI}}
 
 \subsubsection{Representación del Iterador Cola de Prioridad}
@@ -180,30 +176,31 @@
 
 		\renewcommand{\labelenumi}{(\Roman{enumi})}
 
-		%\begin{enumerate}
-		%	\item Todos ids de cada nodo en elementos son menos que el largo del vector proximos 
-		%	\item Si ids de nodos en elementos son diferentes, evaluados en la posicion correspondiente de proximos, sus prioridades mantienen la diferencia.  
-		%\end{enumerate}
+		\begin{enumerate}
+			\item Tiene que valer el rep de la cola.
+			\item El siguiente es invalido o esta en la cola 
+		\end{enumerate}
 
-	%\tadAlinearFunciones{Rep}{estr}
-	%\tadAlinearAxiomas{Rep(e)}
+	\tadAlinearFunciones{Rep}{it}
+	\tadAlinearAxiomas{Rep(it)}
 
-	%\Rep[estr][e]{
-%		\\($\forall i:$ nat) ($i$ < $longitud(e.proximos)$) $\impluego$
-%	\\	(($\forall j:$ nat) $j \leqslant i$ $\impluego$ (e.proximos[$j$].prioridad $\leqslant$ e.proximos[$i$].prioridad) $\land$
-%	\\	(($\forall n:$ nat) $n$ < $longitud(e.proximos)$ $\impluego$ e.proximos[$e.elementos$[$n$]$.id$].$elemCola \rightarrow siguiente.elem$ $\igobs$ $e.elementos$[$n$]$.elem$)
-%	}\mbox{}
+	\Rep[iter][it]{
+		\\Rep(*(it.cola)) $\yluego$
+		\\(it.siguiente = NULL $\oluego$ (Esta?(it.siguiente, *(it.cola)))
+	}\mbox{}
+	
+\tadAlinearFunciones{Esta?}{p/puntero(Nodo),c/estr}{}
+\tadOperacion{Esta?}{puntero(Nodo),estr}{bool}{}
+
+	\tadAxioma{Esta?(p,c)}{p = c.proximo $\oluego$ (Esta?(p, SubArbolIzq(c))) $\oluego$ (Esta?(p, SubArbolDer(c)))}
 
 	\subsubsection{Función de Abstracción}
 
-	\tadAlinearFunciones{Abs}{Estr/e}
+	\tadAlinearFunciones{Abs}{iter/it}
 
-%		\Abs[estr]{colaMinPrior}[e]{cmp}{
-%			(vacía?($cmp$) $\Leftrightarrow$ $tamano$($e$) $\igobs$ 0) $\land$ \\
-%			 $\neg$ $vacia?$($cmp$) $\impluego$ \\
-%		  	 (próximo($cmp$) $\igobs$ próximo($e$) $\land$ \\
-%			 desencolar($cmp$) $\igobs$ desencolar($e$))}
-
+		\Abs[estr]{itColaMin}[it]{u}{
+			(Siguientes($u$) = deColaASecu(it.cola)}
+		\Comment{La funcion deColaASecu convierte todos los elementos de la cola en una secu($\alpha$)}
 \subsection{Algoritmos}
 	\lstset{style=alg}
 
