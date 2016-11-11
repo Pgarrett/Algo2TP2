@@ -161,11 +161,11 @@ El principal costo se paga al crear la estructura o borrar un dato, dado que cue
 
 \begin{algorithm}[H]{\textbf{iDefinir}(\Inout {d}{dicc}, \In {c}{coor}, \In {s}{$\sigma$})}
     	\begin{algorithmic}[1]
-            \Comment sig : tupla \Comment O(1)
-            \Comment sig$_{1}$ $\gets$ true \Comment O(1) 
-            \Comment sig$_{3}$ $\gets$ s \Comment $\Theta(copy(s))$
-            \If{$\lnot(Definido?(d, Aplanar(d,c)))$}
-                \State sig$_{2}$ $\gets$ $AgregarRapido(d.claves, c)$ \Comment $\Theta(copy(s))$
+            \State sig : tupla \Comment O(1)
+            \State sig$_{1}$ $\gets$ true \Comment O(1) 
+            \State sig$_{3}$ $\gets$ s \Comment $\Theta(copy(s))$
+            \If{$\neg$ (Definido?(d, Aplanar(d,c)))}
+                \State sig$_{2}$ $\gets$ AgregarRapido(d.claves, c) \Comment $\Theta(copy(s))$
             \Else
                 \State sig$_{2}$ $\gets$ d.posiciones[Aplanar(d, c)]$_{2}$ \Comment O(1) 
             \EndIf
@@ -197,7 +197,7 @@ El principal costo se paga al crear la estructura o borrar un dato, dado que cue
 
 \begin{algorithm}[H]{\textbf{iBorrar}(\Inout {d}{dicc}, \In {c}{coor})}
     	\begin{algorithmic}[1]
-            \State EliminarSiguiente(d.posiciones[Aplanar(d, c)]_${2}$) \Comment $\Theta(1)$
+            \State EliminarSiguiente(d.posiciones[Aplanar(d, c)]$_{2}$) \Comment $\Theta(1)$
             \State $d.posiciones[Aplanar(d, c)] \gets <false, CrearIt(Vacio()), d.posiciones[Aplanar(d, c)]>$ \Comment $\Theta(1)$ 
       \medskip
 			\Statex \underline{Complejidad:} $\Theta(1)$

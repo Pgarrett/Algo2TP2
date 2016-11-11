@@ -357,15 +357,25 @@ $\textbf{Post}$ $\equiv$ $\{$d = definir(logitud(c), latitud(c), Ag(j, significa
 	\begin{algorithmic}
 	\State tupJug $\gets$ j.jugadoresPorID[id]	\Comment O(1)
 	\State infoJ $\gets$ Siguiente(tupJug$_{1}$)	\Comment O(1)
-	\If {iHayPokemonCercano(infoJ.posicion, j)}	\Comment O(1)
+	\If {iHayPokemonCercano(c, j)}	\Comment O(1) {Pregunto si me estoy moviendo a donde hay un pokemon}
 		\State p $\gets$ iPosPokemonCercano(j, c)	\Comment O(1)
+		\If{$\neg$ iHayPokemonCercano(infoJ.posicion, j)}	\Comment O(1) {Pregunto si no estaba en rango de un pokemon antes de moverme}
+			\State infoP $\gets$ Siguiente(Significado(j.posicionesPokemons, p)$_{2}$)	\Comment O(1)
+			\State infoP.contador $\gets$ 0 \Comment O(1)
+			\State cantPokemonesJug $\gets$ Cardinal(infoJ.pokemonesCapturados)	\Comment O(1)
+			\State tupJugId$_{2}$ $\gets$ iEncolar(infoP.jugadoresEnRango, cantPokemonesJug, id)	\Comment O(log(EC))
+		\Else
+			\If {p $\neq$ iPosPokemonCercano(j, infoJ.posicion)}	\Comment O(1) {Pregunto si el pokemon donde estaba es distinto del que voy a estar}
+				\State infoP $\gets$ Siguiente(Significado(j.posicionesPokemons, p)$_{2}$)	\Comment O(1)
+			\State infoP.contador $\gets$ 0 \Comment O(1)
+			\State cantPokemonesJug $\gets$ Cardinal(infoJ.pokemonesCapturados)	\Comment O(1)
+			\State EliminarSiguiente(tupJugId$_{2}$)	\Comment O(log(EC))
+			\State tupJugId$_{2}$ $\gets$ iEncolar(infoP.jugadoresEnRango, cantPokemonesJug, id)	\Comment O(log(EC))
+			\EndIf
+		\EndIf
 		\State iActualizarMenos(p, j)	\Comment O(PS)
-		\State infoP $\gets$ Siguiente(Significado(j.posicionesPokemons, p)$_{2}$)	\Comment O(1)
-		\State infoP.contador $\gets$ 0 \Comment O(1)
-		\State cantPokemonesJug $\gets$ Cardinal(infoJ.pokemonesCapturados)	\Comment O(1)
-		\State tupJugId$_{2}$ $\gets$ iEncolar(infoP.jugadoresEnRango, cantPokemonesJug, id)	\Comment O(log(EC))
 	\Else
-		\If {iSaleDelRango(j, c, id)}
+		\If {iHayPokemonCercano(infoJ.posicion, j)}	\Comment O(1) {Ya se que no hay pokemon donde voy a estar, si hay pokemon donde estoy ahora es que salgo de un rango}
 			\State EliminarSiguiente(tupJugId$_{2}$)	\Comment O(log(EC)) {Elimina al jugador del heap donde estaba esperando}
 		\EndIf
 		\State iActualizarTodos(j)	\Comment O(PS)
