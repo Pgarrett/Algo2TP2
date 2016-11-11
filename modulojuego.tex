@@ -190,38 +190,27 @@
 \subsubsection{Invariante de Representación}
 	\begin{enumerate}
 		\item La suma de todas las cantidades de cada tipo de pokemon es igual al cardinal del conjunto todosLosPokemones.
-		\item Para cada infoPokemon definido en todosLosPokemones, si es salvaje, su tipo esta definido en pokemones, su coordenada esta definida en posicionesPokemones y el significado en posicionesPokemones es igual a infoPokemon, su contador es un Nat menor estricto que 10 y cada jugador en rango esta en jugadores y su prioridad es la cantidad de pokemones capturados por dicho jugador.
-		\item El cardinal de idsJugadores es igual a la longitud de pokemonesPorID, que es igual al cardinal de jugadores + el cardinal de expulsados
+		\item Para cada infoPokemon definido en todosLosPokemones, si es salvaje, su tipo esta definido en pokemones, su coordenada esta definida en posicionesPokemones y el significado en posicionesPokemones es igual a infoPokemon, su contador es un Nat menor estricto que 10 y cada jugador en rango esta en jugadores.
+		\item El cardinal de idsJugadores es igual a la longitud de jugadoresPorID, que es igual al cardinal de jugadores + el cardinal de expulsados
 		\item Cada jugador en idsJugadores pertenece a expulsados, o su numero de id representa la posicion en jugadoresPorID donde esta guardada su informacion. Esta informacion refleja lo definido en jugadores. Si el jugador esta encolado, entonces existe un infoPokemon en todos los pokemones, tal que ese jugador pertenece a los jugadoresEnRango del pokemon.
-		\item Cada coordenada valida en el mapa, si esta definida en posicionesPokemones, su significado pertenece a todosLosPokemones y es salvaje
-	
-	
-	
-	
-	
-	
-	
-	
-	
-		\item La suma de todos los significados de pokemones es igual al cardinales de  todosLosPokemones.
-		\item La suma de la cantidad de jugadores y expulsados es igual a la longitud del vector jugadoresPorID.
-		\item Para toda coordenada, si esta definida en posicionesPokemons entonces la coordeanda pertenece al mapa.
-		\item La posicion de todo jugador que pertenezca al conjunto jugadores y este conectado pertenece al mapa.
-		\item Para todo pokemon que exista en pokemons y sea salvaje, el conjunto de jugadores que esta esperando para atraparlo pertenece al conjunto jugadores.
-		\item Todo jugador que pertenezca a jugadores, este conectado y este esperando para atrapar, esta incluido en el conjunto de jugadores en rango del pokemon al que quiere atrapar.
+		\item Cada coordenada valida en el mapa, si esta definida en posicionesPokemones, su significado pertenece a todosLosPokemones y es salvaje		
+		\item Cada coordenada valida en el mapa, si esta definida en posicionesJugadores, su significado esta contenido en jugadores
+		\item Para cada infoJugador en jugadores, su id pertenece a idsJugadores. Si esta conectado, su itPosicion esta contenido en el significado de su posicion en posicionesJugadores. Sus sanciones son menores a 5. Sus pokemones capturados estan contenidos en todosLosPokemones
 		\item Los conjuntos jugadores y expulsados son disjuntos.
 	\end{enumerate}
 	
 	\begin{enumerate}
-		\item Checkear con significado de trie
-		\item \# e.jugadores + \# e.expulsados = long(e.jugadoresPorID)
-		\item ($\forall c : coor$) def?(c, e.posicionesPokemons) $\impluego$ j.posicion $\in$ e.mapa.coordenadas
-		\item ($\forall j : jug$) j $\in$ e.jugadores $\land$ j.estaConectado $\impluego$ j.posicion $\in$ e.mapa.coordenadas
-		\item ($\forall p : poke$) (def?(p, e.pokemones) $\land$ p.salvaje) $\impluego$ ($\forall it : itJug$) HayMas?(it) $\yluego$ Actual(it) $\in$ p.jugadoresEnRango $\impluego$ Actual(it) $\in$ e.jugadores
-		\item ($\forall j : jug$) j $\in$ e.jugadores $\land$ j.estaConectado $\yluego$ estaParaAtrapar(j) $\impluego$ ($\forall p : poke$) def?(p, e.pokemones) $\yluego$ j $\in$ p.jugadoresEnRango
-		\item ($\forall j : jug$) (j $\in$ e.jugadores $\impluego$ j $\notin$ e.expulsados) $\lor$ (j $\in$ e.expulsados $\impluego$ j $\notin$ e.jugadores)
-		
-	\end{enumerate}
+	\item $\left(\displaystyle\sum_{c \in claves(e.pokemones)}Obtener(e.pokemones,c)\right = \#e.todosLosPokemons)$
+	\item ($\forall$ i : infoPokemon) pertenece?(e.todosLosPokemones, i) $\impluego$ (definido?(e.pokemones, i.tipo) $\land$ definido?(e.posicionesPokemones, i.posicion) $\yluego$ Significado(e.posicionesPokemones, i.posicion) = i $\land$ i.contador $<$ 10 $\land$ ($\forall$ j : Jugador) j $\in$ i.jugadoresEnRango $\impluego$ j $\in$ e.jugadores )
+	\item $\#$e.idsJugadores = long(e.jugadoresPorID) $\land$ $\#$e.idsJugadores = ($\#$e.jugadores + $\#$e.expulsados)
+	\item ($\forall$ j : jugador) j $\in$ e.idsJugadores $\impluego$ (j $\in$ e.expulsados $\oluego$ e.jugadoresPorID[j].info $\in$ e.jugadores $\land$ Siguiente(e.jugadoresPorID[j].encolado) $\neq$ NULL $\impluego$ (($\forall$ i : infoPokemon) i $\in$ e.todosLosPokemones $\yluego$ j $\in$ i.jugadoresEnRango))
+	\item ($\forall$ c : coor) c $\in$ e.mapa.coordenadas $\impluego$ (definido?(e.posicionesPokemones, c) $\impluego$ Siguiente(Significado(e.posicionesPokemones, c)) $\in$ e.todosLosPokemones $\land$ Siguiente(Significado(e.posicionesPokemones, c))).esSalvaje
+	\item ($\forall$ c : coor) c $\in$ e.mapa.coordenadas $\impluego$ (definido?(e.posicionesJugadores, c) $\impluego$ *(Significado(e.posicionesPokemones, c)) $\subseteq$ e.jugadores)
+	\item ($\forall$ i : infoJugador) i $\in$ e.jugadores $\impluego$ (i.id $\in$ e.idsJugadores $\land$ i.estaConectado $\impluego$ (i.itPosicion $\in$ *Significado(e.posicionesJugadores, i.posicion)) $\land$ i.sanciones $<$ 5 $\land$ i.pokemonesCapturados $\subseteq$ e.todosLosPokemones)
+	\item e.jugadores $\cap$ e.expulsados = $\emptyset$
+\end{enumerate}
+
+\Rep[estr][e]{1 $\yluego$ 2 $\yluego$ 3 $\yluego$ 4 $\yluego$ 5 $\yluego$ 6 $\yluego$ 7 $\yluego$ 8}
 	
 \subsubsection{Funci\'on de Abstracci\'on}	
 	Abs(e): estre - $>$ Jugo {Rep(e)} 
