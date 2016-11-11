@@ -391,9 +391,10 @@ $\textbf{Post}$ $\equiv$ $\{$d = definir(logitud(c), latitud(c), Ag(j, significa
 			\State EliminarSiguiente(infoJ.itPosicion) \Comment O(1)
 			\State AgregarJugadorEnPos(j.posicionesJugadores, infoJ, c) \Comment O(1)
 		\Else
-			\State iEliminarSiguiente(tupJug$_{1}$)	\Comment O(1) {Saca al jugador del conjunto de jugadores}
+			\State EliminarSiguiente(Siguiente(tupJug$_{1}$)$_{1}$)	\Comment O(1) {Elimina el id del jugador del conjunto de jugadores}
 			\State AgregarRapido(j.expulsados, id)	\Comment O(copy(id)) {Copiar un nat es O(1)}
-			\If {iHayPokemonCercano(j, c)}	\Comment O(1)
+			\State EliminarSiguiente(tupJug$_{1}$)	\Comment O(1) {Saca al jugador del conjunto de jugadores}
+      \If {iHayPokemonCercano(j, c)}	\Comment O(1)
 				\State iEliminarSiguiente(tupJug$_{2}$)	\Comment O(log(EC)) {Elimina al jugador del heap donde estaba esperando}
 			\EndIf
 		\EndIf
@@ -409,11 +410,12 @@ $\textbf{Post}$ $\equiv$ $\{$d = definir(logitud(c), latitud(c), Ag(j, significa
 \end{algorithm}
 
 \begin{algorithm}[H]{\textbf{iActualizarMenos}(\Inout{j}{estr}, \In{c}{coor})} 
+
+$\textbf{Pre}$ $\equiv$ $\{$ posExistente(mapa(j), c) $\}$
 	\begin{algorithmic}
-    \State p $\gets$ iPosPokemonCercano(j, c)	\Comment O(1)
 		\State itCoor $\gets$ Coordenadas(j.posicionesPokemons)	\Comment O(1)
 		\While {HaySiguiente(itCoor)}	\Comment O(PS)
-			\If{Siguiente(itCoor) $\neq$ p}	\Comment O(1)
+			\If{Siguiente(itCoor) $\neq$ c}	\Comment O(1)
 				\State itPokemon $\gets$ Significado(j.posicionesPokemons, Siguiente(itCoor))$_{2}$	\Comment O(1)
 					\State ActualizarPokemon(itPokemon)	\Comment O(1)
 			\EndIf
@@ -433,8 +435,6 @@ $\textbf{Post}$ $\equiv$ $\{$d = definir(logitud(c), latitud(c), Ag(j, significa
 			\State itPokemon $\gets$ Significado(j.posicionesPokemons, Siguiente(itCoor))$_{2}$	\Comment O(1)
 				\State ActualizarPokemon(itPokemon)	\Comment O(1)
 		\EndWhile
-
-	
 		\medskip
 		\Statex \underline{Complejidad:} O(PS)
 		\Statex \underline{Justificación:} Actualiza todos las colas de prioridad. invalido.
@@ -442,6 +442,8 @@ $\textbf{Post}$ $\equiv$ $\{$d = definir(logitud(c), latitud(c), Ag(j, significa
 \end{algorithm}
 
 \begin{algorithm}[H]{\textbf{iActualizarPokemon}(\Inout{itPokemones}{itConj(infoPokemon)}, \Inout{j}{estr})} 
+
+$\textbf{Pre}$ $\equiv$ $\{$ haySiguiente(itPokemones)) $\}$
 	\begin{algorithmic}
 		\State infoP $\gets$ Siguiente(itPokemones)	\Comment O(1)
 		\State infoP.contador $\gets$ infoP.contador + 1	\Comment O(1)
@@ -453,8 +455,7 @@ $\textbf{Post}$ $\equiv$ $\{$d = definir(logitud(c), latitud(c), Ag(j, significa
 			\State Borrar(j.posicionesPokemons, infoP.posicion) \Comment O(1)
 		\EndIf
 
-	
-		\medskip
+    \medskip
 		\Statex \underline{Complejidad:} O(1)
 		\Statex \underline{Justificación:} Actualiza la cola de prioridad del pokemon que paso por parametro. Suma uno al contador en caso de que no tenga que atraparse, si tiene que ser atrapado, lo agrega al conjunto de pokemones atrapados del jugador y lo elimina del diccionario de pokemones por posicion.
     \end{algorithmic}

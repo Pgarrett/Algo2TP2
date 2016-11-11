@@ -1,7 +1,6 @@
 tupla(
-  pokemones: diccString(Pokemon, ListaPorTipo: ListaEnlazada(itConj(infoPokemon))),
-  todosLosPokemones: conjLineal(infoPokemon) , 
-  pokedex : diccString(Pokemon, Nat)
+  pokemones: diccString(Pokemon, Nat),
+  todosLosPokemones: conjLineal(infoPokemon) ,
 , idsJugadores: conjLineal(Jugador) , 
   jugadores: conjLineal(infoJugador) , 
   expulsados: conjLineal(Jugador) , 
@@ -31,15 +30,11 @@ pokemon(
     no debe haber repetidos en idsJugadores
     todos los ids dentro de idsJugadores deben ser menores que su cardinal
     
-
-  pokemones
-
   posicionesPokemon:
     todas las coordenadas estan en el mapa
-  
     
   jugadoresPorId:
-    para toda posicion 'i', el jugador en la posicion i y solo si su id es 'i' 
+    para toda posicion 'i', el jugador esta en la posicion i y solo si su id es 'i' 
     un jugador en una posicion 'i' tiene 5 sanciones si y solo si 'i' pertenece a expulsados
     si hay pokemon en rango,(=>) el iterador(en la segunda posicion) apunta a la posicion del jugador entre los que esperan para atraparlo
       
@@ -60,9 +55,9 @@ pokemon(
     son salvajes si y solo si tienen posicion
     un pokemon salvaje, todos los entrenadores que estan para atraparlo, estan en jugadores, estan conectados y estan en el rango (distancia euclidea)
     un pokemon salvaje, tiene al jugador con menos pokemones como proximo a atraparlo
-    la longitud de la lista de pokemones de un tipo, es igual a la cantidad de ese tipo en la pokedex
     un pokemon esta atrapado si y solo si su contador esta en 10
-  pokedex:
+  
+   pokemones
     pokedex tiene todos los tipos de pokemon 
     la suma de todas las cantidades, es igual al tamaño de todosLosPokemones
     
