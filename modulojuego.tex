@@ -404,6 +404,7 @@ $\textbf{Post}$ $\equiv$ $\{$d = definir(logitud(c), latitud(c), Ag(j, significa
 				\EndIf
 				\State EliminarSiguiente(Siguiente(itPCapturados))	\Comment O(1)		
 			\EndWhile
+      \State EliminarSiguiente(Siguiente(tupJug$_{1}$)$_{1}$)	\Comment O(1) {Elimina el id del jugador del conjunto de jugadores}
 			\State iEliminarSiguiente(tupJug$_{1}$)	\Comment O(1) {Saca al jugador del conjunto de jugadores}
 			\State AgregarRapido(j.expulsados, id)	\Comment O(copy(id)) {Copiar un nat es O(1)}
 			\If {iHayPokemonCercano(j, c)}	\Comment O(1)
