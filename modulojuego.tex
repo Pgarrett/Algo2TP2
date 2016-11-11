@@ -156,9 +156,9 @@
 	
 	\begin{Estructura}{Juego}[estr]
 		\begin{Tupla}[estr]
-			\tupItem{pokemones}{diccString(Pokemon, ListaPorTipo: ListaEnlazada(itConj(infoPokemon)))}%
+			\tupItem{pokemones}{diccString(Pokemon, Nat)}%
 			\tupItem{todosLosPokemones}{conjLineal(infoPokemon)}
-			\tupItem{pokedex}{diccString(Pokemon, Nat)}
+		%	\tupItem{pokedex}{diccString(Pokemon, Nat)}
 			\tupItem{idsJugadores}{conjLineal(Jugador)}
 			\tupItem{jugadores}{conjLineal(infoJugador)}
 			\tupItem{expulsados}{conjLineal(Jugador)}
@@ -179,6 +179,7 @@
 		\end{Tupla}
 	
 		\begin{Tupla}[infoPokemon]
+			\tupItem{tipo}{Pokemon}
 			\tupItem{posicion}{coor}
 			\tupItem{contador}{Nat}
 			\tupItem{jugadoresEnRango}{colaPrior$<$Nat, itConj(Jugador)$>$}
@@ -234,7 +235,7 @@
 		\State estr : j	\Comment O(1)
 		\State j.pokemones $\gets$ CrearDiccionario()	\Comment O(1)
 		\State j.todosLosPokemones $\gets$ Vacio()	\Comment O(1)
-		\State j.pokedex $\gets$ CrearDiccionario()	\Comment O(1)		
+%		\State j.pokedex $\gets$ CrearDiccionario()	\Comment O(1)		
 		\State j.idsJugadores $\gets$ Vacio()	\Comment O(1)		
 		\State j.jugadores $\gets$ Vacio()	\Comment O(1)
 		\State j.expulsados $\gets$ Vacio()	\Comment O(1)
@@ -253,7 +254,7 @@
 
 \begin{algorithm}[H]{\textbf{iAgregarPokemon}(\Inout{j}{estr}, \In{c}{coor}, \In{p}{Pokemon}) $\to$ res : itConj(Pokemon)}
 	\begin{algorithmic}
-		\State infoP $\gets$ $<$c, 0, Vacio(), True$>$	\Comment O(1)
+		\State infoP $\gets$ $<$p, c, 0, Vacio(), True$>$	\Comment O(|P|)
 		\State itPokemon $\gets$ AgregarRapido(j.todosLosPokemones, infoP)	\Comment O(copy(infoP)) {Copiar los elementos de la tupla es O(1)}
 		\State desdeLat $\gets$ iDamePos(iLatitud(c), 2) \Comment O(1)
 		\State desdeLong $\gets$ iDamePos(iLongitud(c), 2) \Comment O(1)
@@ -274,10 +275,13 @@
 				\EndIf
 			\EndWhile
 		\EndWhile
-		\If {$\neg$ Definido?(j.pokemones, p)}	\Comment O(|P|)
-			\State Definir(j.pokemones, p, Vacia())	\Comment O(|P|)
+		\If {Definido?(j.pokemones, p)}	\Comment O(|P|)
+			\State cViejo $\gets$ Obtener(j.pokemones, p)	\Comment O(|P|)
+			\State Eliminar(j.pokemones, p)	\Comment O(|P|)
+			\State Definir(j.pokemones, p, cViejo + 1)	\Comment O(|P|)
+		\Else
+			\State Definir(j.pokemones, p, 1)	\Comment O(|P|)
 		\EndIf
-		\State AgregarAtras(Obtener(j.pokemones, p), itPokemon)	\Comment O(|P| + copy(itPokemon)) {Copiar el iterador es O(1)}
 		\State res $\gets$ itPokemon	\Comment O(1)
 	
 		\medskip
@@ -323,7 +327,7 @@
 
 \begin{algorithm}[H]{\textbf{iAgregarJugadorEnPos}(\Inout{d}{DiccMat(coor, puntero(conjLineal(Jugador)))}, \Inout{j}{infoJugador}, \In{c}{coor})} 
 
-$\textbf{Pre}$ $\equiv$ $\{$ d $=$ d_0 $\land$ longitud(c) $<$ ancho(d) $\land$ latitud(c) $<$ largo(d) $\}$
+$\textbf{Pre}$ $\equiv$ $\{$ d $=$ d$_0$ $\land$ longitud(c) $<$ ancho(d) $\land$ latitud(c) $<$ largo(d) $\}$
   \begin{algorithmic}
       \State conLineal(Jugador) : jugsEnPos \Comment O(1)
       \If {$\lnot$ Definido?(d, c)}	\Comment O(1)
