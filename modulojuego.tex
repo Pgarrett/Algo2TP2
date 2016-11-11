@@ -163,7 +163,7 @@
 			\tupItem{jugadores}{conjLineal(infoJugador)}
 			\tupItem{expulsados}{conjLineal(Jugador)}
 			\tupItem{jugadoresPorID}{Vector($<$info: itConj(infoJugador), encolado: itColaPrior(Jugador)$>$)} %% itConj es un iterador a jugadores, itColaPrior es un iterador al heap en el que esta el jugador
-			\tupItem{posicionesPokemons}{DiccMat(coor, $<$Pokemon, itConj(infoPokemon)$>$)} %% itConj es un iterador al conjunto de todosLosPokemones
+			\tupItem{posicionesPokemons}{DiccMat(coor, itConj(infoPokemon))} %% itConj es un iterador al conjunto de todosLosPokemones
 			\tupItem{posicionesJugadores}{DiccMat(coor, puntero(conjLineal(Jugador)))} %% cada coordenada tiene un conjunto de jugadores. con el jugador se lo puede busacr en jugadoresPorID, donde la primer coordenada se agrega al heap del pokemon, lo que devuelve el agregar al heap es el segundo valor en la tupla
 			\tupItem{mapa}{map}
 		\end{Tupla}
@@ -364,13 +364,13 @@ $\textbf{Post}$ $\equiv$ $\{$d = definir(logitud(c), latitud(c), Ag(j, significa
 	\If {iHayPokemonCercano(c, j)}	\Comment O(1) {Pregunto si me estoy moviendo a donde hay un pokemon}
 		\State p $\gets$ iPosPokemonCercano(j, c)	\Comment O(1)
 		\If{$\neg$ iHayPokemonCercano(infoJ.posicion, j)}	\Comment O(1) {Pregunto si no estaba en rango de un pokemon antes de moverme}
-			\State infoP $\gets$ Siguiente(Significado(j.posicionesPokemons, p)$_{2}$)	\Comment O(1)
+			\State infoP $\gets$ Siguiente(Significado(j.posicionesPokemons, p))	\Comment O(1)
 			\State infoP.contador $\gets$ 0 \Comment O(1)
 			\State cantPokemonesJug $\gets$ Cardinal(infoJ.pokemonesCapturados)	\Comment O(1)
 			\State tupJugId$_{2}$ $\gets$ iEncolar(infoP.jugadoresEnRango, cantPokemonesJug, id)	\Comment O(log(EC))
 		\Else
 			\If {p $\neq$ iPosPokemonCercano(j, infoJ.posicion)}	\Comment O(1) {Pregunto si el pokemon donde estaba es distinto del que voy a estar}
-				\State infoP $\gets$ Siguiente(Significado(j.posicionesPokemons, p)$_{2}$)	\Comment O(1)
+				\State infoP $\gets$ Siguiente(Significado(j.posicionesPokemons, p))	\Comment O(1)
 			\State infoP.contador $\gets$ 0 \Comment O(1)
 			\State cantPokemonesJug $\gets$ Cardinal(infoJ.pokemonesCapturados)	\Comment O(1)
 			\State EliminarSiguiente(tupJugId$_{2}$)	\Comment O(log(EC))
@@ -391,6 +391,17 @@ $\textbf{Post}$ $\equiv$ $\{$d = definir(logitud(c), latitud(c), Ag(j, significa
 			\State EliminarSiguiente(infoJ.itPosicion) \Comment O(1)
 			\State AgregarJugadorEnPos(j.posicionesJugadores, infoJ, c) \Comment O(1)
 		\Else
+			\State itPCapturados $\gets$ CrearIt(infoJ.pokemonesCapturados)	\Comment O(1)
+			\While {HaySiguiente(itPCapturados)}	\Comment O(PC)
+				\State infoP $\gets$ Siguiente(Siguiente(itPCapturados))	\Comment O(1)
+				\State pViejos $\gets$ Obtener(j.pokemones, infoP.tipo)	\Comment O(|P|)
+				\State Borrar(j.pokemones, infoP.tipo)	\Comment O(|P|)
+				\If {pViejos $\neq$ 1}	\Comment O(1)
+					\State Definir(j.pokemones, infoP.tipo, pViejos - 1)	\Comment O(|P|)
+				\EndIf
+				\State EliminarSiguiente(Siguiente(itPCapturados))	\Comment O(1)		
+			\EndWhile
+			\State iEliminarSiguiente(tupJug$_{1}$)	\Comment O(1) {Saca al jugador del conjunto de jugadores}
 			\State EliminarSiguiente(Siguiente(tupJug$_{1}$)$_{1}$)	\Comment O(1) {Elimina el id del jugador del conjunto de jugadores}
 			\State AgregarRapido(j.expulsados, id)	\Comment O(copy(id)) {Copiar un nat es O(1)}
 			\State EliminarSiguiente(tupJug$_{1}$)	\Comment O(1) {Saca al jugador del conjunto de jugadores}
@@ -404,7 +415,7 @@ $\textbf{Post}$ $\equiv$ $\{$d = definir(logitud(c), latitud(c), Ag(j, significa
 	\EndIf
 
 \medskip
-\Statex \underline{Complejidad:} O((PS + PC) * |P| + log(EC))
+\Statex \underline{Complejidad:} O(PS + (PC * |P|) + log(EC))
 \Statex \underline{Justificación:}
 \end{algorithmic}
 \end{algorithm}
@@ -416,7 +427,7 @@ $\textbf{Pre}$ $\equiv$ $\{$ posExistente(mapa(j), c) $\}$
 		\State itCoor $\gets$ Coordenadas(j.posicionesPokemons)	\Comment O(1)
 		\While {HaySiguiente(itCoor)}	\Comment O(PS)
 			\If{Siguiente(itCoor) $\neq$ c}	\Comment O(1)
-				\State itPokemon $\gets$ Significado(j.posicionesPokemons, Siguiente(itCoor))$_{2}$	\Comment O(1)
+				\State itPokemon $\gets$ Significado(j.posicionesPokemons, Siguiente(itCoor))	\Comment O(1)
 					\State ActualizarPokemon(itPokemon)	\Comment O(1)
 			\EndIf
 		\EndWhile
@@ -432,7 +443,7 @@ $\textbf{Pre}$ $\equiv$ $\{$ posExistente(mapa(j), c) $\}$
 	\begin{algorithmic}
 		\State itCoor $\gets$ Coordenadas(j.posicionesPokemons)	\Comment O(1)
 		\While {HaySiguiente(itCoor)}	\Comment O(PS)
-			\State itPokemon $\gets$ Significado(j.posicionesPokemons, Siguiente(itCoor))$_{2}$	\Comment O(1)
+			\State itPokemon $\gets$ Significado(j.posicionesPokemons, Siguiente(itCoor))	\Comment O(1)
 				\State ActualizarPokemon(itPokemon)	\Comment O(1)
 		\EndWhile
 		\medskip
