@@ -529,7 +529,7 @@ $\textbf{Post}$ $\equiv$ $\{$d = definir(logitud(c), latitud(c), Ag(j, significa
 \begin{algorithm}[H]{\textbf{iPokemones}(\In{j}{estr}, \In{id}{Jugador}) $\to$ res : itConj($<$Pokemon, Nat$>$)} 
 	{}
 	\begin{algorithmic}
-		\State $res \gets CrearIt(Siguiente(j.jugadoresPorID[id]_0).pokeCapturados) $ \Comment O(1)
+		\State $res \gets CrearIt(Siguiente((j.jugadoresPorID[id]_1).pokeCapturados) $ \Comment O(1)
 	
 		\medskip
 		\Statex \underline{Complejidad:} O(1)
